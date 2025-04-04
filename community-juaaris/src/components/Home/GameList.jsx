@@ -3,12 +3,16 @@ import GameCard from "./GameCard.jsx";
 function GameList() {
   return (
     <main>
-      <div className="flex items-baseline mb-4">
-        <h2 className="text-4xl font-medium mr-6">Upcoming Games</h2>
-        <span className="text-gray-700">Sunday 30/3 - Sunday 6/4</span>
+      <div className="flex flex-col sm:flex-row sm:items-baseline mb-4">
+        <h2 className="text-2xl sm:text-4xl font-medium mb-2 sm:mb-0 sm:mr-6">
+          Upcoming Games
+        </h2>
+        <span className="text-sm sm:text-base text-gray-700">
+          Sunday 30/3 - Sunday 6/4
+        </span>
       </div>
 
-      <div className="h-px bg-gray-200 mb-8"></div>
+      <div className="h-px bg-gray-200 mb-6 sm:mb-8"></div>
 
       {/* Game Cards */}
       <div className="space-y-4">
