@@ -32,7 +32,7 @@ function GameCard({ teams, venue, dateTime, betCutoffTime, cutoffExceeded }) {
       <div className="w-full sm:w-auto sm:ml-4">
         {cutoffExceeded ? (
           <button className="w-full sm:w-auto bg-[#d9534f] text-white px-3 py-1.5 rounded-md hover:bg-[#c9302c] transition-colors text-xs sm:text-sm whitespace-nowrap">
-            Cutoff exceeded, view
+            Cutoff exceeded, view all bets
           </button>
         ) : (
           <button className="w-full sm:w-auto bg-[#4b6c43] text-white px-3 py-1.5 rounded-md hover:bg-[#3d5836] transition-colors text-xs sm:text-sm whitespace-nowrap">
