@@ -43,7 +43,7 @@ Data to be stored:
 ## Data Model
 
 Eraser link: https://app.eraser.io/workspace/RRcqhQoAn4xWIMkP0FOX?origin=share
-![Data model](/images/logo.png)
+![Data model](/images/data_model.png)
 
 # Changelog
 
