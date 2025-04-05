@@ -1,0 +1,89 @@
+juaaris [icon: user, color: blue] {
+  id string pk
+  displayName string
+  is_purple_capped bool
+  is_orange_capped bool
+  winnings float
+}
+
+juaari_win_history [icon: money, color: blue] {
+  juaari_id ObjectId juaaris pk
+  date datetime
+  bet_id ObjectId bets
+  match_id ObjectId matches
+  delta_winnings_this_game float
+  accumulated_winings float
+}
+
+party_fund [icons: money, color: red] {
+  date datetime pk
+  fund float
+}
+
+bets [icon: clipboard, color: blue] {
+  id string pk
+  match_id ObjectId matches
+  juaari_id ObjectId juaaris
+  predicted_winning_team ObjectId teams
+  predicted_more_or_less string
+  bet_amount int
+  successful bool
+  bumper bool
+  mini_bumper bool
+}
+
+matches [icon: gamepad, color: blue] {
+  id string pk
+  first_team_id ObjectId teans
+  second_team_id ObjectId teans
+  venue_id ObjectId venues
+  datetime datetime
+  outcome_winning_team ObjectId teams
+  outcome_total_score int
+  outcome_more_or_less string
+  bet_amount int
+}
+
+gameplayRules [icon: laravel, color: blue] {
+  id string pk
+  days_in_advance_for_bet int
+  max_defaults int
+  second_dimension_cutoff int
+  last_bet_cutoff_hours int
+}
+
+venues [icon: planetscale, color: blue] {
+  id string pk
+  name string
+}
+
+teams [icon: teams, color: blue] {
+  id string pk
+  name string
+}
+
+purple_cap [icon: red-hat, color: purple]{
+  date datetime
+  holder_id ObjectId juaaris
+}
+
+orange_cap[icon: red-hat, color: orange]{
+  date datetime
+  holder_id ObjectId juaaris
+}
+
+juaari_win_history.juaari_id  - juaaris.id
+juaari_win_history.bet_id - bets.id
+juaari_win_history.match_id - matches.id
+
+bets.match_id - matches.id
+bets.juaari_id - juaaris.id
+bets.predicted_winning_team - teams.id
+
+matches.first_team_id - teams.id
+matches.second_team_id - teams.id
+matches.outcome_winning_team - teams.id
+matches.venue_id - venues.id
+
+purple_cap.holder_id - juaaris.id
+orange_cap.holder_id - juaaris.id

@@ -15,6 +15,15 @@ Figma: https://www.figma.com/design/DMyWfAbupmqbiXH60ZAeGy/IPL-Bet-site?node-id=
 
 1. Page design done with v0, free tier isn't too generous, might try easel: https://www.tryeasel.dev
 2. For reasons explained below, we will use NeonDB + Vercel. Luckily a separate backend is not required. We can "expose" APIs for the react component's consumption by defining js files in a new directory.
+3. Integrating Vercel with NeonDB + local development
+   - Spin up a NeonDB instance from the vercel dashboard. Got an instance in SG, default settings.
+   - For speed we will create tables using the neondb console instead of CLI or anything else.
+   - Use Cursor to generate the DDL from the Eraser ERD code. SQL is in the `sql` directory in project root. Migration instructions there too - important to version control all changes.
+4. Data transformation & upload to DB
+   - Asking cursor to read CSVs and create SQL statements is super duper error prone. It hallucinates like anything and struggles to implement complicated text parsing logic, and performing data processing based on "businesses logic".
+   - UUIDs are a pain to work with when uploading data. Would have been way easier to use ints initially, then alter tables later on to use UUID maybe?
+   - Solution: write business logic (parsing CSV) yourself, use cursor to generate python scripts that generate SQL.
+   - postgres schema validations is a LIFESAVER! Saved me from so many cursor hallucinations and painful debugging later on. Always always do this!
 
 ## Database Modelling & Choice
 
@@ -57,3 +66,13 @@ Given the need for time series processing and filtering, as well as foreign key 
 | Date       | Version | Release Notes                                                                                                              |
 | ---------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
 | 03/04/2024 | v0.1.0  | Initial release with responsive design for mobile devices. 3 pages: game list, bets standings. No user interaction for now |
+| 05/04/2024 | v0.1.0  | Initialized vercel + postgres, then hours of laborious database migration work.                                            |
+
+## TODO
+
+- Add playoff matches (71-74) to the database once teams are determined
+- Update team IDs and other relevant data for these matches:
+  - Semi-final 1 (Match 71)
+  - Semi-final 2 (Match 72)
+  - Qualifier (Match 73)
+  - Final (Match 74)

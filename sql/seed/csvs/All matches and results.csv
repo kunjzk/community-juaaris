@@ -1,0 +1,75 @@
+MATCH,DAY,DATE,SGT,TEAM 1,TEAM 2,Team1,Team2,VENUE,Bet amount,Madan,Anshu,Pratibha,Reena,Suresh,Pamela,Sanjeev,Archit,S.Laks,Sanjana,Rajiv,Nidhi,Prachi,Kunal,Result,Madan,Anshu,Pratibha,Reena,Suresh,Pamela,Sanjeev,Archit,S.Laks,Sanjana,Rajiv,Nidhi,Prachi,Kunal,Party fund
+1,Sat,March 22,22:00,Kolkata Knight Riders,Royal Challengers Bangalore,KKR,RCB,Kolkata,5,RCB<,KKR>,RCB>,KKR<,KKR>,KKR>,KKR<,KKR<,RCB>,KKR<,RCB>,KKR<,KKR<,KKR<,RCB>,-5,-5,18.3,-5,-5,-5,-5,-5,18.3,-5,18.3,-5,-5,-5,55
+2,Sun,March 23,18:00,Sunrisers Hyderabad,Rajasthan Royals,SRH,RR,Hyderabad,5,RR>,SRH<,RR<,RR>,SRH<,SRH<,SRH<,SRH>,RR<,SRH>,SRH<,SRH>,SRH>,SRH>,SRH>,-10,-10,13.3,-10,-10,-10,-10,4,13.3,4,13.3,4,4,4,60
+3,Sun,March 23,22:00,Chennai Super Kings,Mumbai Indians,CSK,MI,Chennai,5,MI<,CSK>,MI>,MI>,MI<,MI<,CSK>,CSK<,CSK>,CSK<,CSK<,CSK>,MI>,CSK>,CSK<,-15,-15,8.3,-15,-15,-15,-15,22.3,8.3,22.3,31.7,-1,-1,-1,93
+4,Mon,March 24,22:00,Delhi Capitals,Lucknow Super Giants,DC,LSG,Visakhapatnam,5,LSG<,LSG>,DC<,DC>,LSG<,DC>,DC>,DC>,LSG>,DC<,DC<,LSG>,LSG>,DC>,DC>,-20,-20,3.3,-6,-20,-6,-6,31.3,3.3,17.3,26.7,-6,-6,8,90
+5,Tue,March 25,22:00,Gujarat Titans,Punjab Kings,GT,PBKS,Ahmedabad,5,GT>,GT>,GT<,GT<,GT>,GT>,PBKS>,GT<,GT>,PBKS>,PBKS<,GT>,PBKS<,GT<,PBKS>,-25,-25,-1.7,-11,-25,-11,24,26.3,-1.7,47.3,21.7,-11,-11,3,122.3
+6,Wed,March 26,22:00,Rajasthan Royals,Kolkata Knight Riders,RR,KKR,Guwahati,5,KKR>,KKR>,RR>,RR>,RR<,KKR<,KKR>,RR>,RR>,RR>,RR<,KKR>,KKR>,KKR>,KKR<,-30,-30,-6.7,-16,-30,54,19,21.3,-6.7,42.3,16.7,-16,-16,-2,153.3
+7,Thu,March 27,22:00,Sunrisers Hyderabad,Lucknow Super Giants,SRH,LSG,Hyderabad,5,LSG>,SRH<,SRH<,LSG<,SRH>,LSG>,LSG>,SRH>,SRH>,SRH>,SRH<,SRH>,SRH<,LSG<,LSG>,-11.7,-35,-11.7,-21,-35,72.3,37.3,16.3,-11.7,37.3,11.7,-21,-21,-7,175
+8,Fri,March 28,22:00,Chennai Super Kings,Royal Challengers Bangalore,CSK,RCB,Chennai,5,RCB<,CSK>,RCB>,CSK>,RCB>,RCB>,CSK<,CSK<,RCB>,RCB<,RCB>,CSK<,RCB>,CSK>,RCB<,18.3,-40,-16.7,-26,-40,67.3,32.3,11.3,-16.7,67.3,6.7,-26,-26,-12,203.3
+9,Sat,March 29,22:00,Gujarat Titans,Mumbai Indians,GT,MI,Ahmedabad,5,GT<,GT>,GT>,MI>,MI>,MI<,MI<,MI>,MI>,MI>,MI<,GT>,MI>,MI>,GT>,13.3,-21.7,1.7,-31,-45,62.3,27.3,6.3,-21.7,62.3,1.7,-7.7,-31,-17,175
+10,Sun,March 30,18:00,Delhi Capitals,Sunrisers Hyderabad,DC,SRH,Visakhapatnam,5,DC>,SRH>,SRH<,DC<,SRH>,SRH<,DC<,DC>,DC<,SRH>,SRH<,SRH<,SRH>,SRH>,DC<,8.3,-26.7,-3.3,-12.7,-50,57.3,45.7,1.3,-3.3,57.3,-3.3,-12.7,-36,-22,170
+11,Sun,March 30,22:00,Rajasthan Royals,Chennai Super Kings,RR,CSK,Guwahati,5,RR>,CSK>,RR<,RR<,CSK<,RR<,CSK<,RR>,CSK<,CSK<,RR<,CSK<,CSK<,CSK>,RR<,3.3,-31.7,9.2,-0.2,-55,69.8,40.7,-3.7,-8.3,52.3,9.2,-17.7,-41,-27,184.5
+12,Mon,March 31,22:00,Mumbai Indians,Kolkata Knight Riders,MI,KKR,Mumbai,5,KKR>,MI>,KKR<,KKR<,MI<,KKR>,MI<,MI>,MI<,KKR>,KKR<,MI<,KKR>,MI>,MI<,-1.7,-36.7,4.2,-5.2,-42.5,64.8,53.2,-8.7,4.2,47.3,4.2,-5.2,-46,-32,177.8
+13,Tue,April 1,22:00,Lucknow Super Giants,Punjab Kings,LSG,PBKS,Lucknow,5,PBKS>,LSG>,LSG<,LSG<,LSG>,LSG<,PBKS>,PBKS>,PBKS>,PBKS>,PBKS<,LSG>,PBKS<,PBKS<,PBKS<,-6.7,-41.7,-0.8,-10.2,-47.5,59.8,48.2,-13.7,-0.8,42.3,22.5,-10.2,-27.7,-13.7,172.8
+14,Wed,April 2,22:00,Royal Challengers Bangalore,Gujarat Titans,RCB,GT,Bengaluru,5,RCB>,RCB>,RCB>,GT>,RCB<,RCB<,GT<,GT<,RCB<,RCB>,RCB<,GT>,RCB>,RCB>,GT<,-11.7,-46.7,-5.8,-15.2,-52.5,54.8,78.2,16.3,-5.8,37.3,17.5,-15.2,-32.7,-18.7,204.2
+15,Thu,April 3,22:00,Kolkata Knight Riders,Sunrisers Hyderabad,KKR,SRH,Kolkata,5,KKR<,KKR>,SRH>,SRH>,KKR>,SRH<,KKR<,KKR<,KKR>,KKR<,SRH<,SRH<,KKR>,SRH<,KKR<,0.8,-51.7,-10.8,-20.2,-57.5,49.8,90.7,28.8,-10.8,49.8,12.5,-20.2,-37.7,-23.7,232.5
+16,Fri,April 4,22:00,Lucknow Super Giants,Mumbai Indians,LSG,MI,Lucknow,5,MI>,LSG<,MI<,MI>,LSG<,LSG<,LSG<,LSG<,LSG>,MI<,MI<,LSG>,LSG>,LSG<,LSG>,-4.2,-56.7,-15.8,-25.2,-62.5,44.8,85.7,23.8,7.5,44.8,7.5,-1.8,-19.3,-28.7,214.2
+17,Sat,April 5,18:00,Chennai Super Kings,Delhi Capitals,CSK,DC,Chennai,5,CSK>,CSK<,CSK<,CSK<,CSK<,DC<,DC<,DC<,CSK<,DC<,CSK<,DC<,DC>,CSK<,DC<,-9.2,-61.7,-20.8,-30.2,-67.5,53.8,94.7,32.8,2.5,53.8,2.5,7.2,-24.3,-33.7,247.3
+18,Sat,April 5,22:00,Punjab Kings,Rajasthan Royals,PBKS,RR,New Chandigarh,5,RR>,PBKS>,PBKS>,PBKS<,PBKS<,PBKS<,RR<,RR>,PBKS>,PBKS>,PBKS<,RR<,PBKS>,PBKS<,,,,,,,,,,,,,,,,
+19,Sun,April 6,22:00,Sunrisers Hyderabad,Gujarat Titans,SRH,GT,Hyderabad,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+20,Mon,April 7,22:00,Mumbai Indians,Royal Challengers Bangalore,MI,RCB,Mumbai,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+21,Tue,April 6,18:00,Kolkata Knight Riders,Lucknow Super Giants,KKR,LSG,Kolkata,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+22,Tue,April 8,22:00,Punjab Kings,Chennai Super Kings,PBKS,CSK,New Chandigarh,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+23,Wed,April 9,22:00,Gujarat Titans,Rajasthan Royals,GT,RR,Ahmedabad,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+24,Thu,April 10,22:00,Royal Challengers Bangalore,Delhi Capitals,RCB,DC,Bengaluru,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+25,Fri,April 11,22:00,Chennai Super Kings,Kolkata Knight Riders,CSK,KKR,Chennai,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+26,Sat,April 12,18:00,Lucknow Super Giants,Gujarat Titans,LSG,GT,Lucknow,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+27,Sat,April 12,22:00,Sunrisers Hyderabad,Punjab Kings,SRH,PBKS,Hyderabad,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+28,Sun,April 13,18:00,Rajasthan Royals,Royal Challengers Bangalore,RR,RCB,Jaipur,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+29,Sun,April 13,22:00,Delhi Capitals,Mumbai Indians,DC,MI,Delhi,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+30,Mon,April 14,22:00,Lucknow Super Giants,Chennai Super Kings,LSG,CSK,Lucknow,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+31,Tue,April 15,22:00,Punjab Kings,Kolkata Knight Riders,PBKS,KKR,New Chandigarh,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+32,Wed,April 16,22:00,Delhi Capitals,Rajasthan Royals,DC,RR,Delhi,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+33,Thu,April 17,22:00,Mumbai Indians,Sunrisers Hyderabad,MI,SRH,Mumbai,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+34,Fri,April 18,22:00,Royal Challengers Bangalore,Punjab Kings,RCB,PBKS,Bengaluru,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+35,Sat,April 19,18:00,Gujarat Titans,Delhi Capitals,GT,DC,Ahmedabad,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+36,Sat,April 19,22:00,Rajasthan Royals,Lucknow Super Giants,RR,LSG,Jaipur,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+37,Sun,April 20,18:00,Punjab Kings,Royal Challengers Bangalore,PBKS,RCB,New Chandigarh,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+38,Sun,April 20,22:00,Mumbai Indians,Chennai Super Kings,MI,CSK,Mumbai,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+39,Mon,April 21,22:00,Kolkata Knight Riders,Gujarat Titans,KKR,GT,Kolkata,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+40,Tue,April 22,22:00,Lucknow Super Giants,Delhi Capitals,LSG,DC,Lucknow,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+41,Wed,April 23,22:00,Sunrisers Hyderabad,Mumbai Indians,SRH,MI,Hyderabad,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+42,Thu,April 24,22:00,Royal Challengers Bangalore,Rajasthan Royals,RCB,RR,Bengaluru,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+43,Fri,April 25,22:00,Chennai Super Kings,Sunrisers Hyderabad,CSK,SRH,Chennai,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+44,Sat,April 26,22:00,Kolkata Knight Riders,Punjab Kings,KKR,PBKS,Kolkata,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+45,Sun,April 27,18:00,Mumbai Indians,Lucknow Super Giants,MI,LSG,Mumbai,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+46,Sun,April 27,22:00,Delhi Capitals,Royal Challengers Bangalore,DC,RCB,Delhi,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+47,Mon,April 28,22:00,Rajasthan Royals,Gujarat Titans,RR,GT,Jaipur,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+48,Tue,April 29,22:00,Delhi Capitals,Kolkata Knight Riders,DC,KKR,Delhi,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+49,Wed,April 30,22:00,Chennai Super Kings,Punjab Kings,CSK,PBKS,Chennai,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+50,Thu,May 1,22:00,Rajasthan Royals,Mumbai Indians,RR,MI,Jaipur,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+51,Fri,May 2,22:00,Gujarat Titans,Sunrisers Hyderabad,GT,SRH,Ahmedabad,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+52,Sat,May 3,22:00,Royal Challengers Bangalore,Chennai Super Kings,RCB,CSK,Bengaluru,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+53,Sun,May 4,18:00,Kolkata Knight Riders,Rajasthan Royals,KKR,RR,Kolkata,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+54,Sun,May 4,22:00,Punjab Kings,Lucknow Super Giants,PBKS,LSG,Dharamsala,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+55,Mon,May 5,22:00,Sunrisers Hyderabad,Delhi Capitals,SRH,DC,Hyderabad,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+56,Tue,May 6,22:00,Mumbai Indians,Gujarat Titans,MI,GT,Mumbai,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+57,Wed,May 7,22:00,Kolkata Knight Riders,Chennai Super Kings,KKR,CSK,Kolkata,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+58,Thu,May 8,22:00,Punjab Kings,Delhi Capitals,PBKS,DC,Dharamsala,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+59,Fri,May 9,22:00,Lucknow Super Giants,Royal Challengers Bangalore,LSG,RCB,Lucknow,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+60,Sat,May 10,22:00,Sunrisers Hyderabad,Kolkata Knight Riders,SRH,KKR,Hyderabad,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+61,Sun,May 11,18:00,Punjab Kings,Mumbai Indians,PBKS,MI,Dharamsala,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+62,Sun,May 11,22:00,Delhi Capitals,Gujarat Titans,DC,GT,Delhi,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+63,Mon,May 12,22:00,Chennai Super Kings,Rajasthan Royals,CSK,RR,Chennai,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+64,Tue,May 13,22:00,Royal Challengers Bangalore,Sunrisers Hyderabad,RCB,SRH,Bengaluru,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+65,Wed,May 14,22:00,Gujarat Titans,Lucknow Super Giants,GT,LSG,Ahmedabad,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+66,Thu,May 15,22:00,Mumbai Indians,Delhi Capitals,MI,DC,Mumbai,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+67,Fri,May 16,22:00,Rajasthan Royals,Punjab Kings,RR,PBKS,Jaipur,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+68,Sat,May 17,22:00,Royal Challengers Bangalore,Kolkata Knight Riders,RCB,KKR,Bengaluru,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+69,Sun,May 18,18:00,Gujarat Titans,Chennai Super Kings,GT,CSK,Ahmedabad,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+70,Sun,May 18,22:00,Lucknow Super Giants,Sunrisers Hyderabad,LSG,SRH,Lucknow,10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+71,Tue,May 20,22:00,#N/A,#N/A,,,Hyderabad,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+72,Wed,May 21,22:00,#N/A,#N/A,,,Hyderabad,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+73,Fri,May 23,22:00,#N/A,#N/A,,,Kolkata,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+74,Sun,May 25,22:00,#N/A,#N/A,,,Kolkata,20,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

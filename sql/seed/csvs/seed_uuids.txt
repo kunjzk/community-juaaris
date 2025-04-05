@@ -1,0 +1,45 @@
+--- Juaari UUIDs ---
+
+Nidhi: 091e4931-51e7-4e2f-9277-30f34ebf006e	
+Sanjana: 0d7f55eb-c101-4366-b01c-12c78dd0dc42	
+Kunal: 22366429-c4ff-4cec-bd43-2e3c6dc6d676	
+Sanjeev: 24dfbdaa-8839-4692-bec5-ba213062c9e9	
+Rajiv: 278e27c7-c1d0-47eb-a17e-206dfae0ab54	
+Pamela: 3a281f9b-1b23-4a3f-ac3a-887571c96612	
+S.Laks: 80a2604a-399f-48e3-a22b-989b035dee02	
+Archit: 97695455-d3ab-49ae-9feb-f385117e360a	
+Suresh: 9f40dba6-7f53-4f4c-a1d5-54aad2ae9058	
+Anshu: b3d480e4-f868-4c7f-bc3d-3db38c62a38a	
+Reena: be08b4a2-b430-48c7-b56a-cb34b71eaae1	
+Pratibha: ccfb2098-6fde-405f-ba80-2b153bab89ef	
+Prachi: f5f3efe6-36ee-4d5b-81e7-0e380b1e4785	
+Madan: ff2c177f-7ed9-42a1-8180-2cef8f0c072f	
+
+--- Venue UUIDs ---
+
+Guwahati: 0eb6630d-3ebf-4b9b-b11c-bcdd43df7157	
+Kolkata: 288c830d-fa4a-478f-ba3f-311d50251c88	
+Hyderabad: 44fe4eb1-0342-4dc4-8e96-e0f66f83a648	
+Delhi: 4e851739-dabd-42f9-aae5-ed24f94c703e	
+Ahmedabad: 64524cec-7f5f-45e0-a082-6425f683ee08	
+Chennai: 67585d30-ecae-43d6-9152-32df7dcd061e	
+Mumbai: 67c9ea53-b791-477c-abea-90eac8c4a20a	
+Bengaluru: 6a8f82b0-9b42-44f9-b44d-dab75a2ed368	
+Dharamsala: 7ac9e82d-7055-4de9-bab8-74f5edb39cf1	
+Visakhapatnam: 91132c0a-bf06-44d6-9380-f2864f950f4d	
+Jaipur: dd161096-c397-4e78-8110-f68dd6cc5f15
+Lucknow: f5b09172-48f3-43f5-9727-70695a5f1c24	
+New Chandigarh: ff760c2d-4e7f-4aad-aa31-6930ce6d87c4
+
+--- Team UUIDs ---
+
+DC: 023f3967-cdc8-409a-ae44-0e98a4381b37
+MI: 05ccf6c4-c7bb-486b-9487-28fd17d2dedd
+LSG: 09e0b78b-5f75-479e-9f6c-501bac6e726a
+KKR: 0e15ecb5-26b7-4a23-9103-500f4f88b365
+PBKS: 56b2b5c3-6666-4c02-b436-2d8934f294dd
+SRH: 6c4d7ebd-a3b7-4614-8ace-4a4b9cc4df53
+RR: 8d96a373-57e9-4b39-a81f-9b2bd9a33134
+RCB: 9198b9ed-3cfd-41ad-b4fa-dffd5ea9219a
+GT: b1659aec-827c-4c99-b58e-52aa4ebb25b8
+CSK: ea73347a-a243-4e3f-829c-06ba382ded12
