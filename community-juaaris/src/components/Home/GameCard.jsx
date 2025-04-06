@@ -1,6 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function GameCard({ teams, venue, dateTime, betCutoffTime, cutoffExceeded }) {
+function GameCard({
+  matchId,
+  teams,
+  venue,
+  dateTime,
+  betCutoffTime,
+  cutoffExceeded,
+}) {
+  const navigate = useNavigate();
+
+  // Handle button click
+  const handleButtonClick = () => {
+    navigate(`/bets/${matchId}`);
+  };
+
   return (
     <div className="rounded-xl border border-gray-200 bg-[#fafdf7] p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center">
       <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 sm:gap-4 flex-1 w-full mb-3 sm:mb-0">
@@ -31,11 +46,17 @@ function GameCard({ teams, venue, dateTime, betCutoffTime, cutoffExceeded }) {
       </div>
       <div className="w-full sm:w-auto sm:ml-4">
         {cutoffExceeded ? (
-          <button className="w-full sm:w-auto bg-[#d9534f] text-white px-3 py-1.5 rounded-md hover:bg-[#c9302c] transition-colors text-xs sm:text-sm whitespace-nowrap">
+          <button
+            onClick={handleButtonClick}
+            className="w-full sm:w-auto bg-[#d9534f] text-white px-3 py-1.5 rounded-md hover:bg-[#c9302c] transition-colors text-xs sm:text-sm whitespace-nowrap"
+          >
             Cutoff exceeded, view all bets
           </button>
         ) : (
-          <button className="w-full sm:w-auto bg-[#4b6c43] text-white px-3 py-1.5 rounded-md hover:bg-[#3d5836] transition-colors text-xs sm:text-sm whitespace-nowrap">
+          <button
+            onClick={handleButtonClick}
+            className="w-full sm:w-auto bg-[#4b6c43] text-white px-3 py-1.5 rounded-md hover:bg-[#3d5836] transition-colors text-xs sm:text-sm whitespace-nowrap"
+          >
             Place your bet
           </button>
         )}

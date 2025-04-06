@@ -195,6 +195,7 @@ function GameList() {
               return (
                 <GameCard
                   key={match.id}
+                  matchId={match.id}
                   teams={`${match.first_team_name} vs ${match.second_team_name}`}
                   venue={match.venue_name}
                   dateTime={formatDateTime(match.datetime)}
