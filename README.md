@@ -76,3 +76,4 @@ Given the need for time series processing and filtering, as well as foreign key 
   - Semi-final 2 (Match 72)
   - Qualifier (Match 73)
   - Final (Match 74)
+- Add funationality in database to share purple and orange caps. For now they just go to the first index.

@@ -390,7 +390,7 @@ for juaari_name in df.columns:
 
 # This looks great. Now we need to write the SQL to update the juaari_winnings_history table following the above.
 
-def generate_sql():
+def generate_sql_win_history():
     sql = """-- Juaari win history data seed for Community Juaaris
 -- Generated on {date}
 
@@ -466,7 +466,7 @@ BEGIN
             total_winnings_so_far = value
             
             insert_statements.append(
-                f"    ({juaari_id}, '{match_date}', {match_id}, {bet_id}, {delta_winnings_this_game}, {total_winnings_so_far})"
+                f"    ('{juaari_id}', '{match_date}', '{match_id}', {bet_id}, {delta_winnings_this_game:.1f}, {total_winnings_so_far:.1f})"
             )
     
     # Join all insert statements with commas and add a semicolon at the end
@@ -474,14 +474,145 @@ BEGIN
     
     return sql
 
-# Write to file
-with open("out/py_juaari_win_history.sql", "w") as f:
-    f.write(generate_sql())
+def write_sql_win_history_to_file():
+    # Write to file
+    with open("out/py_juaari_win_history.sql", "w") as f:
+        f.write(generate_sql_win_history())
+    print("Generated juaari win history SQL file with all win history data.")
 
-print("Generated juaari win history SQL file with all win history data.")
+def write_orange_cap_sql_to_file():
+    with open("out/py_orange_cap.sql", "w") as f:
+        f.write(generate_sql_orange_cap())
+    print("Generated orange cap SQL file with all orange cap data.")
+
+
+def write_purple_cap_sql_to_file():
+    with open("out/py_purple_cap.sql", "w") as f:
+        f.write(generate_sql_purple_cap())
+    print("Generated purple cap SQL file with all purple cap data.")
+
+def write_party_fund_sql_to_file():
+    with open("out/py_party_fund.sql", "w") as f:
+        f.write(generate_sql_party_fund())
+    print("Generated party fund SQL file with all party fund data.")
 
 
 
+def generate_sql_orange_cap():
+    sql = """-- Orange cap data seed for Community Juaaris
+-- Generated on {date}
+
+DO $$
+DECLARE
+    -- Juaari UUIDs
+    nidhi_id UUID := '091e4931-51e7-4e2f-9277-30f34ebf006e';
+    sanjana_id UUID := '0d7f55eb-c101-4366-b01c-12c78dd0dc42';
+    kunal_id UUID := '22366429-c4ff-4cec-bd43-2e3c6dc6d676';
+    sanjeev_id UUID := '24dfbdaa-8839-4692-bec5-ba213062c9e9';
+    rajiv_id UUID := '278e27c7-c1d0-47eb-a17e-206dfae0ab54';
+    pamela_id UUID := '3a281f9b-1b23-4a3f-ac3a-887571c96612';
+    slaks_id UUID := '80a2604a-399f-48e3-a22b-989b035dee02';
+    archit_id UUID := '97695455-d3ab-49ae-9feb-f385117e360a';
+    suresh_id UUID := '9f40dba6-7f53-4f4c-a1d5-54aad2ae9058';
+    anshu_id UUID := 'b3d480e4-f868-4c7f-bc3d-3db38c62a38a';
+    reena_id UUID := 'be08b4a2-b430-48c7-b56a-cb34b71eaae1';
+    pratibha_id UUID := 'ccfb2098-6fde-405f-ba80-2b153bab89ef';
+    prachi_id UUID := 'f5f3efe6-36ee-4d5b-81e7-0e380b1e4785';
+    madan_id UUID := 'ff2c177f-7ed9-42a1-8180-2cef8f0c072f';
+""".format(date=datetime.now().strftime("%Y-%m-%d"))
+
+    sql += """
+BEGIN
+    
+    INSERT INTO orange_cap (date, holder_id) VALUES
+"""
+    # Each row in the dataframe corresponds to a match
+    # The minimum value of the row is the orange cap holder for that match
+    # We can use the min function to get the index of the orange cap holder for each match, then lookup the table index to get the name of the juaari
+    # Then use the juaaris map to get the juaari_id
+    # Date can come from the match_to_date_and_uuid_map
+
+    for match_num in match_to_date_and_uuid_map:
+        match_date, match_id = match_to_date_and_uuid_map[match_num]
+        min_juaari_name = df.iloc[match_num-1, ].idxmin()
+        min_juaari_id = juaari_name_to_id_variable_map[min_juaari_name]
+        sql += f"    ('{match_date}', '{min_juaari_id}'),\n"
+
+    return sql
+
+def generate_sql_purple_cap():
+    sql = """-- Purple cap data seed for Community Juaaris
+-- Generated on {date}
+
+DO $$
+DECLARE
+    -- Juaari UUIDs
+    nidhi_id UUID := '091e4931-51e7-4e2f-9277-30f34ebf006e';
+    sanjana_id UUID := '0d7f55eb-c101-4366-b01c-12c78dd0dc42';
+    kunal_id UUID := '22366429-c4ff-4cec-bd43-2e3c6dc6d676';
+    sanjeev_id UUID := '24dfbdaa-8839-4692-bec5-ba213062c9e9';
+    rajiv_id UUID := '278e27c7-c1d0-47eb-a17e-206dfae0ab54';
+    pamela_id UUID := '3a281f9b-1b23-4a3f-ac3a-887571c96612';
+    slaks_id UUID := '80a2604a-399f-48e3-a22b-989b035dee02';
+    archit_id UUID := '97695455-d3ab-49ae-9feb-f385117e360a';
+    suresh_id UUID := '9f40dba6-7f53-4f4c-a1d5-54aad2ae9058';
+    anshu_id UUID := 'b3d480e4-f868-4c7f-bc3d-3db38c62a38a';
+    reena_id UUID := 'be08b4a2-b430-48c7-b56a-cb34b71eaae1';
+    pratibha_id UUID := 'ccfb2098-6fde-405f-ba80-2b153bab89ef';
+    prachi_id UUID := 'f5f3efe6-36ee-4d5b-81e7-0e380b1e4785';
+    madan_id UUID := 'ff2c177f-7ed9-42a1-8180-2cef8f0c072f';
+""".format(date=datetime.now().strftime("%Y-%m-%d"))
+
+    sql += """
+BEGIN
+    
+    INSERT INTO orange_cap (date, holder_id) VALUES
+"""
+    # Each row in the dataframe corresponds to a match
+    # The maximum value of the row is the purple cap holder for that match
+    # We can use the max function to get the index of the purple cap holder for each match, then lookup the table index to get the name of the juaari
+    # Then use the juaaris map to get the juaari_id
+    # Date can come from the match_to_date_and_uuid_map
+
+    df_purple_cap = df.iloc[:, :-1]
+    for match_num in match_to_date_and_uuid_map:
+        match_date, match_id = match_to_date_and_uuid_map[match_num]
+        max_juaari_name = df_purple_cap.iloc[match_num-1, ].idxmax()
+        max_juaari_id = juaari_name_to_id_variable_map[max_juaari_name]
+        sql += f"    ('{match_date}', '{max_juaari_id}'),\n"
+
+    return sql
+
+def generate_sql_party_fund():
+    sql = """-- Party fund data seed for Community Juaaris
+-- Generated on {date}
+
+DO $$
+""".format(date=datetime.now().strftime("%Y-%m-%d"))
+
+    sql += """
+BEGIN
+    
+    INSERT INTO party_fund (date, amount) VALUES
+"""
+    # Each row in the dataframe corresponds to a match
+    # The maximum value of the row is the purple cap holder for that match
+    # We can use the max function to get the index of the purple cap holder for each match, then lookup the table index to get the name of the juaari
+    # Then use the juaaris map to get the juaari_id
+    # Date can come from the match_to_date_and_uuid_map
+
+    for match_num in match_to_date_and_uuid_map:
+        match_date, _ = match_to_date_and_uuid_map[match_num]
+        party_fund_amount = df.iloc[match_num-1, ]["Party fund"]
+        sql += f"    ('{match_date}', '{party_fund_amount}'),\n"
+
+    return sql
+
+
+# write_sql_win_history_to_file()
+# write_orange_cap_sql_to_file()
+# write_purple_cap_sql_to_file()
+write_party_fund_sql_to_file()
 
 
 
