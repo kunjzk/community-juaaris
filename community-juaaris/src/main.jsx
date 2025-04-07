@@ -4,7 +4,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Layout from "./Layout";
 import GameList from "./components/Home/GameList";
-import BetsPage from "./components/Bets/BetsPage";
 
 const router = createBrowserRouter([
   {
@@ -15,11 +14,6 @@ const router = createBrowserRouter([
         index: true,
         element: <GameList />,
       },
-      {
-        path: "bets/:matchId",
-        element: <BetsPage />,
-      },
-      // Add more routes here as needed
     ],
   },
 ]);

@@ -65,8 +65,10 @@ Given the need for time series processing and filtering, as well as foreign key 
 
 | Date       | Version | Release Notes                                                                                                              |
 | ---------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
-| 03/04/2024 | v0.1.0  | Initial release with responsive design for mobile devices. 3 pages: game list, bets standings. No user interaction for now |
-| 05/04/2024 | v0.1.0  | Initialized vercel + postgres, then hours of laborious database migration work.                                            |
+| 03/04/2025 | v0.1.0  | Initial release with responsive design for mobile devices. 3 pages: game list, bets standings. No user interaction for now |
+| 05/04/2025 | v0.2.0  | Initialized vercel + postgres, then hours of laborious database migration work.                                            |
+| 06/04/2025 | v0.3.0  | Migrated entire dabase, home page renders dynmically, tried to vibe code the bets page but it sucked                       |
+| 07/04/2025 | v0.4.0  | Reverted all vibe coded changes, got basic vercel + neondb rendering to work for home page                                 |
 
 ## TODO
 

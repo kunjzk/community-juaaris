@@ -1,6 +1,6 @@
 import { query } from "./db";
 
-export async function getMatches() {
+export async function getAllMatches() {
   const sql = `
     SELECT m.*, 
            t1.name as first_team_name,
