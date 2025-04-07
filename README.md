@@ -79,3 +79,4 @@ Given the need for time series processing and filtering, as well as foreign key 
   - Qualifier (Match 73)
   - Final (Match 74)
 - Add funationality in database to share purple and orange caps. For now they just go to the first index.
+- Figure out a way to inject the postgres DATABASE*URL without leaking it to the browser. Prefixing it with VITE* will leak it to the browser - if you inspect element and open sources -> the js file, search for "postgres://", you'll see the database connection string right there!
