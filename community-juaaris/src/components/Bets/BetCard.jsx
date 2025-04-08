@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 function BetCard({ user, onUpdateBet }) {
+  console.log("USER IS:", user);
   // Make sure user exists and has expected properties
   const userName = user?.name || "User";
   const userBet = user?.bet || null;
@@ -42,14 +41,14 @@ function BetCard({ user, onUpdateBet }) {
     if (isEditing) {
       return (
         <>
-          <h3 className="text-2xl font-serif mb-2 text-center">
+          <h3 className="text-xl sm:text-2xl font-serif mb-2 text-center">
             {userName}'s bet
           </h3>
           <div className="flex-grow">
             <div className="mb-4 flex items-center justify-between">
-              <label className="text-xl">Select team:</label>
+              <label className="text-base sm:text-xl">Select team:</label>
               <select
-                className="border border-gray-300 rounded px-3 py-2 w-[120px]"
+                className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[100px] sm:w-[120px]"
                 value={selectedTeam}
                 onChange={(e) => setSelectedTeam(e.target.value)}
               >
@@ -58,9 +57,9 @@ function BetCard({ user, onUpdateBet }) {
               </select>
             </div>
             <div className="mb-4 flex items-center justify-between">
-              <label className="text-xl">More or less?</label>
+              <label className="text-base sm:text-xl">More or less?</label>
               <select
-                className="border border-gray-300 rounded px-3 py-2 w-[120px]"
+                className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[100px] sm:w-[120px]"
                 value={selectedOption}
                 onChange={(e) => setSelectedOption(e.target.value)}
               >
@@ -69,12 +68,12 @@ function BetCard({ user, onUpdateBet }) {
               </select>
             </div>
           </div>
-          <Button
-            className="w-full bg-[#27ae60] hover:bg-[#2ecc71] text-white"
+          <button
+            className="w-full bg-[#27ae60] hover:bg-[#2ecc71] text-white py-2 rounded-md font-medium"
             onClick={handleSaveBet}
           >
             Save your bet
-          </Button>
+          </button>
         </>
       );
     }
@@ -83,18 +82,18 @@ function BetCard({ user, onUpdateBet }) {
     if (!userBet) {
       return (
         <>
-          <h3 className="text-2xl font-serif mb-2 text-center">
+          <h3 className="text-xl sm:text-2xl font-serif mb-2 text-center">
             {userName}'s bet:
           </h3>
-          <p className="text-4xl font-serif mb-6 text-red-500 text-center flex-grow flex items-center justify-center">
+          <p className="text-2xl sm:text-4xl font-serif mb-6 text-red-500 text-center flex-grow flex items-center justify-center">
             Nothing yet!
           </p>
-          <Button
-            className="w-full bg-[#e74c3c] hover:bg-[#c0392b] text-white"
+          <button
+            className="w-full bg-[#e74c3c] hover:bg-[#c0392b] text-white py-2 rounded-md font-medium"
             onClick={handleStartEdit}
           >
             Place a bet!
-          </Button>
+          </button>
         </>
       );
     }
@@ -102,29 +101,29 @@ function BetCard({ user, onUpdateBet }) {
     // Case 3: User has placed a bet
     return (
       <>
-        <h3 className="text-2xl font-serif mb-2 text-center">
+        <h3 className="text-xl sm:text-2xl font-serif mb-2 text-center">
           {userName}'s bet:
         </h3>
-        <p className="text-4xl font-serif mb-6 text-center flex-grow flex items-center justify-center">
+        <p className="text-2xl sm:text-4xl font-serif mb-6 text-center flex-grow flex items-center justify-center">
           {userBet.team} {userBet.option}
         </p>
-        <Button
-          className="w-full bg-[#3498db] hover:bg-[#2980b9] text-white"
+        <button
+          className="w-full bg-[#3498db] hover:bg-[#2980b9] text-white py-2 rounded-md font-medium"
           onClick={handleStartEdit}
         >
           Edit bet
-        </Button>
+        </button>
       </>
     );
   };
 
   return (
-    <Card
-      className={`p-6 rounded-lg border border-gray-200 flex flex-col h-[220px]`}
+    <div
+      className="p-4 sm:p-6 rounded-lg border border-gray-200 flex flex-col h-[200px] sm:h-[220px] shadow-sm"
       style={{ backgroundColor: cardColor }}
     >
       {renderCardContent()}
-    </Card>
+    </div>
   );
 }
 

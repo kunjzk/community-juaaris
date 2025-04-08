@@ -55,6 +55,7 @@ function GameList() {
           });
 
           setMatches(validMatches);
+          saveMatchesToContext(validMatches);
         }
       } catch (err) {
         console.error("Error fetching matches:", err);
