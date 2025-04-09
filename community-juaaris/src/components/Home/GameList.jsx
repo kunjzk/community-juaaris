@@ -55,7 +55,6 @@ function GameList() {
             return true;
           });
 
-          // setMatches(validMatches);
           saveMatchesToContext(validMatches);
         }
       } catch (err) {

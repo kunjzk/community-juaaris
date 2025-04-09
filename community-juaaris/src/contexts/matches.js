@@ -14,5 +14,4 @@ export const MatchesContext = createContext({
 export const useMatchesContext = () => {
   return useContext(MatchesContext);
 };
-
 export const MatchesProvider = MatchesContext.Provider;
