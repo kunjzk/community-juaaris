@@ -1,32 +1,17 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
-const MatchesContext = createContext({
+// Create the context with default values
+export const MatchesContext = createContext({
   matches: [],
-  saveMatchesToContext: (matches) => {
-    matches = matches;
-  },
-  getMatchIndex: (matchId) => {
-    return matches.findIndex((match) => match.id === matchId);
-  },
-  getMatchById: (matchId) => {
-    return matches.find((match) => match.id === matchId);
-  },
-  getNextMatch: (matchId) => {
-    const index = getMatchIndex(matchId);
-    if (index === matches.length - 1) {
-      return null;
-    }
-    return matches[index + 1];
-  },
-  getPreviousMatch: (matchId) => {
-    const index = getMatchIndex(matchId);
-    if (index === 0) {
-      return null;
-    }
-    return matches[index - 1];
-  },
+  saveMatchesToContext: (matches) => {},
+  getMatchIndex: (matchId) => -1,
+  getMatchById: (matchId) => null,
+  getNextMatch: (matchId) => null,
+  getPreviousMatch: (matchId) => null,
 });
-export const useMatches = () => {
+
+// Custom hook to use the matches context
+export const useMatchesContext = () => {
   return useContext(MatchesContext);
 };
 

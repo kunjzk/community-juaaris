@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import GameCard from "./GameCard.jsx";
 import { getMatchesByDateRange } from "../../api/matches";
+import { useMatchesContext } from "../../contexts/matches";
 
 function GameList() {
-  const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { matches, saveMatchesToContext } = useMatchesContext();
 
   // Calculate date range using useMemo to prevent unnecessary recalculations
   const { mostRecentSunday, nextSaturday } = useMemo(() => {
@@ -54,7 +55,7 @@ function GameList() {
             return true;
           });
 
-          setMatches(validMatches);
+          // setMatches(validMatches);
           saveMatchesToContext(validMatches);
         }
       } catch (err) {

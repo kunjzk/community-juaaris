@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 function BetCard({ user, onUpdateBet }) {
-  console.log("USER IS:", user);
+  // console.log("USER IS:", user);
   // Make sure user exists and has expected properties
   const userName = user?.name || "User";
   const userBet = user?.bet || null;
