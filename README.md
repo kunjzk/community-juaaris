@@ -24,6 +24,12 @@ Figma: https://www.figma.com/design/DMyWfAbupmqbiXH60ZAeGy/IPL-Bet-site?node-id=
    - UUIDs are a pain to work with when uploading data. Would have been way easier to use ints initially, then alter tables later on to use UUID maybe?
    - Solution: write business logic (parsing CSV) yourself, use cursor to generate python scripts that generate SQL.
    - postgres schema validations is a LIFESAVER! Saved me from so many cursor hallucinations and painful debugging later on. Always always do this!
+5. State, context and localStorage:
+   - We call the database api to retrieve this week's games when the home page loads.
+   - This data is saved to react state, and then react context for easy sharing.
+   - We also want to save the data to local storage so that it persists across refreshes. Flow:
+     - App is first loaded, matches are retrieved and stored to localStorage and context
+     - When the app is refreshed, context and state are reset to their intial values. So we can have a useEffect hook that reads matches from localStorage and persists the data in Context's `matches` variable. This way, I can always get matches from the context, even after a refresh, from any page.
 
 ## Database Modelling & Choice
 
