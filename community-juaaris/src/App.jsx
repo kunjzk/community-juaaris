@@ -5,7 +5,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout";
 import GameList from "./components/Home/GameList";
 import BetsList from "./components/Bets/BetsList";
-
+import Standings from "./components/Standings/Standings";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -22,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: "/bets",
         element: <BetsList />,
+      },
+      {
+        path: "/standings",
+        element: <Standings />,
       },
     ],
   },

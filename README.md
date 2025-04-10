@@ -69,13 +69,14 @@ Given the need for time series processing and filtering, as well as foreign key 
 
 # Changelog
 
-| Date       | Version | Release Notes                                                                                                              |
-| ---------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
-| 03/04/2025 | v0.1.0  | Initial release with responsive design for mobile devices. 3 pages: game list, bets standings. No user interaction for now |
-| 05/04/2025 | v0.2.0  | Initialized vercel + postgres, then hours of laborious database migration work.                                            |
-| 06/04/2025 | v0.3.0  | Migrated entire dabase, home page renders dynmically, tried to vibe code the bets page but it sucked                       |
-| 07/04/2025 | v0.4.0  | Reverted all vibe coded changes, got basic vercel + neondb rendering to work for home page                                 |
-| 09/04/2025 | v0.5.0  | Bets page renders matches and context works                                                                                |
+| Date       | Version | Release Notes                                                                                                                        |
+| ---------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 03/04/2025 | v0.1.0  | Initial release with responsive design for mobile devices. 3 pages: game list, bets standings. No user interaction for now           |
+| 05/04/2025 | v0.2.0  | Initialized vercel + postgres, then hours of laborious database migration work.                                                      |
+| 06/04/2025 | v0.3.0  | Migrated entire dabase, home page renders dynmically, tried to vibe code the bets page but it sucked                                 |
+| 07/04/2025 | v0.4.0  | Reverted all vibe coded changes, got basic vercel + neondb rendering to work for home page                                           |
+| 09/04/2025 | v0.5.0  | Bets page renders matches and context works                                                                                          |
+| 10/04/2025 | v0.6.0  | Match data saved to localStorage, standings page renders table. Left with bet read/write, DB changes, and result upload + db changes |
 
 ## TODO
 
