@@ -3,6 +3,8 @@ import BetCard from "./BetCard";
 import { useParams } from "react-router-dom";
 import { useMatchesContext } from "../../contexts/matches";
 import { useNavigate } from "react-router-dom";
+import { getJuaaris } from "../../api/juaaris";
+import { getBetsForGame } from "../../api/bets";
 
 function BetsList() {
   const { matches, getMatchById, getPreviousMatch, getNextMatch } =
@@ -43,50 +45,74 @@ function BetsList() {
     return `${day} ${month} ${year}`;
   };
 
-  // Mock database of users and their bets
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: "Madan",
-      bet: { team: "CSK", option: "MORE" },
-      cardColor: "#fdfdc4",
-    },
-    {
-      id: 2,
-      name: "Pratibha",
-      bet: { team: "RCB", option: "LESS" },
-      cardColor: "#ffd6d6",
-    },
-    {
-      id: 3,
-      name: "Anshu",
-      bet: { team: "CSK", option: "LESS" },
-      cardColor: "#fdfdc4",
-    },
-    { id: 4, name: "Kunal", bet: null, cardColor: "white" },
-    { id: 5, name: "Prachi", bet: null, cardColor: "white" },
-    {
-      id: 6,
-      name: "Rajiv",
-      bet: { team: "CSK", option: "LESS" },
-      cardColor: "#fdfdc4",
-    },
-  ]);
+  const [juaaris, setJuaaris] = useState([]);
+
+  useEffect(() => {
+    const fetchJuaaris = async () => {
+      const fetchedJuaaris = await getJuaaris();
+      setJuaaris(fetchedJuaaris);
+    };
+    fetchJuaaris();
+  }, []);
+
+  console.log("JUAARIS ARE:", juaaris);
+
+  // This flag will trigger a re-fetch of bets for the game
+  // We want to re-fetch all bets when:
+  // - The current match changes
+  // - The user updates a bet
+  // - The user creates a new bet
+  // One minute has passed since the last refresh (polling, to be implemented later)
+  const [refreshBets, setRefreshBets] = useState(false);
+
+  const [betsForGame, setBetsForGame] = useState([]);
+
+  useEffect(() => {
+    const fetchBetsForGame = async () => {
+      const fetchedBetsForGame = await getBetsForGame(matchId);
+      console.log("Fetched bets for game:", fetchedBetsForGame);
+      setBetsForGame(fetchedBetsForGame);
+    };
+
+    fetchBetsForGame();
+  }, [matchId, refreshBets]);
+
+  console.log("Bets for game:", betsForGame);
+
+  const [combinedJuaarisAndBets, setCombinedJuaarisAndBets] = useState([]);
+
+  useEffect(() => {
+    const combineJuaarisAndBets = () => {
+      const combined = juaaris.map((juaari) => {
+        const bet = betsForGame.find((bet) => bet.juaari_id === juaari.id);
+        return { ...juaari, bet };
+      });
+      console.log("Combined juaaris and bets:", combined);
+      setCombinedJuaarisAndBets(combined);
+    };
+    combineJuaarisAndBets();
+  }, [betsForGame]);
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setRefreshBets(!refreshBets);
+  //   }, 10000); // Refresh every 10 seconds
+  //   console.log(
+  //     "Refreshing bets for game now that 10 seconds have passed:",
+  //     matchId
+  //   );
+  //   return () => clearInterval(interval);
+  // }, [refreshBets]);
 
   // Function to update a user's bet
-  const updateUserBet = (userId, newBet) => {
-    setUsers(
-      users.map((user) => {
-        if (user.id === userId) {
-          return {
-            ...user,
-            bet: newBet,
-            // Update card color based on team
-            cardColor: newBet.team === "CSK" ? "#fdfdc4" : "#ffd6d6",
-          };
-        }
-        return user;
-      })
+  const updateJuaariBet = (juaariId, newBet, matchId) => {
+    console.log(
+      "Match ID ",
+      matchId,
+      " Updating bet for juaari:",
+      juaariId,
+      "to",
+      newBet
     );
   };
 
@@ -139,11 +165,14 @@ function BetsList() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {users.map((user) => (
+          {juaaris.map((juaari) => (
             <BetCard
-              key={user.id}
-              user={user}
-              onUpdateBet={(newBet) => updateUserBet(user.id, newBet)}
+              key={juaari.id}
+              juaari={juaari}
+              match={match}
+              onUpdateBet={(newBet) =>
+                updateJuaariBet(juaari.id, newBet, matchId)
+              }
             />
           ))}
         </div>

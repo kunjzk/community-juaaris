@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from "react";
 
-function BetCard({ user, onUpdateBet }) {
-  // console.log("USER IS:", user);
-  // Make sure user exists and has expected properties
-  const userName = user?.name || "User";
-  const userBet = user?.bet || null;
-  const cardColor = user?.cardColor || "white";
+function BetCard({ juaari, match, onUpdateBet }) {
+  const juaariName = juaari.display_name;
+  const bet = juaari.bet || null;
+  const cardColor = "white";
 
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedTeam, setSelectedTeam] = useState("CSK");
-  const [selectedOption, setSelectedOption] = useState("MORE");
+  const [selectedTeam, setSelectedTeam] = useState("");
+  const [selectedOption, setSelectedOption] = useState("");
 
   // Initialize form values when user or user.bet changes
   useEffect(() => {
-    if (userBet) {
-      setSelectedTeam(userBet.team || "CSK");
-      setSelectedOption(userBet.option || "MORE");
+    if (bet) {
+      setSelectedTeam(bet.predicted_winning_team);
+      setSelectedOption(bet.predicted_more_or_less);
     }
-  }, [userBet]);
+  }, [bet]);
 
   // Handle saving the bet
   const handleSaveBet = () => {
@@ -28,9 +26,9 @@ function BetCard({ user, onUpdateBet }) {
   // Handle starting to edit
   const handleStartEdit = () => {
     // If user already has a bet, pre-fill the form
-    if (userBet) {
-      setSelectedTeam(userBet.team || "CSK");
-      setSelectedOption(userBet.option || "MORE");
+    if (bet) {
+      setSelectedTeam(bet.predicted_winning_team);
+      setSelectedOption(bet.predicted_more_or_less);
     }
     setIsEditing(true);
   };
@@ -42,27 +40,33 @@ function BetCard({ user, onUpdateBet }) {
       return (
         <>
           <h3 className="text-xl sm:text-2xl font-serif mb-2 text-center">
-            {userName}'s bet
+            {juaariName}'s bet
           </h3>
           <div className="flex-grow">
             <div className="mb-4 flex items-center justify-between">
               <label className="text-base sm:text-xl">Select team:</label>
               <select
-                className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[100px] sm:w-[120px]"
+                className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[120px] sm:w-[140px]"
                 value={selectedTeam}
                 onChange={(e) => setSelectedTeam(e.target.value)}
               >
-                <option value="CSK">CSK</option>
-                <option value="RCB">RCB</option>
+                <option value="">Select team</option>
+                <option value={match.first_team_id}>
+                  {match.first_team_name}
+                </option>
+                <option value={match.second_team_id}>
+                  {match.second_team_name}
+                </option>
               </select>
             </div>
             <div className="mb-4 flex items-center justify-between">
               <label className="text-base sm:text-xl">More or less?</label>
               <select
-                className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[100px] sm:w-[120px]"
+                className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[120px] sm:w-[140px]"
                 value={selectedOption}
                 onChange={(e) => setSelectedOption(e.target.value)}
               >
+                <option value="">Select option</option>
                 <option value="MORE">MORE</option>
                 <option value="LESS">LESS</option>
               </select>
@@ -79,11 +83,11 @@ function BetCard({ user, onUpdateBet }) {
     }
 
     // Case 2: User has not placed a bet yet
-    if (!userBet) {
+    if (!bet) {
       return (
         <>
           <h3 className="text-xl sm:text-2xl font-serif mb-2 text-center">
-            {userName}'s bet:
+            {juaariName}'s bet:
           </h3>
           <p className="text-2xl sm:text-4xl font-serif mb-6 text-red-500 text-center flex-grow flex items-center justify-center">
             Nothing yet!
@@ -102,10 +106,10 @@ function BetCard({ user, onUpdateBet }) {
     return (
       <>
         <h3 className="text-xl sm:text-2xl font-serif mb-2 text-center">
-          {userName}'s bet:
+          {juaariName}'s bet:
         </h3>
         <p className="text-2xl sm:text-4xl font-serif mb-6 text-center flex-grow flex items-center justify-center">
-          {userBet.team} {userBet.option}
+          {bet.predicted_winning_team} {bet.predicted_more_or_less}
         </p>
         <button
           className="w-full bg-[#3498db] hover:bg-[#2980b9] text-white py-2 rounded-md font-medium"
