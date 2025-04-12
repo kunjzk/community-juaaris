@@ -77,6 +77,7 @@ Given the need for time series processing and filtering, as well as foreign key 
 | 07/04/2025 | v0.4.0  | Reverted all vibe coded changes, got basic vercel + neondb rendering to work for home page                                           |
 | 09/04/2025 | v0.5.0  | Bets page renders matches and context works                                                                                          |
 | 10/04/2025 | v0.6.0  | Match data saved to localStorage, standings page renders table. Left with bet read/write, DB changes, and result upload + db changes |
+| 12/04/2025 | v0.7.0  | Dropped UUIDs, such a pain. Slight DB schema refactoring. So important to get this right the first time!                             |
 
 ## TODO
 
