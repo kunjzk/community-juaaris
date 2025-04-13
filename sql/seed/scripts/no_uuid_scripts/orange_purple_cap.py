@@ -40,8 +40,6 @@ for i, p in enumerate(purple_cap):
     cur.execute('INSERT INTO new_purple_cap (date, holder_id) VALUES (%s, %s);', (p[0].isoformat(), juaari_uuid_to_id[p[1]][0]))
 
 conn.commit()
-# print(juaari_id_to_uuid)
-# save the dict to a json file
 
 cur.close()
 connection_pool.putconn(conn)

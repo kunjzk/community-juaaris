@@ -82,13 +82,13 @@ CREATE TABLE new_juaari_win_history (
 );
 
 -- Purple Cap History table
-CREATE TABLE purple_cap (
+CREATE TABLE new_purple_cap (
     date TIMESTAMP WITH TIME ZONE PRIMARY KEY,
     holder_id SERIAL NOT NULL REFERENCES new_juaaris(id)
 );
 
 -- Orange Cap History table
-CREATE TABLE orange_cap (
+CREATE TABLE new_orange_cap (
     date TIMESTAMP WITH TIME ZONE PRIMARY KEY,
     holder_id SERIAL NOT NULL REFERENCES new_juaaris(id)
 );
