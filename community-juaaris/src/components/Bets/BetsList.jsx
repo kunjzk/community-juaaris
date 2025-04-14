@@ -6,17 +6,31 @@ import { useNavigate } from "react-router-dom";
 import { getJuaaris } from "../../api/juaaris";
 import { getBetsForGame } from "../../api/bets";
 
+function getMatchIdFromParams(params, matches) {
+  let matchId = parseInt(params.matchId);
+  if (matchId) {
+    console.log("Match ID from params:", matchId);
+    return matchId;
+  }
+  if (!matchId) {
+    matchId = matches[0].id;
+    console.log("No match ID from params, using first match ID: ", matchId);
+  }
+  return matchId;
+}
+
 function BetsList() {
   const { matches, getMatchById, getPreviousMatch, getNextMatch } =
     useMatchesContext();
   const navigate = useNavigate();
-  let { matchId } = useParams();
-  if (!matchId) {
-    matchId = matches[0].id;
-  }
-  console.log("MATCH ID IS:", matchId);
+
+  // Get matchId from params
+  let params = useParams();
+  let matchId = getMatchIdFromParams(params, matches);
   const match = getMatchById(matchId);
   console.log("MATCH IS:", match);
+
+  // --- NAVIGATION ---
 
   // Get previous and next matches
   const prevMatch = getPreviousMatch(matchId);
@@ -31,19 +45,27 @@ function BetsList() {
     console.log("Next button should be disabled:", nextMatch === null);
   }, [matchId, prevMatch, nextMatch]);
 
-  // Format date to DD MMM YYYY
-  const formatDate = (dateString) => {
-    if (!dateString) return "Date not available";
-
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "Invalid date";
-
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = date.toLocaleString("default", { month: "short" });
-    const year = date.getFullYear();
-
-    return `${day} ${month} ${year}`;
+  const goToPrevMatch = () => {
+    console.log("Going to previous match:", prevMatch);
+    navigate(`/bets/${prevMatch.id}`);
   };
+
+  const goToNextMatch = () => {
+    console.log("Going to next match:", nextMatch);
+    navigate(`/bets/${nextMatch.id}`);
+  };
+
+  // --- DATA REFRESH TRIGGER ---
+
+  // This flag will trigger a re-fetch of bets for the game
+  // We want to re-fetch all bets when:
+  // - The current match changes
+  // - The user updates a bet
+  // - The user creates a new bet
+  // One minute has passed since the last refresh (polling, to be implemented later)
+  const [refreshBets, setRefreshBets] = useState(false);
+
+  // --- DATA PREP: JUAARIS ---
 
   const [juaaris, setJuaaris] = useState([]);
 
@@ -57,13 +79,7 @@ function BetsList() {
 
   console.log("JUAARIS ARE:", juaaris);
 
-  // This flag will trigger a re-fetch of bets for the game
-  // We want to re-fetch all bets when:
-  // - The current match changes
-  // - The user updates a bet
-  // - The user creates a new bet
-  // One minute has passed since the last refresh (polling, to be implemented later)
-  const [refreshBets, setRefreshBets] = useState(false);
+  // --- DATA PREP: BETS ---
 
   const [betsForGame, setBetsForGame] = useState([]);
 
@@ -79,6 +95,8 @@ function BetsList() {
 
   console.log("Bets for game:", betsForGame);
 
+  // --- DATA PREP: COMBINED JUAARIS AND BETS ---
+
   const [combinedJuaarisAndBets, setCombinedJuaarisAndBets] = useState([]);
 
   useEffect(() => {
@@ -92,6 +110,22 @@ function BetsList() {
     };
     combineJuaarisAndBets();
   }, [betsForGame]);
+
+  console.log("Combined juaaris and bets:", combinedJuaarisAndBets);
+
+  // Format date to DD MMM YYYY
+  const formatDate = (dateString) => {
+    if (!dateString) return "Date not available";
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Invalid date";
+
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = date.toLocaleString("default", { month: "short" });
+    const year = date.getFullYear();
+
+    return `${day} ${month} ${year}`;
+  };
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -114,16 +148,16 @@ function BetsList() {
       "to",
       newBet
     );
-  };
-
-  const goToPrevMatch = () => {
-    console.log("Going to previous match:", prevMatch);
-    navigate(`/bets/${prevMatch.id}`);
-  };
-
-  const goToNextMatch = () => {
-    console.log("Going to next match:", nextMatch);
-    navigate(`/bets/${nextMatch.id}`);
+    if (newBet.team === "") {
+      console.log("Rejecting bet because team is empty");
+      alert("You forgot to select a team, try again!");
+      return;
+    }
+    if (newBet.option === "") {
+      console.log("Rejecting bet because option is empty");
+      alert("You forgot to select more or less, try again!");
+      return;
+    }
   };
 
   return (

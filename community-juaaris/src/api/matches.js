@@ -6,10 +6,10 @@ export async function getAllMatches() {
            t1.name as first_team_name,
            t2.name as second_team_name,
            v.name as venue_name
-    FROM matches m
-    JOIN teams t1 ON m.first_team_id = t1.id
-    JOIN teams t2 ON m.second_team_id = t2.id
-    JOIN venues v ON m.venue_id = v.id
+    FROM new_matches m
+    JOIN new_teams t1 ON m.first_team_id = t1.id
+    JOIN new_teams t2 ON m.second_team_id = t2.id
+    JOIN new_venues v ON m.venue_id = v.id
     ORDER BY m.datetime DESC
   `;
 
@@ -22,10 +22,10 @@ export async function getMatchById(id) {
            t1.name as first_team_name,
            t2.name as second_team_name,
            v.name as venue_name
-    FROM matches m
-    JOIN teams t1 ON m.first_team_id = t1.id
-    JOIN teams t2 ON m.second_team_id = t2.id
-    JOIN venues v ON m.venue_id = v.id
+    FROM new_matches m
+    JOIN new_teams t1 ON m.first_team_id = t1.id
+    JOIN new_teams t2 ON m.second_team_id = t2.id
+    JOIN new_venues v ON m.venue_id = v.id
     WHERE m.id = $1
   `;
 
@@ -54,10 +54,10 @@ export async function getMatchesByDateRange(startDate, endDate) {
       t1.name as first_team_name,
       t2.name as second_team_name,
       v.name as venue_name
-    FROM matches m
-    JOIN teams t1 ON m.first_team_id = t1.id
-    JOIN teams t2 ON m.second_team_id = t2.id
-    JOIN venues v ON m.venue_id = v.id
+    FROM new_matches m
+    JOIN new_teams t1 ON m.first_team_id = t1.id
+    JOIN new_teams t2 ON m.second_team_id = t2.id
+    JOIN new_venues v ON m.venue_id = v.id
     WHERE m.datetime >= $1 AND m.datetime <= $2
     ORDER BY m.datetime ASC
   `;
