@@ -31,10 +31,7 @@ export function MatchesProvider({ children }) {
 
   // Helper function to get a match by ID
   const getMatchById = (id) => {
-    console.log("FROM CONTEXT MATCHES ARE:", matches);
-    console.log("FROM CONTEXT ID IS:", id);
     let m = matches.find((match) => match.id === id);
-    console.log("FROM CONTEXTMATCH IS:", m);
     return m;
   };
 

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useMatchesContext } from "../../contexts/matches";
 import { useNavigate } from "react-router-dom";
 import { getJuaaris } from "../../api/juaaris";
-import { getBetsForGame } from "../../api/bets";
+import { getBetsForGame, updateBet, createBet } from "../../api/bets";
 
 function getMatchIdFromParams(params, matches) {
   let matchId = parseInt(params.matchId);
@@ -17,6 +17,10 @@ function getMatchIdFromParams(params, matches) {
     console.log("No match ID from params, using first match ID: ", matchId);
   }
   return matchId;
+}
+
+function getBetForJuaari(combinedJuaarisAndBets, juaariId) {
+  return combinedJuaarisAndBets.find((jb) => jb.id === juaariId).bet;
 }
 
 function BetsList() {
@@ -158,6 +162,43 @@ function BetsList() {
       alert("You forgot to select more or less, try again!");
       return;
     }
+    const bet = getBetForJuaari(combinedJuaarisAndBets, juaariId);
+    if (bet) {
+      console.log(
+        "Bet already exists for this juaari on this match. Checking if update required"
+      );
+      if (bet.team === newBet.team && bet.option === newBet.option) {
+        console.log("No update required");
+        return;
+      } else {
+        console.log("Update required");
+        const updateBetInPlace = async () => {
+          const updatedBet = await updateBet(
+            bet.id,
+            newBet.team,
+            newBet.option
+          );
+          console.log("Updated bet:", updatedBet);
+        };
+        updateBetInPlace();
+        setRefreshBets(!refreshBets);
+      }
+    } else {
+      console.log(
+        "Bet does not exist for this juaari on this match. Creating bet."
+      );
+      const createBetForJuaari = async () => {
+        const createdBet = await createBet(
+          matchId,
+          juaariId,
+          newBet.team,
+          newBet.option
+        );
+        console.log("Created bet:", createdBet);
+      };
+      createBetForJuaari();
+      setRefreshBets(!refreshBets);
+    }
   };
 
   return (
@@ -199,14 +240,13 @@ function BetsList() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {juaaris.map((juaari) => (
+          {combinedJuaarisAndBets.map((jb) => (
             <BetCard
-              key={juaari.id}
-              juaari={juaari}
+              key={jb.id}
+              juaari_name={jb.display_name}
               match={match}
-              onUpdateBet={(newBet) =>
-                updateJuaariBet(juaari.id, newBet, matchId)
-              }
+              bet={jb.bet}
+              onUpdateBet={(newBet) => updateJuaariBet(jb.id, newBet, matchId)}
             />
           ))}
         </div>

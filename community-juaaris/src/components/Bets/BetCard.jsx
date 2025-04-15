@@ -1,21 +1,33 @@
 import React, { useState, useEffect } from "react";
+import { getTeamNameById } from "../../api/teams";
 
-function BetCard({ juaari, match, onUpdateBet }) {
-  const juaariName = juaari.display_name;
-  const bet = juaari.bet || null;
+async function displayTeamName(teamId) {
+  const teamName = await getTeamNameById(teamId);
+  return teamName;
+}
+
+function BetCard({ juaari_name, match, bet, onUpdateBet }) {
+  const juaariName = juaari_name;
   const cardColor = "white";
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
 
-  // Initialize form values when user or user.bet changes
   useEffect(() => {
-    if (bet) {
-      setSelectedTeam(bet.predicted_winning_team);
-      setSelectedOption(bet.predicted_more_or_less);
-    }
+    const initializeBet = async () => {
+      if (bet) {
+        const teamName = await displayTeamName(bet.predicted_winning_team);
+        setSelectedTeam(teamName);
+        setSelectedOption(bet.predicted_more_or_less);
+      }
+    };
+    initializeBet();
   }, [bet]);
+
+  useEffect(() => {
+    console.log("SELECTED TEAM UPDATED TO:", selectedTeam);
+  }, [selectedTeam]);
 
   // Handle saving the bet
   const handleSaveBet = () => {
@@ -24,7 +36,7 @@ function BetCard({ juaari, match, onUpdateBet }) {
   };
 
   // Handle starting to edit
-  const handleStartEdit = () => {
+  const handleStartEdit = async () => {
     // If user already has a bet, pre-fill the form
     if (bet) {
       setSelectedTeam(bet.predicted_winning_team);
@@ -109,7 +121,7 @@ function BetCard({ juaari, match, onUpdateBet }) {
           {juaariName}'s bet:
         </h3>
         <p className="text-2xl sm:text-4xl font-serif mb-6 text-center flex-grow flex items-center justify-center">
-          {bet.predicted_winning_team} {bet.predicted_more_or_less}
+          {selectedTeam} {selectedOption}
         </p>
         <button
           className="w-full bg-[#3498db] hover:bg-[#2980b9] text-white py-2 rounded-md font-medium"
