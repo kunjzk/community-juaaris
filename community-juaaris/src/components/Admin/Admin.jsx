@@ -1,10 +1,11 @@
 import React from "react";
 import SecondDimensionEdit from "./SecondDimensionEdit";
-
+import ResultsList from "./ResultsList";
 function Admin() {
   return (
     <div>
       <SecondDimensionEdit />
+      <br></br>
       <p>
         Results list can initially be the same as game list, except it's got a
         form for user to submit results.
