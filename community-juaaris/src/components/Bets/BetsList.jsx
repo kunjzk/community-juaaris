@@ -69,6 +69,10 @@ function BetsList() {
   // One minute has passed since the last refresh (polling, to be implemented later)
   const [refreshBets, setRefreshBets] = useState(false);
 
+  useEffect(() => {
+    console.log("Value of refreshBets:", refreshBets);
+  }, [refreshBets]);
+
   // --- DATA PREP: JUAARIS ---
 
   const [juaaris, setJuaaris] = useState([]);
@@ -93,7 +97,6 @@ function BetsList() {
       console.log("Fetched bets for game:", fetchedBetsForGame);
       setBetsForGame(fetchedBetsForGame);
     };
-
     fetchBetsForGame();
   }, [matchId, refreshBets]);
 
@@ -143,7 +146,7 @@ function BetsList() {
   // }, [refreshBets]);
 
   // Function to update a user's bet
-  const updateJuaariBet = (juaariId, newBet, matchId) => {
+  const updateJuaariBet = async (juaariId, newBet, matchId) => {
     console.log(
       "Match ID ",
       matchId,
@@ -180,7 +183,8 @@ function BetsList() {
           );
           console.log("Updated bet:", updatedBet);
         };
-        updateBetInPlace();
+        await updateBetInPlace();
+        console.log("Value of refreshBets before flipping:", refreshBets);
         setRefreshBets(!refreshBets);
       }
     } else {
@@ -196,7 +200,8 @@ function BetsList() {
         );
         console.log("Created bet:", createdBet);
       };
-      createBetForJuaari();
+      await createBetForJuaari();
+      console.log("Value of refreshBets before flipping:", refreshBets);
       setRefreshBets(!refreshBets);
     }
   };

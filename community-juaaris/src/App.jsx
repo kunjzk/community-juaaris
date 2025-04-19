@@ -6,6 +6,7 @@ import Layout from "./Layout";
 import GameList from "./components/Home/GameList";
 import BetsList from "./components/Bets/BetsList";
 import Standings from "./components/Standings/Standings";
+import Admin from "./components/Admin/Admin";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "/standings",
         element: <Standings />,
+      },
+      {
+        path: "/admin",
+        element: <Admin />,
       },
     ],
   },

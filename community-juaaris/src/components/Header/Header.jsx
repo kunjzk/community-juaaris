@@ -43,6 +43,16 @@ function Header() {
         >
           Standings
         </Link>
+        <Link
+          to="/admin"
+          className={`text-sm sm:text-base font-semibold pb-1 ${
+            location.pathname === "/admin"
+              ? "text-[#2e7d32] border-b-2 border-[#2e7d32]"
+              : "text-black hover:text-[#2e7d32] transition-colors"
+          }`}
+        >
+          Admin
+        </Link>
       </nav>
     </header>
   );
