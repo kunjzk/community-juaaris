@@ -30,6 +30,7 @@ Figma: https://www.figma.com/design/DMyWfAbupmqbiXH60ZAeGy/IPL-Bet-site?node-id=
    - We also want to save the data to local storage so that it persists across refreshes. Flow:
      - App is first loaded, matches are retrieved and stored to localStorage and context
      - When the app is refreshed, context and state are reset to their intial values. So we can have a useEffect hook that reads matches from localStorage and persists the data in Context's `matches` variable. This way, I can always get matches from the context, even after a refresh, from any page.
+6. Post results logic wip
 
 ## Database Modelling & Choice
 
