@@ -69,7 +69,7 @@ function SecondDimensionEdit() {
   return (
     <>
       <div>
-        <h3 className="text-4xl font-serif mb-8">Second Dimension History</h3>
+        <h3 className="text-3xl font-serif mb-8">Second Dimension History</h3>
 
         {/* Table Header - Styled like cards */}
         <div className="bg-gray-100 rounded-t-lg border border-gray-200 grid grid-cols-12 font-medium text-gray-700">
@@ -101,7 +101,7 @@ function SecondDimensionEdit() {
         <br></br>
 
         <div>
-          <h3 className="text-4xl font-serif mb-8">
+          <h3 className="text-3xl font-serif mb-8">
             Set a new second dimension
           </h3>
 
@@ -141,8 +141,6 @@ function SecondDimensionEdit() {
           >
             Save new second dimension
           </button>
-
-          <p> Set refresh to be true</p>
         </div>
       </div>
     </>

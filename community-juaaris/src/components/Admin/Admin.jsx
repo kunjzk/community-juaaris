@@ -1,21 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import SecondDimensionEdit from "./SecondDimensionEdit";
 import ResultsList from "./ResultsList";
+
 function Admin() {
+  const [activeTab, setActiveTab] = useState("results");
+
   return (
     <div>
-      <SecondDimensionEdit />
-      <br></br>
-      <p>
-        Results list can initially be the same as game list, except it's got a
-        form for user to submit results.
-      </p>
-      <p>Remember to handle the case where the game goes to super over</p>
-      <p>
-        Then figure out how to update all the tables, as well as the bets page.
-        Bumper can wait.
-      </p>
-      <ResultsList />
+      <h1 className="text-4xl font-serif mb-8">Admin</h1>
+
+      <nav className="flex gap-4 sm:gap-8 mb-8">
+        <button
+          onClick={() => setActiveTab("results")}
+          className={`text-sm sm:text-base font-semibold pb-1 ${
+            activeTab === "results"
+              ? "text-[#2e7d32] border-b-2 border-[#2e7d32]"
+              : "text-black hover:text-[#2e7d32] transition-colors"
+          }`}
+        >
+          Post Match Results
+        </button>
+        <button
+          onClick={() => setActiveTab("second-dimension")}
+          className={`text-sm sm:text-base font-semibold pb-1 ${
+            activeTab === "second-dimension"
+              ? "text-[#2e7d32] border-b-2 border-[#2e7d32]"
+              : "text-black hover:text-[#2e7d32] transition-colors"
+          }`}
+        >
+          Edit Second Dimension
+        </button>
+      </nav>
+
+      {activeTab === "results" ? <ResultsList /> : <SecondDimensionEdit />}
     </div>
   );
 }

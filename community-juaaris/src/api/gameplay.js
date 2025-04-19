@@ -14,3 +14,12 @@ export async function postSecondDimension(
                 VALUES ($1, $2, 7, 5, 2);`;
   return query(sql, [secondDimensionCutoff, effectiveFrom]);
 }
+
+export async function getSecondDimensionForDate(date) {
+  const sql = `SELECT second_dimension_cutoff
+                FROM new_gameplay_rules
+                WHERE effective_from <= $1
+                ORDER BY effective_from DESC
+                LIMIT 1;`;
+  return query(sql, [date]);
+}
