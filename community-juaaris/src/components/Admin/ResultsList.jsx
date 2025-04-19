@@ -4,6 +4,38 @@ import { useMatchesContext } from "../../contexts/matches";
 
 function ResultsList() {
   const { matches } = useMatchesContext();
+
+  // Format date and time for display
+  const formatDateTime = (dateTimeString) => {
+    try {
+      // Check if dateTimeString is valid
+      if (!dateTimeString) {
+        console.error("Invalid date string:", dateTimeString);
+        return "Date not available";
+      }
+
+      // Parse the date string
+      const date = new Date(dateTimeString);
+
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        console.error("Invalid date object:", date);
+        return "Invalid date";
+      }
+
+      // Format the date and time
+      const day = date.getDate();
+      const month = date.getMonth() + 1; // Months are 0-indexed
+      const hours = date.getHours();
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+
+      return `${day}/${month}/25, ${hours}:${minutes} SGT`;
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Date formatting error";
+    }
+  };
+
   return (
     <div>
       <h1 className="text-3xl font-serif mb-8">Results List</h1>
@@ -16,6 +48,7 @@ function ResultsList() {
                 key={match.id}
                 matchId={match.id}
                 teams={`${match.first_team_name} vs ${match.second_team_name}`}
+                dateTime={formatDateTime(match.datetime)}
                 venue={match.venue_name}
               />
             );

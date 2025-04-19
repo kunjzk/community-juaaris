@@ -19,7 +19,7 @@ export async function getSecondDimensionForDate(date) {
   const sql = `SELECT second_dimension_cutoff
                 FROM new_gameplay_rules
                 WHERE effective_from <= $1
-                ORDER BY effective_from DESC
+                ORDER BY effective_from ASC
                 LIMIT 1;`;
   return query(sql, [date]);
 }

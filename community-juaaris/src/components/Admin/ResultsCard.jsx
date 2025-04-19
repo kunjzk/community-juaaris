@@ -1,14 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { getSecondDimensionForDate } from "../../api/gameplay";
-import { getMatchById } from "../../api/matches";
+import { useMatchesContext } from "../../contexts/matches";
 
-function getSecondDimensionForMatch(matchId) {
-  const matchDate = getMatchById(matchId).date;
-  const secondDimension = getSecondDimension(matchDate);
-  return secondDimension;
-}
+function ResultsCard({ matchId, teams, dateTime, venue }) {
+  const [secondDimension, setSecondDimension] = useState(null);
+  const { getMatchById } = useMatchesContext();
 
-function ResultsCard({ matchId, teams, venue }) {
+  useEffect(() => {
+    const fetchSecondDimension = async () => {
+      try {
+        const match = getMatchById(matchId);
+        if (!match || !match.datetime) {
+          console.error("No match found or match has no datetime");
+          return;
+        }
+
+        // Convert the datetime to a format the database expects
+        const matchDate = new Date(match.datetime);
+        const formattedDate = matchDate.toISOString().split("T")[0];
+
+        const records = await getSecondDimensionForDate(formattedDate);
+        if (records && records.length > 0) {
+          setSecondDimension(records[0].second_dimension_cutoff);
+        } else {
+          setSecondDimension("No second dimension set");
+        }
+      } catch (error) {
+        console.error("Error fetching second dimension:", error);
+        setSecondDimension("Error loading second dimension");
+      }
+    };
+
+    fetchSecondDimension();
+  }, [matchId]);
+
   return (
     <div>
       <div className="rounded-xl border border-gray-200 bg-[#fafdf7] p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center">
@@ -33,12 +58,16 @@ function ResultsCard({ matchId, teams, venue }) {
           </div>
           <div className="text-center col-span-1">
             <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">
+              Date
+            </div>
+            <div className="font-medium text-xs sm:text-sm">{dateTime}</div>
+          </div>
+          <div className="text-center col-span-1">
+            <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">
               Second Dimension
             </div>
             <div className="font-medium text-xs sm:text-sm">
-              {() => {
-                getSecondDimensionForMatch(matchId);
-              }}
+              {secondDimension === null ? "Loading..." : secondDimension}
             </div>
           </div>
         </div>
