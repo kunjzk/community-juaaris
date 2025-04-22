@@ -23,10 +23,12 @@ cur = conn.cursor()
 
 tables = ["new_teams", "new_venues", "new_gameplay_rules", "new_juaaris", "new_matches", "new_bets", "bumpers", "party_fund", "new_juaari_win_history", "new_purple_cap", "new_orange_cap"]
 table_name_idx = 0
-
-cur.execute(f'SELECT * FROM {tables[table_name_idx]}')
-res = cur.fetchall()
-print(res)
+for i in range(len(tables)):
+    table_name_idx = i
+    print("Checking table ", tables[table_name_idx] )
+    cur.execute(f'SELECT * FROM {tables[table_name_idx]}')
+    res = cur.fetchall()
+    print(res)
 
 cur.close()
 connection_pool.putconn(conn)

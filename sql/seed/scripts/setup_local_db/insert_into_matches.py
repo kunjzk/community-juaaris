@@ -21,11 +21,40 @@ if connection_pool:
 conn = connection_pool.getconn()
 # Create a cursor object
 cur = conn.cursor()
+conn.rollback()
+
+# venues = pd.read_csv('neondb_backup/new_venues.csv')
+
+# for i, row in venues.iterrows():
+#     cur.execute('''
+#         INSERT INTO new_venues (
+#             id, name
+#                 ) VALUES (%s, %s);
+#                 ''', (row['id'], row ['name']))
+# conn.commit()
 
 matches = pd.read_csv('neondb_backup/new_matches.csv')
 
 for i, row in matches.iterrows():
-    cur.execute('INSERT INTO new_teams (id, name) VALUES (%s, %s);', (row['id'], row['name']))
+    # if i<10:
+    #     print(row)
+    cur.execute('''
+        INSERT INTO new_matches (
+            id, first_team_id, second_team_id, venue_id, 
+            datetime, outcome_winning_team, outcome_total_score, 
+            outcome_more_or_less, bet_amount
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+    ''', (
+        row['id'], 
+        row['first_team_id'], 
+        row['second_team_id'], 
+        row['venue_id'],
+        row['datetime'],
+        row['outcome_winning_team'] if pd.notna(row['outcome_winning_team']) else None,
+        row['outcome_total_score'] if pd.notna(row['outcome_total_score']) else None,
+        row['outcome_more_or_less'] if pd.notna(row['outcome_more_or_less']) else None,
+        row['bet_amount']
+    ))
 
 conn.commit()
 cur.close()

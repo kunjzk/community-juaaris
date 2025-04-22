@@ -2,7 +2,19 @@ import { neon, neonConfig, Pool } from "@neondatabase/serverless";
 
 // In Vite/React applications, environment variables are accessed through import.meta.env
 // instead of process.env
-const DATABASE_URL = import.meta.env.VITE_DATABASE_URL;
+// const DATABASE_URL = import.meta.env.VITE_DATABASE_URL;
+const DATABASE_URL = import.meta.env.VITE_LOCAL_DB_URL;
+
+// Configuring Neon for local development
+const connectionString =
+  "postgres://postgres:postgres@db.localtest.me:5432/main";
+neonConfig.fetchEndpoint = (host) => {
+  const [protocol, port] =
+    host === "db.localtest.me" ? ["http", 4444] : ["https", 443];
+  return `${protocol}://${host}:${port}/sql`;
+};
+
+export const sql = neon(connectionString);
 
 // Debug: Print all environment variables
 console.log("Environment variables:", import.meta.env);
@@ -13,7 +25,7 @@ if (!DATABASE_URL) {
 }
 
 // Create a connection to the database
-const sql = neon(DATABASE_URL);
+// const sql = neon(DATABASE_URL);
 
 // Helper function to execute queries
 export async function query(sqlQuery, params = []) {

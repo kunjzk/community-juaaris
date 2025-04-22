@@ -93,9 +93,8 @@ CREATE TABLE new_bets (
     juaari_id SERIAL NOT NULL REFERENCES new_juaaris(id),
     predicted_winning_team SERIAL NOT NULL REFERENCES new_teams(id),
     predicted_more_or_less VARCHAR(50) NOT NULL,
-    bet_amount INTEGER NOT NULL,
     successful BOOLEAN,
-    defaults INTEGER DEFAULT 5
+    default_bet BOOLEAN DEFAULT FALSE
 );
 '''
 commands_to_run.append(create_bets_table)
