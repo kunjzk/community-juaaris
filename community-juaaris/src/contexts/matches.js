@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import React from "react";
+import { getMatches } from "../api/matches";
 
 // Create the context with default values
 const MatchesContext = createContext({
@@ -8,6 +9,7 @@ const MatchesContext = createContext({
   getMatchById: () => null,
   getPreviousMatch: () => null,
   getNextMatch: () => null,
+  refreshMatches: () => {},
 });
 
 // Custom hook to use the context
@@ -27,6 +29,18 @@ export function MatchesProvider({ children }) {
   const saveMatchesToContext = (newMatches) => {
     setMatches(newMatches);
     localStorage.setItem("matches-for-the-week", JSON.stringify(newMatches));
+  };
+
+  // Function to refresh matches from the server
+  const refreshMatches = async () => {
+    try {
+      const freshMatches = await getMatches();
+      saveMatchesToContext(freshMatches);
+      return freshMatches;
+    } catch (error) {
+      console.error("Error refreshing matches:", error);
+      throw error;
+    }
   };
 
   // Helper function to get a match by ID
@@ -60,6 +74,7 @@ export function MatchesProvider({ children }) {
     getMatchById,
     getPreviousMatch,
     getNextMatch,
+    refreshMatches,
   };
 
   return React.createElement(MatchesContext.Provider, { value }, children);

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { getSecondDimensionForDate } from "../../api/gameplay";
+import { getTeamNameById } from "../../api/teams";
+import { saveResult } from "../../api/matches";
 import { useMatchesContext } from "../../contexts/matches";
 
 function ResultsCard({ matchId, teams, dateTime, venue }) {
-  const { getMatchById } = useMatchesContext();
+  const { getMatchById, refreshMatches } = useMatchesContext();
 
   const match = getMatchById(matchId);
   if (!match || !match.datetime) {
@@ -88,8 +90,12 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
 
     // Try to save the result
     try {
+      console.log("Saving result to database");
       await saveResult(matchId, winningTeam, totalScore);
       setResultExists(true);
+      await refreshMatches(); // Refresh the matches data after saving
+      console.log("Result saved to database");
+      console.log("Result exists: ", resultExists);
     } catch (error) {
       console.error("Error saving result:", error);
       alert("Error saving result, please try again");
@@ -132,51 +138,67 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
             <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">
               Winning Team
             </div>
-            <select
-              className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[120px] sm:w-[140px]"
-              value={winningTeam}
-              onChange={(e) => setWinningTeam(e.target.value)}
-            >
-              <option value="">Select team</option>
-              <option value={match.first_team_id}>
-                {match.first_team_name}
-              </option>
-              <option value={match.second_team_id}>
-                {match.second_team_name}
-              </option>
-              <option value="Draw">Draw</option>
-            </select>
+            {resultExists ? (
+              <div className="font-medium text-xs sm:text-sm">
+                {getTeamNameById(winningTeam)}
+              </div>
+            ) : (
+              <select
+                className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[120px] sm:w-[140px]"
+                value={winningTeam}
+                onChange={(e) => setWinningTeam(e.target.value)}
+              >
+                <option value="">Select team</option>
+                <option value={match.first_team_id}>
+                  {match.first_team_name}
+                </option>
+                <option value={match.second_team_id}>
+                  {match.second_team_name}
+                </option>
+                <option value="Draw">Draw</option>
+              </select>
+            )}
           </div>
           <div className="text-center col-span-1">
             <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">
-              Input Total Score
+              Total Score
             </div>
-            <input
-              type="number"
-              className="border border-gray-300 rounded px-2 h-10 w-[120px] sm:w-[140px]"
-              value={totalScore}
-              onChange={(e) => setTotalScore(e.target.value)}
-              min="0"
-              step="1"
-            />
+            {resultExists ? (
+              <div className="font-medium text-xs sm:text-sm">{totalScore}</div>
+            ) : (
+              <input
+                type="number"
+                className="border border-gray-300 rounded px-2 h-10 w-[120px] sm:w-[140px]"
+                value={totalScore}
+                onChange={(e) => setTotalScore(e.target.value)}
+                min="0"
+                step="1"
+              />
+            )}
           </div>
           <div className="text-center col-span-1">
             <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">
               Second dimension valid?
             </div>
-            <select
-              className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[120px] sm:w-[140px]"
-              value={secondDimValidBool}
-              onChange={(e) => setSecondDimValidBool(e.target.value)}
-            >
-              <option value="">Select option</option>
-              <option value={false}>False</option>
-              <option value={true}>True</option>
-            </select>
+            {resultExists ? (
+              <div className="font-medium text-xs sm:text-sm">
+                {match.outcome_more_or_less === "INVALID" ? "NO" : "YES"}
+              </div>
+            ) : (
+              <select
+                className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[120px] sm:w-[140px]"
+                value={secondDimValidBool}
+                onChange={(e) => setSecondDimValidBool(e.target.value)}
+              >
+                <option value="">Select option</option>
+                <option value={false}>False</option>
+                <option value={true}>True</option>
+              </select>
+            )}
           </div>
           <button
             className="col-span-1 px-1 h-10 leading-none bg-[#4b6c43] text-white rounded-md hover:bg-[#3d5836] transition-colors text-xs sm:text-sm whitespace-nowrap"
-            disabled={!resultExists}
+            disabled={resultExists}
             onClick={handleSaveResult}
           >
             Save result
