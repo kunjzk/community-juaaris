@@ -4,7 +4,12 @@ import { useParams } from "react-router-dom";
 import { useMatchesContext } from "../../contexts/matches";
 import { useNavigate } from "react-router-dom";
 import { getJuaaris } from "../../api/juaaris";
-import { getBetsForGame, updateBet, createBet } from "../../api/bets";
+import {
+  getBetsForGame,
+  updateBet,
+  createBet,
+  getLargestBetId,
+} from "../../api/bets";
 
 function getMatchIdFromParams(params, matches) {
   let matchId = parseInt(params.matchId);
@@ -20,7 +25,8 @@ function getMatchIdFromParams(params, matches) {
 }
 
 function getBetForJuaari(combinedJuaarisAndBets, juaariId) {
-  return combinedJuaarisAndBets.find((jb) => jb.id === juaariId).bet;
+  const juaariEntry = combinedJuaarisAndBets.find((jb) => jb.id === juaariId);
+  return juaariEntry ? juaariEntry.bet : null;
 }
 
 function BetsList() {
@@ -147,14 +153,7 @@ function BetsList() {
 
   // Function to update a user's bet
   const updateJuaariBet = async (juaariId, newBet, matchId) => {
-    console.log(
-      "Match ID ",
-      matchId,
-      " Updating bet for juaari:",
-      juaariId,
-      "to",
-      newBet
-    );
+    console.log("Updating bet for juaari:", juaariId, "to", newBet);
     if (newBet.team === "") {
       console.log("Rejecting bet because team is empty");
       alert("You forgot to select a team, try again!");
@@ -165,45 +164,53 @@ function BetsList() {
       alert("You forgot to select more or less, try again!");
       return;
     }
-    const bet = getBetForJuaari(combinedJuaarisAndBets, juaariId);
-    if (bet) {
-      console.log(
-        "Bet already exists for this juaari on this match. Checking if update required"
-      );
-      if (bet.team === newBet.team && bet.option === newBet.option) {
-        console.log("No update required");
+
+    // First check if a bet already exists
+    const existingBet = betsForGame.find((b) => b.juaari_id === juaariId);
+
+    if (existingBet) {
+      console.log("Bet already exists, updating...");
+      try {
+        await updateBet(existingBet.id, newBet.team, newBet.option);
+      } catch (error) {
+        console.error("Error updating bet:", error);
+        alert("Could not update bet, please try again");
         return;
-      } else {
-        console.log("Update required");
-        const updateBetInPlace = async () => {
-          const updatedBet = await updateBet(
-            bet.id,
-            newBet.team,
-            newBet.option
-          );
-          console.log("Updated bet:", updatedBet);
-        };
-        await updateBetInPlace();
-        console.log("Value of refreshBets before flipping:", refreshBets);
-        setRefreshBets(!refreshBets);
       }
     } else {
-      console.log(
-        "Bet does not exist for this juaari on this match. Creating bet."
-      );
-      const createBetForJuaari = async () => {
-        const createdBet = await createBet(
+      console.log("Creating new bet...");
+      const largestBetId = await getLargestBetId();
+      console.log("Largest bet ID:", largestBetId);
+      const newBetId = largestBetId[0].max + 1;
+      console.log("New bet ID:", newBetId);
+      try {
+        await createBet(
+          newBetId,
           matchId,
           juaariId,
           newBet.team,
           newBet.option
         );
-        console.log("Created bet:", createdBet);
-      };
-      await createBetForJuaari();
-      console.log("Value of refreshBets before flipping:", refreshBets);
-      setRefreshBets(!refreshBets);
+      } catch (error) {
+        console.error("Error creating bet:", error);
+        // If we get a duplicate key error, try to update instead
+        if (error.message.includes("duplicate key")) {
+          console.log("Race condition detected, trying to update instead...");
+          const updatedBets = await getBetsForGame(matchId);
+          const raceBet = updatedBets.find((b) => b.juaari_id === juaariId);
+          if (raceBet) {
+            await updateBet(raceBet.id, newBet.team, newBet.option);
+          } else {
+            alert("Could not create bet, please try again");
+            return;
+          }
+        } else {
+          alert("Could not create bet, please try again");
+          return;
+        }
+      }
     }
+    setRefreshBets(!refreshBets);
   };
 
   return (

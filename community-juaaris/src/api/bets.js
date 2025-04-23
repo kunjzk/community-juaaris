@@ -17,10 +17,17 @@ export const updateBet = async (betId, team, option) => {
   return query(sql, [betId, team, option]);
 };
 
-export const createBet = async (matchId, juaariId, team, option) => {
+export const getLargestBetId = async () => {
   const sql = `
-    INSERT INTO new_bets (match_id, juaari_id, predicted_winning_team, predicted_more_or_less)
-    VALUES ($1, $2, $3, $4)
+    SELECT MAX(id) FROM new_bets
   `;
-  return query(sql, [matchId, juaariId, team, option]);
+  return query(sql);
+};
+
+export const createBet = async (newBetId, matchId, juaariId, team, option) => {
+  const sql = `
+    INSERT INTO new_bets (id, match_id, juaari_id, predicted_winning_team, predicted_more_or_less)
+    VALUES ($1, $2, $3, $4, $5)
+  `;
+  return query(sql, [newBetId, matchId, juaariId, team, option]);
 };

@@ -3,10 +3,6 @@ import { getSecondDimensionForDate } from "../../api/gameplay";
 import { useMatchesContext } from "../../contexts/matches";
 
 function ResultsCard({ matchId, teams, dateTime, venue }) {
-  const [secondDimension, setSecondDimension] = useState(null);
-  const [winningTeam, setWinningTeam] = useState(null);
-  const [totalScore, setTotalScore] = useState(0);
-  const [secondDimValidBool, setSecondDimValidBool] = useState(true);
   const { getMatchById } = useMatchesContext();
 
   const match = getMatchById(matchId);
@@ -14,6 +10,35 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
     console.error("No match found or match has no datetime");
     return;
   }
+
+  const [secondDimensionCutoff, setSecondDimensionCutoff] = useState(null);
+  const [winningTeam, setWinningTeam] = useState(null);
+  const [totalScore, setTotalScore] = useState(null);
+  const [secondDimValidBool, setSecondDimValidBool] = useState(null);
+  const [resultExists, setResultExists] = useState(false);
+
+  useEffect(() => {
+    setWinningTeam(
+      match.outcome_winning_team ? match.outcome_winning_team : null
+    );
+    setTotalScore(match.outcome_total_score ? match.outcome_total_score : 0);
+    if (
+      match.outcome_more_or_less === "MORE" ||
+      match.outcome_more_or_less === "LESS"
+    ) {
+      setSecondDimValidBool(true);
+    } else {
+      setSecondDimValidBool(false);
+    }
+
+    if (
+      winningTeam !== null &&
+      totalScore !== null &&
+      secondDimValidBool !== null
+    ) {
+      setResultExists(true);
+    }
+  }, [matchId]);
 
   useEffect(() => {
     const fetchSecondDimension = async () => {
@@ -24,24 +49,51 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
         const records = await getSecondDimensionForDate(formattedDate);
         console.log("SECOND DIMENSION RECORDS: ", records);
         if (records && records.length > 0) {
-          setSecondDimension(records[0].second_dimension_cutoff);
+          setSecondDimensionCutoff(records[0].second_dimension_cutoff);
         } else {
-          setSecondDimension("No second dimension set");
+          setSecondDimensionCutoff("No second dimension set");
         }
       } catch (error) {
         console.error("Error fetching second dimension:", error);
-        setSecondDimension("Error loading second dimension");
+        setSecondDimensionCutoff("Error loading second dimension");
       }
     };
 
     fetchSecondDimension();
   }, [matchId]);
 
-  const handleSaveResult = () => {
+  const handleSaveResult = async () => {
+    // Input validation
+    if (!winningTeam || !totalScore || !secondDimValidBool) {
+      console.error("Missing required fields");
+      alert(
+        "Missing required fields: winning team, total score, or second dimension valid"
+      );
+      return;
+    }
+
     console.log("Saving result to database");
     console.log("Winning team: ", winningTeam);
     console.log("Total score: ", totalScore);
     console.log("Second dim valid: ", secondDimValidBool);
+
+    // Check if there is already a result for this match
+    if (resultExists) {
+      console.error("Result already exists for this match");
+      alert(
+        "Result already exists for this match and you cannot edit it for now"
+      );
+      return;
+    }
+
+    // Try to save the result
+    try {
+      await saveResult(matchId, winningTeam, totalScore);
+      setResultExists(true);
+    } catch (error) {
+      console.error("Error saving result:", error);
+      alert("Error saving result, please try again");
+    }
   };
 
   return (
@@ -71,7 +123,9 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
               Second Dimension
             </div>
             <div className="font-medium text-xs sm:text-sm">
-              {secondDimension === null ? "Loading..." : secondDimension}
+              {secondDimensionCutoff === null
+                ? "Loading..."
+                : secondDimensionCutoff}
             </div>
           </div>
           <div className="text-center col-span-1">
@@ -99,7 +153,7 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
             </div>
             <input
               type="number"
-              className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[120px] sm:w-[140px]"
+              className="border border-gray-300 rounded px-2 h-10 w-[120px] sm:w-[140px]"
               value={totalScore}
               onChange={(e) => setTotalScore(e.target.value)}
               min="0"
@@ -121,7 +175,8 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
             </select>
           </div>
           <button
-            className="w-full sm:w-auto bg-[#4b6c43] text-white rounded-md hover:bg-[#3d5836] transition-colors text-xs sm:text-sm whitespace-nowrap"
+            className="col-span-1 px-1 h-10 leading-none bg-[#4b6c43] text-white rounded-md hover:bg-[#3d5836] transition-colors text-xs sm:text-sm whitespace-nowrap"
+            disabled={!resultExists}
             onClick={handleSaveResult}
           >
             Save result
