@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import React from "react";
-import { getMatches } from "../api/matches";
+import { getMatchesByDateRange } from "../api/matches";
 
 // Create the context with default values
 const MatchesContext = createContext({
@@ -10,6 +10,10 @@ const MatchesContext = createContext({
   getPreviousMatch: () => null,
   getNextMatch: () => null,
   refreshMatches: () => {},
+  startDate: null,
+  endDate: null,
+  setStartDate: () => {},
+  setEndDate: () => {},
 });
 
 // Custom hook to use the context
@@ -19,6 +23,15 @@ export function useMatchesContext() {
 
 // Provider component
 export function MatchesProvider({ children }) {
+  const [startDate, setStartDateState] = useState(() => {
+    const storedStartDate = localStorage.getItem("startDate");
+    return storedStartDate ? new Date(storedStartDate) : null;
+  });
+  const [endDate, setEndDateState] = useState(() => {
+    const storedEndDate = localStorage.getItem("endDate");
+    return storedEndDate ? new Date(storedEndDate) : null;
+  });
+
   // Initialize state with localStorage data
   const [matches, setMatches] = useState(() => {
     const storedMatches = localStorage.getItem("matches-for-the-week");
@@ -34,13 +47,25 @@ export function MatchesProvider({ children }) {
   // Function to refresh matches from the server
   const refreshMatches = async () => {
     try {
-      const freshMatches = await getMatches();
+      const freshMatches = await getMatchesByDateRange(startDate, endDate);
       saveMatchesToContext(freshMatches);
       return freshMatches;
     } catch (error) {
       console.error("Error refreshing matches:", error);
       throw error;
     }
+  };
+
+  // Wrapper function to set start date and update localStorage
+  const setStartDate = (date) => {
+    setStartDateState(date);
+    localStorage.setItem("startDate", date.toISOString());
+  };
+
+  // Wrapper function to set end date and update localStorage
+  const setEndDate = (date) => {
+    setEndDateState(date);
+    localStorage.setItem("endDate", date.toISOString());
   };
 
   // Helper function to get a match by ID
@@ -75,6 +100,10 @@ export function MatchesProvider({ children }) {
     getPreviousMatch,
     getNextMatch,
     refreshMatches,
+    startDate,
+    endDate,
+    setStartDate,
+    setEndDate,
   };
 
   return React.createElement(MatchesContext.Provider, { value }, children);

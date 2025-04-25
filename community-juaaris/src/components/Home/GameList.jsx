@@ -6,7 +6,8 @@ import { useMatchesContext } from "../../contexts/matches";
 function GameList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { matches, saveMatchesToContext } = useMatchesContext();
+  const { matches, setStartDate, setEndDate, saveMatchesToContext } =
+    useMatchesContext();
 
   // Calculate date range using useMemo to prevent unnecessary recalculations
   const { mostRecentSunday, nextSaturday } = useMemo(() => {
@@ -26,6 +27,9 @@ function GameList() {
     // Calculate next Saturday
     const nextSaturday = new Date(mostRecentSunday);
     nextSaturday.setDate(mostRecentSunday.getDate() + 6);
+
+    setStartDate(mostRecentSunday);
+    setEndDate(nextSaturday);
 
     return { mostRecentSunday, nextSaturday };
   }, []); // Empty dependency array means this only runs once on mount
