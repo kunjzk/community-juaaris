@@ -40,7 +40,7 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
     ) {
       setResultExists(true);
     }
-  }, [matchId]);
+  }, [match]);
 
   useEffect(() => {
     const fetchSecondDimension = async () => {
@@ -88,14 +88,25 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
       return;
     }
 
+    let more_or_less = "";
+    if (secondDimValidBool === "true") {
+      const second_dim_threshold = secondDimensionCutoff;
+      if (totalScore > second_dim_threshold) {
+        more_or_less = "MORE";
+      } else {
+        more_or_less = "LESS";
+      }
+    } else {
+      more_or_less = "INVALID";
+    }
+
     // Try to save the result
     try {
       console.log("Saving result to database");
-      await saveResult(matchId, winningTeam, totalScore);
+      await saveResult(matchId, winningTeam, totalScore, more_or_less);
       setResultExists(true);
-      await refreshMatches(); // Refresh the matches data after saving
+      refreshMatches(); // Refresh the matches data after saving
       console.log("Result saved to database");
-      console.log("Result exists: ", resultExists);
     } catch (error) {
       console.error("Error saving result:", error);
       alert("Error saving result, please try again");

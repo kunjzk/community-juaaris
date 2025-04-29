@@ -70,11 +70,16 @@ export async function getMatchesByDateRange(startDate, endDate) {
   return results;
 }
 
-export async function saveResult(matchId, winningTeam, totalScore) {
+export async function saveResult(
+  matchId,
+  winningTeam,
+  totalScore,
+  more_or_less
+) {
   const sql = `
     UPDATE new_matches
-    SET outcome_winning_team = $2, outcome_total_score = $3
+    SET outcome_winning_team = $2, outcome_total_score = $3, outcome_more_or_less = $4
     WHERE id = $1
   `;
-  return query(sql, [matchId, winningTeam, totalScore]);
+  return query(sql, [matchId, winningTeam, totalScore, more_or_less]);
 }
