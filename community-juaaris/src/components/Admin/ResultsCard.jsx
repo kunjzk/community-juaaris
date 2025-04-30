@@ -14,33 +14,32 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
   }
 
   const [secondDimensionCutoff, setSecondDimensionCutoff] = useState(null);
-  const [winningTeam, setWinningTeam] = useState(null);
-  const [totalScore, setTotalScore] = useState(null);
+  const [winningTeam, setWinningTeam] = useState("");
+  const [totalScore, setTotalScore] = useState("");
   const [secondDimValidBool, setSecondDimValidBool] = useState(null);
   const [resultExists, setResultExists] = useState(false);
 
   useEffect(() => {
-    setWinningTeam(
-      match.outcome_winning_team ? match.outcome_winning_team : null
-    );
-    setTotalScore(match.outcome_total_score ? match.outcome_total_score : 0);
-    if (
-      match.outcome_more_or_less === "MORE" ||
-      match.outcome_more_or_less === "LESS"
-    ) {
-      setSecondDimValidBool(true);
-    } else {
-      setSecondDimValidBool(false);
+    if (matchId) {
+      setWinningTeam(match.outcome_winning_team || "");
+      setTotalScore(match.outcome_total_score || "");
+      setSecondDimValidBool(
+        match.outcome_more_or_less === "MORE" ||
+          match.outcome_more_or_less === "LESS"
+          ? true
+          : false
+      );
     }
+  }, [matchId]);
 
-    if (
-      winningTeam !== null &&
-      totalScore !== null &&
-      secondDimValidBool !== null
-    ) {
+  // Separate useEffect to check if result exists
+  useEffect(() => {
+    if (winningTeam && totalScore && secondDimValidBool !== null) {
       setResultExists(true);
+    } else {
+      setResultExists(false);
     }
-  }, [match]);
+  }, [winningTeam, totalScore, secondDimValidBool]);
 
   useEffect(() => {
     const fetchSecondDimension = async () => {
