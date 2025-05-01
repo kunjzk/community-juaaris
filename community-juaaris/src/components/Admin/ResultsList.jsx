@@ -49,7 +49,6 @@ function ResultsList() {
                 matchId={match.id}
                 teams={`${match.first_team_name} vs ${match.second_team_name}`}
                 dateTime={formatDateTime(match.datetime)}
-                venue={match.venue_name}
               />
             );
           })

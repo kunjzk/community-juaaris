@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import React from "react";
 import { getMatchesByDateRange } from "../api/matches";
+import { getSecondDimensionForDate } from "../api/gameplay";
 
 // Create the context with default values
 const MatchesContext = createContext({
@@ -14,6 +15,8 @@ const MatchesContext = createContext({
   endDate: null,
   setStartDate: () => {},
   setEndDate: () => {},
+  secondDimensionData: { data: {}, isLoading: true },
+  getSecondDimensionCutoff: () => null,
 });
 
 // Custom hook to use the context
@@ -32,6 +35,12 @@ export function MatchesProvider({ children }) {
     return storedEndDate ? new Date(storedEndDate) : null;
   });
 
+  // Add second dimension state
+  const [secondDimensionData, setSecondDimensionData] = useState(() => {
+    const storedData = localStorage.getItem("second-dimension-data");
+    return storedData ? JSON.parse(storedData) : { data: {}, isLoading: true };
+  });
+
   // Initialize state with localStorage data
   const [matches, setMatches] = useState(() => {
     const storedMatches = localStorage.getItem("matches-for-the-week");
@@ -44,11 +53,44 @@ export function MatchesProvider({ children }) {
     localStorage.setItem("matches-for-the-week", JSON.stringify(newMatches));
   };
 
-  // Function to refresh matches from the server
+  // Function to refresh matches and second dimension data
   const refreshMatches = async () => {
     try {
       const freshMatches = await getMatchesByDateRange(startDate, endDate);
       saveMatchesToContext(freshMatches);
+
+      // Fetch second dimension data for all matches
+      const secondDimensionPromises = freshMatches.map(async (match) => {
+        const matchDate = new Date(match.datetime);
+        const formattedDate = matchDate.toISOString().split("T")[0];
+        const records = await getSecondDimensionForDate(formattedDate);
+        return {
+          date: formattedDate,
+          cutoff:
+            records && records.length > 0
+              ? records[0].second_dimension_cutoff
+              : null,
+        };
+      });
+
+      const secondDimensionResults = await Promise.all(secondDimensionPromises);
+      const secondDimensionMap = secondDimensionResults.reduce((acc, curr) => {
+        acc[curr.date] = curr.cutoff;
+        return acc;
+      }, {});
+
+      setSecondDimensionData({
+        data: secondDimensionMap,
+        isLoading: false,
+      });
+      localStorage.setItem(
+        "second-dimension-data",
+        JSON.stringify({
+          data: secondDimensionMap,
+          isLoading: false,
+        })
+      );
+
       return freshMatches;
     } catch (error) {
       console.error("Error refreshing matches:", error);
@@ -92,6 +134,12 @@ export function MatchesProvider({ children }) {
     return matches[currentIndex + 1];
   };
 
+  // Helper function to get second dimension cutoff for a date
+  const getSecondDimensionCutoff = (date) => {
+    const formattedDate = new Date(date).toISOString().split("T")[0];
+    return secondDimensionData.data[formattedDate] || null;
+  };
+
   // Value object that will be provided to consumers
   const value = {
     matches,
@@ -104,6 +152,8 @@ export function MatchesProvider({ children }) {
     endDate,
     setStartDate,
     setEndDate,
+    secondDimensionData,
+    getSecondDimensionCutoff,
   };
 
   return React.createElement(MatchesContext.Provider, { value }, children);

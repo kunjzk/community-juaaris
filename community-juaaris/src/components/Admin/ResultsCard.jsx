@@ -5,7 +5,8 @@ import { saveResult } from "../../api/matches";
 import { useMatchesContext } from "../../contexts/matches";
 
 function ResultsCard({ matchId, teams, dateTime, venue }) {
-  const { getMatchById, refreshMatches } = useMatchesContext();
+  const { getMatchById, refreshMatches, getSecondDimensionCutoff } =
+    useMatchesContext();
 
   const match = getMatchById(matchId);
   if (!match || !match.datetime) {
@@ -13,14 +14,21 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
     return;
   }
 
-  const [secondDimensionCutoff, setSecondDimensionCutoff] = useState(null);
   const [winningTeam, setWinningTeam] = useState("");
   const [totalScore, setTotalScore] = useState("");
   const [secondDimValidBool, setSecondDimValidBool] = useState(null);
   const [resultExists, setResultExists] = useState(false);
 
+  // Get second dimension cutoff from context
+  const secondDimensionCutoff = getSecondDimensionCutoff(match.datetime);
+
   useEffect(() => {
-    if (matchId) {
+    if (match) {
+      console.log(
+        "First UseEffect hook for match id: ",
+        matchId,
+        " confirming that there is a match"
+      );
       setWinningTeam(match.outcome_winning_team || "");
       setTotalScore(match.outcome_total_score || "");
       setSecondDimValidBool(
@@ -34,34 +42,44 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
 
   // Separate useEffect to check if result exists
   useEffect(() => {
+    console.log(
+      "Second UseEffect hook for match id: ",
+      matchId,
+      " checking if result exists"
+    );
+    console.log(
+      "Second UseEffect hook for match id: ",
+      matchId,
+      " Winning team: ",
+      winningTeam
+    );
+    console.log(
+      "Second UseEffect hook for match id: ",
+      matchId,
+      " Total score: ",
+      totalScore
+    );
+    console.log(
+      "Second UseEffect hook for match id: ",
+      matchId,
+      " Second dim valid: ",
+      secondDimValidBool
+    );
     if (winningTeam && totalScore && secondDimValidBool !== null) {
+      console.log(
+        "Second UseEffect hook for match id: ",
+        matchId,
+        " Result exists"
+      );
       setResultExists(true);
     } else {
-      setResultExists(false);
+      console.log(
+        "Second UseEffect hook for match id: ",
+        matchId,
+        " Result does not exist"
+      );
     }
   }, [winningTeam, totalScore, secondDimValidBool]);
-
-  useEffect(() => {
-    const fetchSecondDimension = async () => {
-      try {
-        // Convert the datetime to a format the database expects
-        const matchDate = new Date(match.datetime);
-        const formattedDate = matchDate.toISOString().split("T")[0];
-        const records = await getSecondDimensionForDate(formattedDate);
-        console.log("SECOND DIMENSION RECORDS: ", records);
-        if (records && records.length > 0) {
-          setSecondDimensionCutoff(records[0].second_dimension_cutoff);
-        } else {
-          setSecondDimensionCutoff("No second dimension set");
-        }
-      } catch (error) {
-        console.error("Error fetching second dimension:", error);
-        setSecondDimensionCutoff("Error loading second dimension");
-      }
-    };
-
-    fetchSecondDimension();
-  }, [matchId]);
 
   const handleSaveResult = async () => {
     // Input validation
