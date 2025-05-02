@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { getSecondDimensionForDate } from "../../api/gameplay";
 import { getTeamNameById } from "../../api/teams";
 import { saveResult } from "../../api/matches";
 import { useMatchesContext } from "../../contexts/matches";
 
-function ResultsCard({ matchId, teams, dateTime, venue }) {
-  const { getMatchById, refreshMatches, getSecondDimensionCutoff } =
-    useMatchesContext();
+function ResultsCard({ matchId, teams, dateTime, updateResult }) {
+  const { getMatchById, refreshMatches } = useMatchesContext();
 
   const match = getMatchById(matchId);
   if (!match || !match.datetime) {
@@ -19,16 +17,16 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
   const [secondDimValidBool, setSecondDimValidBool] = useState(null);
   const [resultExists, setResultExists] = useState(false);
 
-  // Get second dimension cutoff from context
-  const secondDimensionCutoff = getSecondDimensionCutoff(match.datetime);
+  // Get second dimension cutoff from the match object
+  const secondDimensionCutoff = match.second_dimension_cutoff;
 
   useEffect(() => {
     if (match) {
-      console.log(
-        "First UseEffect hook for match id: ",
-        matchId,
-        " confirming that there is a match"
-      );
+      // console.log(
+      //   "First UseEffect hook for match id: ",
+      //   matchId,
+      //   " confirming that there is a match"
+      // );
       setWinningTeam(match.outcome_winning_team || "");
       setTotalScore(match.outcome_total_score || "");
       setSecondDimValidBool(
@@ -42,93 +40,102 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
 
   // Separate useEffect to check if result exists
   useEffect(() => {
-    console.log(
-      "Second UseEffect hook for match id: ",
-      matchId,
-      " checking if result exists"
-    );
-    console.log(
-      "Second UseEffect hook for match id: ",
-      matchId,
-      " Winning team: ",
-      winningTeam
-    );
-    console.log(
-      "Second UseEffect hook for match id: ",
-      matchId,
-      " Total score: ",
-      totalScore
-    );
-    console.log(
-      "Second UseEffect hook for match id: ",
-      matchId,
-      " Second dim valid: ",
-      secondDimValidBool
-    );
+    // console.log(
+    //   "Second UseEffect hook for match id: ",
+    //   matchId,
+    //   " checking if result exists"
+    // );
+    // console.log(
+    //   "Second UseEffect hook for match id: ",
+    //   matchId,
+    //   " Winning team: ",
+    //   winningTeam
+    // );
+    // console.log(
+    //   "Second UseEffect hook for match id: ",
+    //   matchId,
+    //   " Total score: ",
+    //   totalScore
+    // );
+    // console.log(
+    //   "Second UseEffect hook for match id: ",
+    //   matchId,
+    //   " Second dim valid: ",
+    //   secondDimValidBool
+    // );
     if (winningTeam && totalScore && secondDimValidBool !== null) {
-      console.log(
-        "Second UseEffect hook for match id: ",
-        matchId,
-        " Result exists"
-      );
+      // console.log(
+      //   "Second UseEffect hook for match id: ",
+      //   matchId,
+      //   " Result exists"
+      // );
       setResultExists(true);
     } else {
-      console.log(
-        "Second UseEffect hook for match id: ",
-        matchId,
-        " Result does not exist"
-      );
+      // console.log(
+      //   "Second UseEffect hook for match id: ",
+      //   matchId,
+      //   " Result does not exist"
+      // );
     }
   }, [winningTeam, totalScore, secondDimValidBool]);
 
-  const handleSaveResult = async () => {
-    // Input validation
-    if (!winningTeam || !totalScore || !secondDimValidBool) {
-      console.error("Missing required fields");
-      alert(
-        "Missing required fields: winning team, total score, or second dimension valid"
-      );
-      return;
-    }
-
-    console.log("Saving result to database");
-    console.log("Winning team: ", winningTeam);
-    console.log("Total score: ", totalScore);
-    console.log("Second dim valid: ", secondDimValidBool);
-
-    // Check if there is already a result for this match
-    if (resultExists) {
-      console.error("Result already exists for this match");
-      alert(
-        "Result already exists for this match and you cannot edit it for now"
-      );
-      return;
-    }
-
-    let more_or_less = "";
-    if (secondDimValidBool === "true") {
-      const second_dim_threshold = secondDimensionCutoff;
-      if (totalScore > second_dim_threshold) {
-        more_or_less = "MORE";
-      } else {
-        more_or_less = "LESS";
-      }
-    } else {
-      more_or_less = "INVALID";
-    }
-
-    // Try to save the result
-    try {
-      console.log("Saving result to database");
-      await saveResult(matchId, winningTeam, totalScore, more_or_less);
-      setResultExists(true);
-      refreshMatches(); // Refresh the matches data after saving
-      console.log("Result saved to database");
-    } catch (error) {
-      console.error("Error saving result:", error);
-      alert("Error saving result, please try again");
-    }
+  const handleSaveResult = () => {
+    updateResult({
+      matchId: matchId,
+      winningTeam: winningTeam,
+      totalScore: totalScore,
+      secondDimValidBool: secondDimValidBool,
+    });
   };
+
+  // const handleSaveResult = async () => {
+  //   // Input validation
+  //   if (!winningTeam || !totalScore || !secondDimValidBool) {
+  //     // console.error("Missing required fields");
+  //     alert(
+  //       "Missing required fields: winning team, total score, or second dimension valid"
+  //     );
+  //     return;
+  //   }
+
+  //   // console.log("Saving result to database");
+  //   // console.log("Winning team: ", winningTeam);
+  //   // console.log("Total score: ", totalScore);
+  //   // console.log("Second dim valid: ", secondDimValidBool);
+
+  //   // Check if there is already a result for this match
+  //   if (resultExists) {
+  //     console.error("Result already exists for this match");
+  //     alert(
+  //       "Result already exists for this match and you cannot edit it for now"
+  //     );
+  //     return;
+  //   }
+
+  //   let more_or_less = "";
+  //   if (secondDimValidBool === "true") {
+  //     const second_dim_threshold = secondDimensionCutoff;
+  //     if (totalScore > second_dim_threshold) {
+  //       more_or_less = "MORE";
+  //     } else {
+  //       more_or_less = "LESS";
+  //     }
+  //   } else {
+  //     more_or_less = "INVALID";
+  //   }
+
+  //   // Try to save the result
+  //   try {
+  //     // console.log("Saving result to database");
+  //     await saveResult(matchId, winningTeam, totalScore, more_or_less);
+  //     setResultExists(true);
+  //     refreshMatches(); // Refresh the matches data after saving
+  //     // console.log("Result saved to database");
+  //   } catch (error) {
+  //     console.error("Error saving result:", error);
+  //     alert("Error saving result, please try again");
+  //   }
+  // };
 
   return (
     <div>
@@ -227,7 +234,14 @@ function ResultsCard({ matchId, teams, dateTime, venue }) {
           <button
             className="col-span-1 px-1 h-10 leading-none bg-[#4b6c43] text-white rounded-md hover:bg-[#3d5836] transition-colors text-xs sm:text-sm whitespace-nowrap"
             disabled={resultExists}
-            onClick={handleSaveResult}
+            onClick={() =>
+              handleSaveResult(
+                matchId,
+                winningTeam,
+                totalScore,
+                secondDimValidBool
+              )
+            }
           >
             Save result
           </button>

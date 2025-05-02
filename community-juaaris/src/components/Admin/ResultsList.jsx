@@ -36,6 +36,13 @@ function ResultsList() {
     }
   };
 
+  const updateResult = async (newResult) => {
+    console.log("Updating result for match:", newResult.matchId);
+    console.log("Winning team:", newResult.winningTeam);
+    console.log("Total score:", newResult.totalScore);
+    console.log("Second dim valid:", newResult.secondDimValidBool);
+  };
+
   return (
     <div>
       <h1 className="text-3xl font-serif mb-8">Results List</h1>
@@ -49,6 +56,7 @@ function ResultsList() {
                 matchId={match.id}
                 teams={`${match.first_team_name} vs ${match.second_team_name}`}
                 dateTime={formatDateTime(match.datetime)}
+                updateResult={(newResult) => updateResult(newResult)}
               />
             );
           })

@@ -227,7 +227,7 @@ function BetsList() {
                 Date: {formatDate(match.datetime)}
               </p>
               <p className="text-base sm:text-lg font-medium">
-                Second dimension: 335 runs
+                Second dimension: {match.second_dimension_cutoff} runs
               </p>
             </div>
             <div className="flex gap-2 sm:gap-4 mt-2 sm:mt-0">

@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import GameCard from "./GameCard.jsx";
-import { getMatchesByDateRange } from "../../api/matches";
 import { useMatchesContext } from "../../contexts/matches";
 
 function GameList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { matches, setStartDate, setEndDate, saveMatchesToContext } =
+  const { matches, setStartDate, setEndDate, refreshMatches } =
     useMatchesContext();
 
   // Calculate date range using useMemo to prevent unnecessary recalculations
@@ -41,26 +40,7 @@ function GameList() {
     async function fetchMatches() {
       try {
         setLoading(true);
-        const data = await getMatchesByDateRange(
-          mostRecentSunday,
-          nextSaturday
-        );
-
-        // Debug: Log the matches data to check for undefined values
-        console.log("Fetched matches:", data);
-
-        if (isMounted) {
-          // Filter out matches with undefined match_datetime
-          const validMatches = data.filter((match) => {
-            if (!match || match.datetime === undefined) {
-              console.error("Invalid match object:", match);
-              return false;
-            }
-            return true;
-          });
-
-          saveMatchesToContext(validMatches);
-        }
+        await refreshMatches();
       } catch (err) {
         console.error("Error fetching matches:", err);
         if (isMounted) {
