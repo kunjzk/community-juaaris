@@ -2,6 +2,48 @@ import React, { useState, useEffect } from "react";
 import ResultsCard from "./ResultsCard";
 import { useMatchesContext } from "../../contexts/matches";
 
+const saveMatchResultAndCalculateAllWinnings = async (
+  matchId,
+  winningTeam,
+  totalScore,
+  more_or_less,
+  washout
+) => {
+  // 1. Save the result of the match
+  try {
+    console.log("Saving result to database");
+    await saveResult(matchId, winningTeam, totalScore, more_or_less, washout);
+  } catch (error) {
+    console.error("Error saving match result:", error);
+    alert("Error saving match result, please tell Kunal");
+  }
+
+  if (washout) {
+    console.log("Washout, so no need to calculate winnings");
+  } else {
+    // 2. Update the "successful" column in the bets table
+    try {
+      console.log("Updating successful column in bets table");
+      await updateSuccessfulColumnInBetsTable(
+        matchId,
+        winningTeam,
+        more_or_less
+      );
+    } catch (error) {
+      console.error("Error updating successful column in bets table:", error);
+      alert(
+        "Error updating successful column in bets table, please tell Kunal"
+      );
+    }
+  }
+  // 2. Update the "successful" column in the bets table
+
+  // 3. Keep track of user ID of winners
+
+  // 4. Calculate the net change for each player
+  // If you lose, you lose the amount you bet
+};
+
 function ResultsList() {
   const { matches, refreshMatches, getWinningTeamName } = useMatchesContext();
   const [refreshMatchesBool, setRefreshMatchesBool] = useState(false);
@@ -45,11 +87,20 @@ function ResultsList() {
     }
   };
 
-  const updateResult = async (newResult) => {
+  const submitResult = async (newResult) => {
     console.log("Updating result for match:", newResult.matchId);
     console.log("Winning team:", newResult.winningTeam);
     console.log("Total score:", newResult.totalScore);
-    console.log("Second dim valid:", newResult.secondDimValidBool);
+    console.log("More or less:", newResult.moreOrLess);
+    console.log("Washout:", newResult.washout);
+
+    await saveMatchResultAndCalculateAllWinnings(
+      newResult.matchId,
+      newResult.winningTeam,
+      newResult.totalScore,
+      newResult.moreOrLess,
+      newResult.washout
+    );
     setRefreshMatchesBool(!refreshMatchesBool);
   };
 
@@ -78,6 +129,15 @@ function ResultsList() {
                   winningTeam: winningTeamName,
                   totalScore: match.outcome_total_score,
                   secondDimension: match.outcome_more_or_less,
+                  washout: false,
+                };
+              }
+              if (match.washout) {
+                result = {
+                  winningTeam: "WASHOUT",
+                  totalScore: 0,
+                  secondDimension: null,
+                  washout: true,
                 };
               }
               console.log("Result:", result);
@@ -88,11 +148,10 @@ function ResultsList() {
                   teams={`${match.first_team_name} vs ${match.second_team_name}`}
                   dateTime={formatDateTime(match.datetime)}
                   result={result}
-                  submitResult={(newResult) => updateResult(newResult)}
+                  submitResult={(newResult) => submitResult(newResult)}
                 />
               );
             });
-            console.log("All match cards:", allMatchCards);
             return allMatchCards;
           })()
         ) : (

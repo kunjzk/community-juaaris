@@ -31,3 +31,16 @@ export const createBet = async (newBetId, matchId, juaariId, team, option) => {
   `;
   return query(sql, [newBetId, matchId, juaariId, team, option]);
 };
+
+export const updateSuccessfulColumnInBetsTable = async (
+  matchId,
+  winningTeam,
+  moreOrLess
+) => {
+  const sql = `
+    UPDATE new_bets
+    SET successful = TRUE
+    WHERE match_id = $1 AND predicted_winning_team = $2 AND predicted_more_or_less = $3
+  `;
+  return query(sql, [matchId, winningTeam, moreOrLess]);
+};

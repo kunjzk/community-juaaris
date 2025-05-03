@@ -16,16 +16,10 @@ export async function getAllMatches() {
   return query(sql);
 }
 
-export async function getMatchById(id) {
+export async function getMatchByIdApi(id) {
   const sql = `
-    SELECT m.*, 
-           t1.name as first_team_name,
-           t2.name as second_team_name,
-           v.name as venue_name
+    SELECT *, 
     FROM new_matches m
-    JOIN new_teams t1 ON m.first_team_id = t1.id
-    JOIN new_teams t2 ON m.second_team_id = t2.id
-    JOIN new_venues v ON m.venue_id = v.id
     WHERE m.id = $1
   `;
 

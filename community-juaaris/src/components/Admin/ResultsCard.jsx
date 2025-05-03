@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { getTeamNameById } from "../../api/teams";
 import { useMatchesContext } from "../../contexts/matches";
 import { useNavigate } from "react-router-dom";
+
 // 1. If there is a result for the match, show it
 // 2. If there is no result for the match, show the form to add a result
 // Editing of results is not allowed, for now.
 
 function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   console.log("ResultsCard component rendered for match id: ", matchId);
-  const { getMatchById, getWinningTeamName } = useMatchesContext();
+  const { getMatchById, getWinningTeamName, getNextGameBetAmount } =
+    useMatchesContext();
   const navigate = useNavigate();
   const match = getMatchById(matchId);
   if (!match || !match.datetime) {
@@ -19,17 +21,65 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   const [winningTeam, setWinningTeam] = useState("");
   const [totalScore, setTotalScore] = useState("");
   const [secondDimValidBool, setSecondDimValidBool] = useState(true);
+  const [washoutBool, setWashoutBool] = useState(false);
+  const [nextGameBetAmount, setNextGameBetAmount] = useState(0);
 
   // Get second dimension cutoff from the match object
   const secondDimensionCutoff = match.second_dimension_cutoff;
 
+  useEffect(() => {
+    const getNextGameBet = async () => {
+      if (match.washout) {
+        const nextGameBetAmount = await getNextGameBetAmount(matchId);
+        setNextGameBetAmount(nextGameBetAmount);
+      }
+    };
+    getNextGameBet();
+  }, [result]);
+
   const handleSaveResult = () => {
     console.log("Saving result for match id: ", matchId);
-    updateResult({
+
+    if (washoutBool) {
+      // If washout, set more_or_less to "INVALID"
+      moreOrLess = "INVALID";
+      submitResult({
+        matchId: matchId,
+        winningTeam: "WASHOUT",
+        totalScore: 0,
+        moreOrLess: "INVALID",
+        washout: true,
+      });
+      return;
+    }
+    // Input validation
+    if (!winningTeam || !totalScore || !secondDimValidBool) {
+      alert(
+        "Missing required fields: winning team, total score, or second dimension valid"
+      );
+      return;
+    }
+
+    // Set more_or_less
+    let moreOrLess = "";
+    if (secondDimValidBool === "true") {
+      const second_dim_threshold = secondDimensionCutoff;
+      if (totalScore > second_dim_threshold) {
+        moreOrLess = "MORE";
+      } else {
+        moreOrLess = "LESS";
+      }
+    } else {
+      moreOrLess = "INVALID";
+    }
+
+    // Update the result
+    submitResult({
       matchId: matchId,
       winningTeam: winningTeam,
       totalScore: totalScore,
-      secondDimValidBool: secondDimValidBool,
+      moreOrLess: moreOrLess,
+      washout: false,
     });
   };
 
@@ -38,61 +88,11 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
     navigate(`/bets/${matchId}`);
   };
 
-  // const handleSaveResult = async () => {
-  //   // Input validation
-  //   if (!winningTeam || !totalScore || !secondDimValidBool) {
-  //     // console.error("Missing required fields");
-  //     alert(
-  //       "Missing required fields: winning team, total score, or second dimension valid"
-  //     );
-  //     return;
-  //   }
-
-  //   // console.log("Saving result to database");
-  //   // console.log("Winning team: ", winningTeam);
-  //   // console.log("Total score: ", totalScore);
-  //   // console.log("Second dim valid: ", secondDimValidBool);
-
-  //   // Check if there is already a result for this match
-  //   if (resultExists) {
-  //     console.error("Result already exists for this match");
-  //     alert(
-  //       "Result already exists for this match and you cannot edit it for now"
-  //     );
-  //     return;
-  //   }
-
-  //   let more_or_less = "";
-  //   if (secondDimValidBool === "true") {
-  //     const second_dim_threshold = secondDimensionCutoff;
-  //     if (totalScore > second_dim_threshold) {
-  //       more_or_less = "MORE";
-  //     } else {
-  //       more_or_less = "LESS";
-  //     }
-  //   } else {
-  //     more_or_less = "INVALID";
-  //   }
-
-  //   // Try to save the result
-  //   try {
-  //     // console.log("Saving result to database");
-  //     await saveResult(matchId, winningTeam, totalScore, more_or_less);
-  //     setResultExists(true);
-  //     refreshMatches(); // Refresh the matches data after saving
-  //     // console.log("Result saved to database");
-  //   } catch (error) {
-  //     console.error("Error saving result:", error);
-  //     alert("Error saving result, please try again");
-  //   }
-  // };
-
   const renderForm = () => {
     console.log("Rendering form for match id: ", matchId);
     // To reduce code duplication, we will render the static elements of the form in a loop
     const staticElements = [
-      { label: "Match ID", value: matchId },
-      { label: "Teams", value: teams },
+      { label: "Match", value: matchId + ": " + teams },
       { label: "Date", value: dateTime },
       { label: "Second Dimension", value: secondDimensionCutoff },
     ];
@@ -114,6 +114,28 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
             ))}
 
             {/* Dynamic elements */}
+
+            {/* Washout? */}
+            <div className="text-center col-span-1">
+              <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">
+                Washout?
+              </div>
+              <select
+                className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[120px] sm:w-[140px]"
+                value={washoutBool}
+                onChange={(e) => {
+                  if (e.target.value === "true") {
+                    alert(
+                      "Be careful, if washout is True then there is no result for this game. If you are 100% sure, close this warning and click save result. Otherwise, close this warning and select False for washout."
+                    );
+                  }
+                  setWashoutBool(e.target.value);
+                }}
+              >
+                <option value={false}>False</option>
+                <option value={true}>True</option>
+              </select>
+            </div>
 
             {/* Input to select winning team */}
             <div className="text-center col-span-1">
@@ -161,7 +183,6 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
                 value={secondDimValidBool}
                 onChange={(e) => setSecondDimValidBool(e.target.value)}
               >
-                <option value="">Select option</option>
                 <option value={false}>False</option>
                 <option value={true}>True</option>
               </select>
@@ -175,7 +196,8 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
                   matchId,
                   winningTeam,
                   totalScore,
-                  secondDimValidBool
+                  secondDimValidBool,
+                  washoutBool
                 )
               }
             >
@@ -187,26 +209,38 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
     );
   };
 
-  const renderResult = () => {
+  // If the match is a washout, we will update the washout bool in the match object to be true
+  // For this, the database model needs to be updated to include a washout column
+  // If washout is true, we want to double the next game's bet mount
+
+  function renderResult() {
     console.log("Rendering result for match id: ", matchId);
-    const data = [
-      { label: "Match ID", value: matchId },
-      { label: "Teams", value: teams },
-      { label: "Total Score", value: match.total_score },
-      { label: "Second Dim Cutoff", value: secondDimensionCutoff },
-      { label: "Winner", value: getWinningTeamName(match) },
-      {
-        label: "Second Dim Outcome",
-        value:
-          match.outcome_more_or_less === "INVALID"
-            ? "Not applicable"
-            : match.outcome_more_or_less,
-      },
-    ];
+    let data = [];
+    if (match.washout) {
+      data = [
+        { label: "Match", value: matchId + ": " + teams },
+        { label: "WASHOUT", value: "Yes" },
+        { label: "Next Game Bet Amount", value: nextGameBetAmount },
+      ];
+    } else {
+      data = [
+        { label: "Match", value: matchId + ": " + teams },
+        { label: "Second Dim Cutoff", value: secondDimensionCutoff },
+        { label: "Winner", value: getWinningTeamName(match) },
+        { label: "Total Score", value: match.total_score },
+        {
+          label: "Second Dim Outcome",
+          value:
+            match.outcome_more_or_less === "INVALID"
+              ? "Not applicable"
+              : match.outcome_more_or_less,
+        },
+      ];
+    }
     return (
       <div>
         <div className="rounded-xl border border-gray-200 bg-[#fafdf7] p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center">
-          <div className="grid grid-cols-2 sm:grid-cols-8 gap-2 sm:gap-4 flex-1 w-full mb-3 sm:mb-0">
+          <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 sm:gap-4 flex-1 w-full mb-3 sm:mb-0">
             {data.map((element, index) => (
               <div key={index} className="text-center col-span-1">
                 <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">
@@ -217,7 +251,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
                 </div>
               </div>
             ))}
-            <div className="col-span-2">
+            <div className="col-span-1">
               <button
                 className="w-full px-1 h-10 leading-none bg-[#1554ba] text-white rounded-md hover:bg-[#303f58] transition-colors text-xs sm:text-sm whitespace-nowrap"
                 onClick={() => goToBetsPageForMatch(matchId)}
@@ -229,9 +263,9 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
         </div>
       </div>
     );
-  };
+  }
 
-  const renderCardContent = () => {
+  function renderCardContent() {
     console.log("Rendering card content for match id: ", matchId);
     if (result === null) {
       console.log("Result is null, so we are rendering the form");
@@ -240,7 +274,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
       console.log("Result is not null, so we are rendering the result");
       return renderResult();
     }
-  };
+  }
 
   return <div>{renderCardContent()}</div>;
 }

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import React from "react";
-import { getMatchesByDateRange } from "../api/matches";
+import { getMatchesByDateRange, getMatchByIdApi } from "../api/matches";
 import { getSecondDimensionForDateRange } from "../api/gameplay";
 // The goal is to include the second dimension cutoff for each match in the context
 // so that we can use it in the ResultsCard component
@@ -31,6 +31,7 @@ const MatchesContext = createContext({
   setStartDate: () => {},
   setEndDate: () => {},
   getWinningTeamName: () => null,
+  getNextGameBetAmount: () => null,
 });
 
 // Custom hook to use the context
@@ -162,6 +163,18 @@ export function MatchesProvider({ children }) {
     return winningTeamName;
   };
 
+  const getNextGameBetAmount = async (matchId) => {
+    const nextMatchId = matchId + 1;
+    if (nextMatchId > 74) {
+      return 0;
+    }
+    let nextMatch = getMatchById(nextMatchId);
+    if (!nextMatch) {
+      nextMatch = await getMatchByIdApi(nextMatchId);
+    }
+    return nextMatch.bet_amount;
+  };
+
   // Value object that will be provided to consumers
   const value = {
     matches,
@@ -175,6 +188,7 @@ export function MatchesProvider({ children }) {
     setStartDate,
     setEndDate,
     getWinningTeamName,
+    getNextGameBetAmount,
   };
 
   return React.createElement(MatchesContext.Provider, { value }, children);
