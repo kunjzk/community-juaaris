@@ -30,6 +30,7 @@ const MatchesContext = createContext({
   endDate: null,
   setStartDate: () => {},
   setEndDate: () => {},
+  getWinningTeamName: () => null,
 });
 
 // Custom hook to use the context
@@ -97,6 +98,7 @@ export function MatchesProvider({ children }) {
   // Function to refresh matches and second dimension data
   const refreshMatches = async () => {
     try {
+      console.log("From context: refreshMatches called, refreshing now.");
       const freshMatches = await getMatchesByDateRange(startDate, endDate);
       const secondDimensionData = await getSecondDimensionDataBetweenDates(
         startDate,
@@ -150,6 +152,16 @@ export function MatchesProvider({ children }) {
     return matches[currentIndex + 1];
   };
 
+  const getWinningTeamName = (match) => {
+    const winningTeamId = match.outcome_winning_team;
+    if (winningTeamId === null) return null;
+    const winningTeamName =
+      match.first_team_name === winningTeamId
+        ? match.first_team_name
+        : match.second_team_name;
+    return winningTeamName;
+  };
+
   // Value object that will be provided to consumers
   const value = {
     matches,
@@ -162,6 +174,7 @@ export function MatchesProvider({ children }) {
     endDate,
     setStartDate,
     setEndDate,
+    getWinningTeamName,
   };
 
   return React.createElement(MatchesContext.Provider, { value }, children);

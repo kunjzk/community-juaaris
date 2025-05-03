@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ResultsCard from "./ResultsCard";
 import { useMatchesContext } from "../../contexts/matches";
 
 function ResultsList() {
-  const { matches } = useMatchesContext();
+  const { matches, refreshMatches, getWinningTeamName } = useMatchesContext();
+  const [refreshMatchesBool, setRefreshMatchesBool] = useState(false);
+
+  useEffect(() => {
+    console.log(
+      "refreshMatchesBool was changed from the admin page. Value is now: ",
+      refreshMatchesBool
+    );
+    refreshMatches();
+  }, [refreshMatchesBool]);
 
   // Format date and time for display
   const formatDateTime = (dateTimeString) => {
@@ -41,6 +50,7 @@ function ResultsList() {
     console.log("Winning team:", newResult.winningTeam);
     console.log("Total score:", newResult.totalScore);
     console.log("Second dim valid:", newResult.secondDimValidBool);
+    setRefreshMatchesBool(!refreshMatchesBool);
   };
 
   return (
@@ -49,17 +59,42 @@ function ResultsList() {
       {/* Game Cards */}
       <div className="space-y-4">
         {matches.length > 0 ? (
-          matches.map((match) => {
-            return (
-              <ResultsCard
-                key={match.id}
-                matchId={match.id}
-                teams={`${match.first_team_name} vs ${match.second_team_name}`}
-                dateTime={formatDateTime(match.datetime)}
-                updateResult={(newResult) => updateResult(newResult)}
-              />
+          (() => {
+            console.log(
+              "Rendering match cards, since match length is more than 0."
             );
-          })
+            const allMatchCards = matches.map((match) => {
+              console.log("Rendering card content for match id: ", match.id);
+              // If there is a result, supply the result to the ResultsCard
+              // Otherwise, supply null
+              let result = null;
+              if (
+                match.outcome_winning_team !== null &&
+                match.outcome_total_score !== null &&
+                match.outcome_more_or_less !== null
+              ) {
+                const winningTeamName = getWinningTeamName(match);
+                result = {
+                  winningTeam: winningTeamName,
+                  totalScore: match.outcome_total_score,
+                  secondDimension: match.outcome_more_or_less,
+                };
+              }
+              console.log("Result:", result);
+              return (
+                <ResultsCard
+                  key={match.id}
+                  matchId={match.id}
+                  teams={`${match.first_team_name} vs ${match.second_team_name}`}
+                  dateTime={formatDateTime(match.datetime)}
+                  result={result}
+                  submitResult={(newResult) => updateResult(newResult)}
+                />
+              );
+            });
+            console.log("All match cards:", allMatchCards);
+            return allMatchCards;
+          })()
         ) : (
           <div className="text-center py-8 text-gray-500">
             No matches scheduled for this week
