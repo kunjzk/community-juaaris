@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import React from "react";
 import { getMatchesByDateRange, getMatchByIdApi } from "../api/matches";
-import { getSecondDimensionForDateRange } from "../api/gameplay";
+import { getSecondDimensionTillDate } from "../api/gameplay";
 // The goal is to include the second dimension cutoff for each match in the context
 // so that we can use it in the ResultsCard component
 
@@ -65,11 +65,8 @@ export function MatchesProvider({ children }) {
     localStorage.setItem("matches-for-the-week", JSON.stringify(newMatches));
   };
 
-  const getSecondDimensionDataBetweenDates = async (startDate, endDate) => {
-    const secondDimensionData = await getSecondDimensionForDateRange(
-      startDate,
-      endDate
-    );
+  const getSecondDimensionDataForGames = async (endDate) => {
+    const secondDimensionData = await getSecondDimensionTillDate(endDate);
     return secondDimensionData;
   };
 
@@ -82,6 +79,9 @@ export function MatchesProvider({ children }) {
       let minimumDifference = Infinity;
       let secondDimensionCutoff = null;
       for (const data of secondDimensionData) {
+        if (data.effective_from > matchDate) {
+          continue;
+        }
         const dataDate = new Date(data.effective_from);
         const difference = Math.abs(dataDate.getTime() - matchDate.getTime());
         if (difference < minimumDifference) {
@@ -101,10 +101,8 @@ export function MatchesProvider({ children }) {
     try {
       console.log("From context: refreshMatches called, refreshing now.");
       const freshMatches = await getMatchesByDateRange(startDate, endDate);
-      const secondDimensionData = await getSecondDimensionDataBetweenDates(
-        startDate,
-        endDate
-      );
+      const secondDimensionData = await getSecondDimensionDataForGames(endDate);
+      console.log("Second dimension data:", secondDimensionData);
       const matchesWithSecondDimensionData = mapSecondDimensionDataToMatches(
         freshMatches,
         secondDimensionData

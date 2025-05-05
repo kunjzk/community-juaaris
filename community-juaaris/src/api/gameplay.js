@@ -24,10 +24,10 @@ export async function getSecondDimensionForDate(date) {
   return query(sql, [date]);
 }
 
-export async function getSecondDimensionForDateRange(startDate, endDate) {
+export async function getSecondDimensionTillDate(endDate) {
   const sql = `SELECT effective_from, second_dimension_cutoff
                 FROM new_gameplay_rules
-                WHERE effective_from BETWEEN $1 AND $2
+                WHERE effective_from <= $1
                 ORDER BY effective_from;`;
-  return query(sql, [startDate, endDate]);
+  return query(sql, [endDate]);
 }
