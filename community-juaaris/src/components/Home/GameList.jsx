@@ -5,11 +5,12 @@ import { useMatchesContext } from "../../contexts/matches";
 function GameList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [mostRecentSunday, setMostRecentSunday] = useState(null);
+  const [nextSaturday, setNextSaturday] = useState(null);
   const { matches, setStartDate, setEndDate, refreshMatches } =
     useMatchesContext();
 
-  // Calculate date range using useMemo to prevent unnecessary recalculations
-  const { mostRecentSunday, nextSaturday } = useMemo(() => {
+  useEffect(() => {
     // Get the date of the most recent sunday, relative to the current date.
     // For example if today is 6/4, the most recent sunday is 6/4.
     // If today is 5/4, the most recent sunday is 30/3.
@@ -27,10 +28,11 @@ function GameList() {
     const nextSaturday = new Date(mostRecentSunday);
     nextSaturday.setDate(mostRecentSunday.getDate() + 6);
 
+    setMostRecentSunday(mostRecentSunday);
+    setNextSaturday(nextSaturday);
+
     setStartDate(mostRecentSunday);
     setEndDate(nextSaturday);
-
-    return { mostRecentSunday, nextSaturday };
   }, []); // Empty dependency array means this only runs once on mount
 
   // Fetch matches for the current week
@@ -143,23 +145,25 @@ function GameList() {
         <h2 className="text-2xl sm:text-4xl font-medium mb-2 sm:mb-0 sm:mr-6">
           This week's games
         </h2>
-        <span className="text-sm sm:text-base text-gray-700">
-          {mostRecentSunday
-            .toLocaleDateString("en-GB", {
-              weekday: "long",
-              day: "numeric",
-              month: "numeric",
-            })
-            .replace(",", "")}{" "}
-          -{" "}
-          {nextSaturday
-            .toLocaleDateString("en-GB", {
-              weekday: "long",
-              day: "numeric",
-              month: "numeric",
-            })
-            .replace(",", "")}
-        </span>
+        {mostRecentSunday && nextSaturday && (
+          <span className="text-sm sm:text-base text-gray-700">
+            {mostRecentSunday
+              .toLocaleDateString("en-GB", {
+                weekday: "long",
+                day: "numeric",
+                month: "numeric",
+              })
+              .replace(",", "")}{" "}
+            -{" "}
+            {nextSaturday
+              .toLocaleDateString("en-GB", {
+                weekday: "long",
+                day: "numeric",
+                month: "numeric",
+              })
+              .replace(",", "")}
+          </span>
+        )}
       </div>
 
       <div className="h-px bg-gray-200 mb-6 sm:mb-8"></div>
