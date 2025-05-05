@@ -68,12 +68,13 @@ export async function saveResult(
   matchId,
   winningTeam,
   totalScore,
-  more_or_less
+  more_or_less,
+  washout
 ) {
   const sql = `
     UPDATE new_matches
-    SET outcome_winning_team = $2, outcome_total_score = $3, outcome_more_or_less = $4
+    SET outcome_winning_team = $2, outcome_total_score = $3, outcome_more_or_less = $4, outcome_washout = $5
     WHERE id = $1
   `;
-  return query(sql, [matchId, winningTeam, totalScore, more_or_less]);
+  return query(sql, [matchId, winningTeam, totalScore, more_or_less, washout]);
 }

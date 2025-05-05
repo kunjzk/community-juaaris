@@ -49,6 +49,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
         totalScore: 0,
         moreOrLess: "INVALID",
         washout: true,
+        betAmount: 0,
       });
       return;
     }
@@ -80,6 +81,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
       totalScore: totalScore,
       moreOrLess: moreOrLess,
       washout: false,
+      betAmount: match.bet_amount,
     });
   };
 

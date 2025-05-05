@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import ResultsCard from "./ResultsCard";
 import { useMatchesContext } from "../../contexts/matches";
+import { updateSuccessfulColumnInBetsTable } from "../../api/bets";
+import { saveResult } from "../../api/matches";
 
 const saveMatchResultAndCalculateAllWinnings = async (
   matchId,
   winningTeam,
   totalScore,
   more_or_less,
-  washout
+  washout,
+  bet_amount
 ) => {
   // 1. Save the result of the match
   try {
@@ -20,6 +23,11 @@ const saveMatchResultAndCalculateAllWinnings = async (
 
   if (washout) {
     console.log("Washout, so no need to calculate winnings");
+    // Set washout to true in matches table
+    // Set bet amount to 0 in matches table (note we're already getting a 0 value from the card)
+    // Update the successful column to false for all bets (this should be automatically handled by the updateSuccessfulColumnInBetsTable function)
+    // Set bet amount to double for next match in matches table
+    // Then continue as before? Confirm this.
   } else {
     // 2. Update the "successful" column in the bets table
     try {
@@ -36,11 +44,36 @@ const saveMatchResultAndCalculateAllWinnings = async (
       );
     }
   }
-  // 2. Update the "successful" column in the bets table
 
   // 3. Keep track of user ID of winners
+  let winnerIds = [];
+  try {
+    console.log("Getting user ID of winners");
+    winnerIds = await getWinnerIDs(matchId);
+    console.log("User IDs of winners:", winnerIds);
+  } catch (error) {
+    console.error("Error getting winner IDs:", error);
+    alert("Error getting winner IDs, please tell Kunal");
+  }
 
   // 4. Calculate the net change for each player
+  const totalWinningsPot = bet_amount * (14 - winnerIds.length);
+  const netWinningsPerWinner = totalWinningsPot / winnerIds.length;
+
+  // 5. Update net winnings for each juaari
+  try {
+    console.log("Updating net winnings for each juaari");
+    await updateNetWinnings(
+      matchId,
+      winnerIds,
+      netWinningsPerWinner,
+      bet_amount
+    );
+  } catch (error) {
+    console.error("Error updating net winnings:", error);
+    alert("Error updating net winnings, please tell Kunal");
+  }
+
   // If you lose, you lose the amount you bet
 };
 
@@ -93,13 +126,14 @@ function ResultsList() {
     console.log("Total score:", newResult.totalScore);
     console.log("More or less:", newResult.moreOrLess);
     console.log("Washout:", newResult.washout);
-
+    console.log("Bet amount:", newResult.betAmount);
     await saveMatchResultAndCalculateAllWinnings(
       newResult.matchId,
       newResult.winningTeam,
       newResult.totalScore,
       newResult.moreOrLess,
-      newResult.washout
+      newResult.washout,
+      newResult.betAmount
     );
     setRefreshMatchesBool(!refreshMatchesBool);
   };

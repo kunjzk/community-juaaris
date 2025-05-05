@@ -44,3 +44,28 @@ export const updateSuccessfulColumnInBetsTable = async (
   `;
   return query(sql, [matchId, winningTeam, moreOrLess]);
 };
+
+export const getWinnerIDs = async (matchId) => {
+  const sql = `
+    SELECT juaari_id FROM new_bets
+    WHERE match_id = $1 AND successful = TRUE
+  `;
+  return query(sql, [matchId]);
+};
+
+export const updateNetWinnings = async (
+  matchId,
+  winnerIds,
+  netWinningsPerWinner,
+  bet_amount
+) => {
+  const sql = `
+    UPDATE new_juaari_win_history
+    SET delta_winnings_this_game = CASE 
+        WHEN juaari_id = ANY($2) THEN $3
+        ELSE $4
+    END
+    WHERE match_id = $1
+  `;
+  return query(sql, [matchId, winnerIds, netWinningsPerWinner, bet_amount]);
+};

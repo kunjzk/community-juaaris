@@ -1,0 +1,1 @@
+ALTER TABLE matches ADD COLUMN outcome_washout BOOLEAN DEFAULT FALSE;
