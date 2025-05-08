@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ResultsCard from "./ResultsCard";
 import { useMatchesContext } from "../../contexts/matches";
-import { updateSuccessfulColumnInBetsTable } from "../../api/bets";
+import {
+  updateSuccessfulColumnInBetsTable,
+  getWinnerIDs,
+} from "../../api/bets";
 import { saveResult } from "../../api/matches";
 
 const saveMatchResultAndCalculateAllWinnings = async (
