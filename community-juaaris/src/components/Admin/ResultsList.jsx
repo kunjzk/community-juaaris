@@ -6,6 +6,7 @@ import {
   getWinnerIDs,
 } from "../../api/bets";
 import { saveResult } from "../../api/matches";
+import { getJuaarisAndWinnings } from "../../api/juaaris";
 
 const saveMatchResultAndCalculateAllWinnings = async (
   matchId,
@@ -65,6 +66,7 @@ const saveMatchResultAndCalculateAllWinnings = async (
 
   // 5. Update net winnings for each juaari
   try {
+    // TODO: Drop the accumulated_winnings column from the juaaris win history table
     console.log("Updating net winnings for each juaari");
     await updateNetWinnings(
       matchId,
@@ -77,7 +79,31 @@ const saveMatchResultAndCalculateAllWinnings = async (
     alert("Error updating net winnings, please tell Kunal");
   }
 
-  // If you lose, you lose the amount you bet
+  // 6. Update total winnings for juaaris
+  try {
+    console.log("Updating total winnings for all juaaris")
+    await updateTotalWinnings(
+      winnerIds,
+      netWinningsPerWinner,
+      bet_amount
+    )
+  } catch (error) {
+    console.error("Error updating total winnings:", error);
+    alert("Error updating total winnings, please tell Kunal");
+  }
+
+  try {
+    // TODO: drop the orange and purple cap columns from the juaaris table
+    console.log("Updating orange and purple caps")
+    const allWinnings = await getJuaarisAndWinnings()
+    const purpleCapId = // get ID of person with highest winnings
+    const orangeCapId = // get ID of person with lowest winnings
+    await updateOrangeCap(match.datetime, orangeCapId)
+    await updatePurpleCap(match.datetime, purpleCapId)
+  } catch (error) {
+    console.error("Error updating purple and orange caps:", error);
+    alert("Error updating caps, please tell Kunal");
+  }
 };
 
 function ResultsList() {

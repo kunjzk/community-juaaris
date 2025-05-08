@@ -9,3 +9,5 @@ export async function getJuaarisAndWinnings() {
   const sql = `SELECT display_name, winnings FROM new_juaaris ORDER BY winnings DESC`;
   return query(sql);
 }
+
+export async function updateTotalWinnings() {}
