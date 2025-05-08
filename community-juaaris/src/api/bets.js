@@ -62,10 +62,19 @@ export const updateNetWinnings = async (
   const sql = `
     UPDATE new_juaari_win_history
     SET delta_winnings_this_game = CASE 
-        WHEN juaari_id = ANY($2) THEN $3
-        ELSE $4
+        WHEN juaari_id = ANY($2) THEN $3::DECIMAL(10,2)
+        ELSE ($4 * -1)::DECIMAL(10,2)
     END
     WHERE match_id = $1
   `;
   return query(sql, [matchId, winnerIds, netWinningsPerWinner, bet_amount]);
+};
+
+export const allBetsUnsuccessful = async (matchId) => {
+  const sql = `
+    UPDATE new_bets
+    SET successful = FALSE
+    WHERE match_id = $1
+  `;
+  return query(sql, [matchId]);
 };

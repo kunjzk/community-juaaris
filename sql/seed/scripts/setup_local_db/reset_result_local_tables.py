@@ -23,16 +23,13 @@ conn = connection_pool.getconn()
 cur = conn.cursor()
 conn.rollback()
 
-# Add the outcome_washout column to the matches table
-# cur.execute('''
-#     ALTER TABLE new_matches ADD COLUMN outcome_washout BOOLEAN DEFAULT FALSE;
-# ''')
-
-
-# Alter the valid more or less constraint to include the 'INVALID' value
+match_id = 53
 cur.execute('''
-    ALTER TABLE new_matches ADD CONSTRAINT valid_more_or_less CHECK (outcome_more_or_less IN ('MORE', 'LESS', 'INVALID'));
-''')
+    UPDATE new_matches 
+    SET outcome_washout = FALSE, outcome_total_score = NULL, outcome_more_or_less = NULL
+    WHERE id = %s;
+''', (match_id,)
+)
 
 conn.commit()
 cur.close()

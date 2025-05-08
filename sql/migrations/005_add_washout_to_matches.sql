@@ -1,1 +1,1 @@
-ALTER TABLE matches ADD COLUMN outcome_washout BOOLEAN DEFAULT FALSE;
+ALTER TABLE new_matches ADD COLUMN outcome_washout BOOLEAN DEFAULT FALSE;

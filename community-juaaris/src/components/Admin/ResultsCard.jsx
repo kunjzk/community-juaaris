@@ -40,7 +40,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   const handleSaveResult = () => {
     console.log("Saving result for match id: ", matchId);
 
-    if (washoutBool) {
+    if (washoutBool === true) {
       // If washout, set more_or_less to "INVALID"
       moreOrLess = "INVALID";
       submitResult({
@@ -63,7 +63,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
 
     // Set more_or_less
     let moreOrLess = "";
-    if (secondDimValidBool === "true") {
+    if (secondDimValidBool === true) {
       const second_dim_threshold = secondDimensionCutoff;
       if (totalScore > second_dim_threshold) {
         moreOrLess = "MORE";
@@ -229,7 +229,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
         { label: "Match", value: matchId + ": " + teams },
         { label: "Second Dim Cutoff", value: secondDimensionCutoff },
         { label: "Winner", value: getWinningTeamName(match) },
-        { label: "Total Score", value: match.total_score },
+        { label: "Total Score", value: match.outcome_total_score },
         {
           label: "Second Dim Outcome",
           value:

@@ -4,9 +4,20 @@ import { useMatchesContext } from "../../contexts/matches";
 import {
   updateSuccessfulColumnInBetsTable,
   getWinnerIDs,
+  allBetsUnsuccessful,
+  updateNetWinnings,
 } from "../../api/bets";
-import { saveResult } from "../../api/matches";
-import { getJuaarisAndWinnings } from "../../api/juaaris";
+import {
+  saveResult,
+  updateWashoutAndBetAmount,
+  updateBetAmount,
+} from "../../api/matches";
+import {
+  getJuaarisAndWinnings,
+  updateTotalWinnings,
+  updateOrangeCap,
+  updatePurpleCap,
+} from "../../api/juaaris";
 
 const saveMatchResultAndCalculateAllWinnings = async (
   matchId,
@@ -14,7 +25,8 @@ const saveMatchResultAndCalculateAllWinnings = async (
   totalScore,
   more_or_less,
   washout,
-  bet_amount
+  bet_amount,
+  match_datetime
 ) => {
   // 1. Save the result of the match
   try {
@@ -23,14 +35,37 @@ const saveMatchResultAndCalculateAllWinnings = async (
   } catch (error) {
     console.error("Error saving match result:", error);
     alert("Error saving match result, please tell Kunal");
+    return;
   }
 
   if (washout) {
     console.log("Washout, so no need to calculate winnings");
     // Set washout to true in matches table
+    try {
+      await updateWashoutAndBetAmount(matchId, true, 0);
+    } catch (error) {
+      console.error("Error updating washout and bet amount:", error);
+      alert("Error updating washout and bet amount, please tell Kunal");
+      return;
+    }
     // Set bet amount to 0 in matches table (note we're already getting a 0 value from the card)
-    // Update the successful column to false for all bets (this should be automatically handled by the updateSuccessfulColumnInBetsTable function)
+    try {
+      await allBetsUnsuccessful(matchId);
+    } catch (error) {
+      console.error("Error updating successful column in bets table:", error);
+      alert(
+        "Error updating successful column in bets table, please tell Kunal"
+      );
+      return;
+    }
     // Set bet amount to double for next match in matches table
+    try {
+      await updateBetAmount(matchId, bet_amount * 2);
+    } catch (error) {
+      console.error("Error updating bet amount:", error);
+      alert("Error updating bet amount, please tell Kunal");
+      return;
+    }
     // Then continue as before? Confirm this.
   } else {
     // 2. Update the "successful" column in the bets table
@@ -46,6 +81,7 @@ const saveMatchResultAndCalculateAllWinnings = async (
       alert(
         "Error updating successful column in bets table, please tell Kunal"
       );
+      return;
     }
   }
 
@@ -54,15 +90,22 @@ const saveMatchResultAndCalculateAllWinnings = async (
   try {
     console.log("Getting user ID of winners");
     winnerIds = await getWinnerIDs(matchId);
+    // Extract just the user IDs from the array of objects
+    winnerIds = winnerIds.map((winner) => winner.juaari_id);
     console.log("User IDs of winners:", winnerIds);
   } catch (error) {
     console.error("Error getting winner IDs:", error);
     alert("Error getting winner IDs, please tell Kunal");
+    return;
   }
 
   // 4. Calculate the net change for each player
   const totalWinningsPot = bet_amount * (14 - winnerIds.length);
-  const netWinningsPerWinner = totalWinningsPot / winnerIds.length;
+  let netWinningsPerWinner = totalWinningsPot / winnerIds.length;
+  // Round to 2 decimal places and return a number
+  netWinningsPerWinner = parseFloat(netWinningsPerWinner.toFixed(2));
+  console.log("Net winnings per winner:", netWinningsPerWinner);
+  console.log("Type of netWinningsPerWinner:", typeof netWinningsPerWinner);
 
   // 5. Update net winnings for each juaari
   try {
@@ -77,37 +120,40 @@ const saveMatchResultAndCalculateAllWinnings = async (
   } catch (error) {
     console.error("Error updating net winnings:", error);
     alert("Error updating net winnings, please tell Kunal");
+    return;
   }
 
   // 6. Update total winnings for juaaris
   try {
-    console.log("Updating total winnings for all juaaris")
-    await updateTotalWinnings(
-      winnerIds,
-      netWinningsPerWinner,
-      bet_amount
-    )
+    console.log("Updating total winnings for all juaaris");
+    await updateTotalWinnings(winnerIds, netWinningsPerWinner, bet_amount);
   } catch (error) {
     console.error("Error updating total winnings:", error);
     alert("Error updating total winnings, please tell Kunal");
+    return;
   }
 
   try {
     // TODO: drop the orange and purple cap columns from the juaaris table
-    console.log("Updating orange and purple caps")
-    const allWinnings = await getJuaarisAndWinnings()
-    const purpleCapId = // get ID of person with highest winnings
-    const orangeCapId = // get ID of person with lowest winnings
-    await updateOrangeCap(match.datetime, orangeCapId)
-    await updatePurpleCap(match.datetime, purpleCapId)
+    console.log("Updating orange and purple caps");
+    const allWinnings = await getJuaarisAndWinnings();
+    console.log("All winnings:", allWinnings);
+    const purpleCapId = allWinnings[0].id;
+    const orangeCapId = allWinnings[allWinnings.length - 1].id;
+    console.log("Orange cap ID:", orangeCapId);
+    console.log("Purple cap ID:", purpleCapId);
+    await updateOrangeCap(match_datetime, orangeCapId);
+    await updatePurpleCap(match_datetime, purpleCapId);
   } catch (error) {
     console.error("Error updating purple and orange caps:", error);
     alert("Error updating caps, please tell Kunal");
+    return;
   }
 };
 
 function ResultsList() {
-  const { matches, refreshMatches, getWinningTeamName } = useMatchesContext();
+  const { matches, refreshMatches, getWinningTeamName, getMatchById } =
+    useMatchesContext();
   const [refreshMatchesBool, setRefreshMatchesBool] = useState(false);
 
   useEffect(() => {
@@ -162,7 +208,8 @@ function ResultsList() {
       newResult.totalScore,
       newResult.moreOrLess,
       newResult.washout,
-      newResult.betAmount
+      newResult.betAmount,
+      getMatchById(newResult.matchId).datetime
     );
     setRefreshMatchesBool(!refreshMatchesBool);
   };

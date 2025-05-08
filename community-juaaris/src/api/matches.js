@@ -78,3 +78,21 @@ export async function saveResult(
   `;
   return query(sql, [matchId, winningTeam, totalScore, more_or_less, washout]);
 }
+
+export async function updateWashoutAndBetAmount(matchId, washout, bet_amount) {
+  const sql = `
+    UPDATE new_matches
+    SET outcome_washout = $2, bet_amount = $3
+    WHERE id = $1
+  `;
+  return query(sql, [matchId, washout, bet_amount]);
+}
+
+export const updateBetAmount = async (matchId, bet_amount) => {
+  const sql = `
+    UPDATE new_matches
+    SET bet_amount = $2
+    WHERE id = $1
+  `;
+  return query(sql, [matchId, bet_amount]);
+};
