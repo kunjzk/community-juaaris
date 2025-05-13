@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BetCard from "./BetCard";
+import WinnerCard from "./WinnerCard";
 import { useParams } from "react-router-dom";
 import { useMatchesContext } from "../../contexts/matches";
 import { useNavigate } from "react-router-dom";
@@ -30,8 +31,13 @@ function getBetForJuaari(combinedJuaarisAndBets, juaariId) {
 }
 
 function BetsList() {
-  const { matches, getMatchById, getPreviousMatch, getNextMatch } =
-    useMatchesContext();
+  const {
+    matches,
+    getMatchById,
+    getPreviousMatch,
+    getNextMatch,
+    getWinningTeamName,
+  } = useMatchesContext();
   const navigate = useNavigate();
 
   // Get matchId from params
@@ -39,6 +45,41 @@ function BetsList() {
   let matchId = getMatchIdFromParams(params, matches);
   const match = getMatchById(matchId);
   console.log("MATCH IS:", match);
+  const [isCutoffExceeded, setIsCutoffExceeded] = useState(false);
+  const [isWinnerDeclared, setIsWinnerDeclared] = useState(false);
+  const [winningBet, setWinningBet] = useState({
+    winningTeam: null,
+    moreOrLess: null,
+  });
+
+  useEffect(() => {
+    const checkCutoff = () => {
+      let cutoffTime = new Date(match.datetime);
+      cutoffTime.setHours(cutoffTime.getHours() - 2);
+      console.log("Cutoff time:", cutoffTime);
+      const now = new Date();
+      if (now > cutoffTime) {
+        console.log("Cutoff time exceeded");
+        setIsCutoffExceeded(true);
+      } else {
+        console.log("Cutoff time not exceeded");
+        setIsCutoffExceeded(false);
+      }
+    };
+    checkCutoff();
+    const checkWinningBet = () => {
+      if (getWinningTeamName(match) !== null) {
+        setWinningBet({
+          winningTeam: getWinningTeamName(match),
+          moreOrLess: match.outcome_more_or_less,
+        });
+        setIsWinnerDeclared(true);
+      } else {
+        setIsWinnerDeclared(false);
+      }
+    };
+    checkWinningBet();
+  }, [match]);
 
   // --- NAVIGATION ---
 
@@ -251,6 +292,38 @@ function BetsList() {
           </div>
         </div>
 
+        {isCutoffExceeded && !isWinnerDeclared && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg shadow-sm">
+            <div className="flex items-center justify-center space-x-2">
+              <svg
+                className="w-5 h-5 text-red-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+              <p className="text-red-600 text-center text-sm sm:text-base font-medium">
+                Betting is closed. The cutoff time has been exceeded.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {isWinnerDeclared && (
+          <WinnerCard
+            matchId={matchId}
+            winningTeam={winningBet.winningTeam}
+            moreOrLess={winningBet.moreOrLess}
+            bet_amount={match.bet_amount}
+          />
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {combinedJuaarisAndBets.map((jb) => (
             <BetCard
@@ -258,6 +331,7 @@ function BetsList() {
               juaari_name={jb.display_name}
               match={match}
               bet={jb.bet}
+              isCutoffExceeded={isCutoffExceeded}
               onUpdateBet={(newBet) => updateJuaariBet(jb.id, newBet, matchId)}
             />
           ))}

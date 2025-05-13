@@ -153,7 +153,15 @@ export function MatchesProvider({ children }) {
 
   const getWinningTeamName = (match) => {
     const winningTeamId = match.outcome_winning_team;
-    if (winningTeamId === null) return null;
+    const totalScore = match.outcome_total_score;
+    const moreOrLess = match.outcome_more_or_less;
+    if (
+      winningTeamId === null ||
+      totalScore === null ||
+      moreOrLess === null ||
+      match.washout === true
+    )
+      return null;
     const winningTeamName =
       match.first_team_name === winningTeamId
         ? match.first_team_name

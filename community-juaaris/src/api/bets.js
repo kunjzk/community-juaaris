@@ -53,6 +53,18 @@ export const getWinnerIDs = async (matchId) => {
   return query(sql, [matchId]);
 };
 
+export const getWinnerNamesAndWinnings = async (matchId) => {
+  const sql = `
+    SELECT display_name
+    FROM new_bets
+    JOIN new_juaaris ON new_bets.juaari_id = new_juaaris.id
+    WHERE new_bets.match_id = $1 AND new_bets.successful = TRUE
+  `;
+  const result = await query(sql, [matchId]);
+  console.log("Result:", result);
+  return result;
+};
+
 export const updateNetWinnings = async (
   matchId,
   winnerIds,

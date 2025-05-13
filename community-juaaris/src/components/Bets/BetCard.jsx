@@ -6,7 +6,7 @@ async function displayTeamName(teamId) {
   return teamName;
 }
 
-function BetCard({ juaari_name, match, bet, onUpdateBet }) {
+function BetCard({ juaari_name, match, bet, isCutoffExceeded, onUpdateBet }) {
   const juaariName = juaari_name;
   const cardColor = "white";
 
@@ -87,6 +87,7 @@ function BetCard({ juaari_name, match, bet, onUpdateBet }) {
           <button
             className="w-full bg-[#27ae60] hover:bg-[#2ecc71] text-white py-2 rounded-md font-medium"
             onClick={handleSaveBet}
+            disabled={isCutoffExceeded}
           >
             Save your bet
           </button>
@@ -104,12 +105,16 @@ function BetCard({ juaari_name, match, bet, onUpdateBet }) {
           <p className="text-2xl sm:text-4xl font-serif mb-6 text-red-500 text-center flex-grow flex items-center justify-center">
             Nothing yet!
           </p>
-          <button
-            className="w-full bg-[#e74c3c] hover:bg-[#c0392b] text-white py-2 rounded-md font-medium"
-            onClick={handleStartEdit}
-          >
-            Place a bet!
-          </button>
+          {isCutoffExceeded && <div></div>}
+          {!isCutoffExceeded && (
+            <button
+              className="w-full bg-[#e74c3c] hover:bg-[#c0392b] text-white py-2 rounded-md font-medium"
+              onClick={handleStartEdit}
+              disabled={isCutoffExceeded}
+            >
+              Place a bet!
+            </button>
+          )}
         </>
       );
     }
@@ -123,12 +128,16 @@ function BetCard({ juaari_name, match, bet, onUpdateBet }) {
         <p className="text-2xl sm:text-4xl font-serif mb-6 text-center flex-grow flex items-center justify-center">
           {selectedTeam} {selectedOption}
         </p>
-        <button
-          className="w-full bg-[#3498db] hover:bg-[#2980b9] text-white py-2 rounded-md font-medium"
-          onClick={handleStartEdit}
-        >
-          Edit bet
-        </button>
+        {isCutoffExceeded && <div></div>}
+        {!isCutoffExceeded && (
+          <button
+            className="w-full bg-[#3498db] hover:bg-[#2980b9] text-white py-2 rounded-md font-medium"
+            onClick={handleStartEdit}
+            disabled={isCutoffExceeded}
+          >
+            Edit bet
+          </button>
+        )}
       </>
     );
   };
