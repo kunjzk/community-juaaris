@@ -23,27 +23,15 @@ conn = connection_pool.getconn()
 cur = conn.cursor()
 conn.rollback()
 
-# match_id = 53
-# cur.execute('''
-#     UPDATE new_matches 
-#     SET outcome_washout = FALSE, outcome_total_score = NULL, outcome_more_or_less = NULL
-#     WHERE id = %s;
-# ''', (match_id,)
-# )
-
 match_id = 61
-# cur.execute('''
-# DELETE FROM new_bets
-# WHERE match_id = %s;      
-#             ''', (match_id,)
-# )
-
 cur.execute('''
-            UPDATE new_matches
-            SET outcome_winning_team = NULL, outcome_total_score = NULL, outcome_more_or_less = NULL
-            WHERE id = %s;
-            ''', (match_id,)
+    SELECT * FROM new_juaari_win_history 
+    WHERE match_id = %s;
+''', (match_id,)
 )
+
+results = cur.fetchall()
+print(results)
 
 conn.commit()
 cur.close()

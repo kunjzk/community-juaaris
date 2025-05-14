@@ -163,7 +163,7 @@ export function MatchesProvider({ children }) {
     )
       return null;
     const winningTeamName =
-      match.first_team_name === winningTeamId
+      match.first_team_id === winningTeamId
         ? match.first_team_name
         : match.second_team_name;
     return winningTeamName;

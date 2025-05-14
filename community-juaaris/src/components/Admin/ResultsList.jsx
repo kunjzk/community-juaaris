@@ -30,31 +30,43 @@ const saveMatchResultAndCalculateAllWinnings = async (
 ) => {
   // 1. Save the result of the match
   try {
-    console.log("Saving result to database");
+    console.log("RESULT POST: Saving result to database");
+    console.log("RESULT POST: Winning team:", winningTeam);
+    console.log("RESULT POST: Total score:", totalScore);
+    console.log("RESULT POST: More or less:", more_or_less);
+    console.log("RESULT POST: Washout:", washout);
     await saveResult(matchId, winningTeam, totalScore, more_or_less, washout);
   } catch (error) {
-    console.error("Error saving match result:", error);
-    alert("Error saving match result, please tell Kunal");
+    console.error("RESULT POST: Error saving match result:", error);
+    alert("RESULT POST: Error saving match result, please tell Kunal");
     return;
   }
 
   if (washout) {
-    console.log("Washout, so no need to calculate winnings");
+    console.log("RESULT POST: Washout, so no need to calculate winnings");
     // Set washout to true in matches table
     try {
       await updateWashoutAndBetAmount(matchId, true, 0);
     } catch (error) {
-      console.error("Error updating washout and bet amount:", error);
-      alert("Error updating washout and bet amount, please tell Kunal");
+      console.error(
+        "RESULT POST: Error updating washout and bet amount:",
+        error
+      );
+      alert(
+        "RESULT POST: Error updating washout and bet amount, please tell Kunal"
+      );
       return;
     }
     // Set bet amount to 0 in matches table (note we're already getting a 0 value from the card)
     try {
       await allBetsUnsuccessful(matchId);
     } catch (error) {
-      console.error("Error updating successful column in bets table:", error);
+      console.error(
+        "RESULT POST: Error updating successful column in bets table:",
+        error
+      );
       alert(
-        "Error updating successful column in bets table, please tell Kunal"
+        "RESULT POST: Error updating successful column in bets table, please tell Kunal"
       );
       return;
     }
@@ -62,24 +74,27 @@ const saveMatchResultAndCalculateAllWinnings = async (
     try {
       await updateBetAmount(matchId, bet_amount * 2);
     } catch (error) {
-      console.error("Error updating bet amount:", error);
-      alert("Error updating bet amount, please tell Kunal");
+      console.error("RESULT POST: Error updating bet amount:", error);
+      alert("RESULT POST: Error updating bet amount, please tell Kunal");
       return;
     }
     // Then continue as before? Confirm this.
   } else {
     // 2. Update the "successful" column in the bets table
     try {
-      console.log("Updating successful column in bets table");
+      console.log("RESULT POST: Updating successful column in bets table");
       await updateSuccessfulColumnInBetsTable(
         matchId,
         winningTeam,
         more_or_less
       );
     } catch (error) {
-      console.error("Error updating successful column in bets table:", error);
+      console.error(
+        "RESULT POST: Error updating successful column in bets table:",
+        error
+      );
       alert(
-        "Error updating successful column in bets table, please tell Kunal"
+        "RESULT POST: Error updating successful column in bets table, please tell Kunal"
       );
       return;
     }
@@ -88,11 +103,11 @@ const saveMatchResultAndCalculateAllWinnings = async (
   // 3. Keep track of user ID of winners
   let winnerIds = [];
   try {
-    console.log("Getting user ID of winners");
+    console.log("RESULT POST: Getting user ID of winners");
     winnerIds = await getWinnerIDs(matchId);
     // Extract just the user IDs from the array of objects
     winnerIds = winnerIds.map((winner) => winner.juaari_id);
-    console.log("User IDs of winners:", winnerIds);
+    console.log("RESULT POST: User IDs of winners:", winnerIds);
   } catch (error) {
     console.error("Error getting winner IDs:", error);
     alert("Error getting winner IDs, please tell Kunal");
@@ -104,13 +119,16 @@ const saveMatchResultAndCalculateAllWinnings = async (
   let netWinningsPerWinner = totalWinningsPot / winnerIds.length;
   // Round to 2 decimal places and return a number
   netWinningsPerWinner = parseFloat(netWinningsPerWinner.toFixed(2));
-  console.log("Net winnings per winner:", netWinningsPerWinner);
-  console.log("Type of netWinningsPerWinner:", typeof netWinningsPerWinner);
+  console.log("RESULT POST: Net winnings per winner:", netWinningsPerWinner);
+  console.log(
+    "RESULT POST: Type of netWinningsPerWinner:",
+    typeof netWinningsPerWinner
+  );
 
   // 5. Update net winnings for each juaari
   try {
     // TODO: Drop the accumulated_winnings column from the juaaris win history table
-    console.log("Updating net winnings for each juaari");
+    console.log("RESULT POST: Updating net winnings for each juaari");
     await updateNetWinnings(
       matchId,
       winnerIds,
@@ -118,29 +136,29 @@ const saveMatchResultAndCalculateAllWinnings = async (
       bet_amount
     );
   } catch (error) {
-    console.error("Error updating net winnings:", error);
-    alert("Error updating net winnings, please tell Kunal");
+    console.error("RESULT POST: Error updating net winnings:", error);
+    alert("RESULT POST: Error updating net winnings, please tell Kunal");
     return;
   }
 
   // 6. Update total winnings for juaaris
   try {
-    console.log("Updating total winnings for all juaaris");
+    console.log("RESULT POST: Updating total winnings for all juaaris");
     await updateTotalWinnings(winnerIds, netWinningsPerWinner, bet_amount);
   } catch (error) {
-    console.error("Error updating total winnings:", error);
-    alert("Error updating total winnings, please tell Kunal");
+    console.error("RESULT POST: Error updating total winnings:", error);
+    alert("RESULT POST: Error updating total winnings, please tell Kunal");
     return;
   }
 
   try {
     // TODO: drop the orange and purple cap columns from the juaaris table
-    console.log("Updating orange and purple caps");
+    console.log("RESULT POST: Updating orange and purple caps");
     const allWinnings = await getJuaarisAndWinnings();
-    console.log("All winnings:", allWinnings);
+    console.log("RESULT POST: All winnings:", allWinnings);
     const purpleCapId = allWinnings[0].id;
     const orangeCapId = allWinnings[allWinnings.length - 1].id;
-    console.log("Orange cap ID:", orangeCapId);
+    console.log("RESULT POST: Orange cap ID:", orangeCapId);
     console.log("Purple cap ID:", purpleCapId);
     await updateOrangeCap(match_datetime, orangeCapId);
     await updatePurpleCap(match_datetime, purpleCapId);

@@ -10,6 +10,7 @@ import {
   updateBet,
   createBet,
   getLargestBetId,
+  insertBetIntoJuaariWinHistory,
 } from "../../api/bets";
 
 function getMatchIdFromParams(params, matches) {
@@ -55,7 +56,7 @@ function BetsList() {
   useEffect(() => {
     const checkCutoff = () => {
       let cutoffTime = new Date(match.datetime);
-      cutoffTime.setHours(cutoffTime.getHours() - 2);
+      cutoffTime.setHours(cutoffTime.getHours() + 20000);
       console.log("Cutoff time:", cutoffTime);
       const now = new Date();
       if (now > cutoffTime) {
@@ -249,6 +250,14 @@ function BetsList() {
           alert("Could not create bet, please try again");
           return;
         }
+      }
+      // Insert bet into juaari_win_history
+      try {
+        await insertBetIntoJuaariWinHistory(newBetId, matchId, juaariId);
+      } catch (error) {
+        console.error("Error inserting bet into juaari_win_history:", error);
+        alert("Could not insert bet into juaari_win_history, please try again");
+        return;
       }
     }
     setRefreshBets(!refreshBets);

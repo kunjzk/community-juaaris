@@ -90,3 +90,15 @@ export const allBetsUnsuccessful = async (matchId) => {
   `;
   return query(sql, [matchId]);
 };
+
+export const insertBetIntoJuaariWinHistory = async (
+  betId,
+  matchId,
+  juaariId
+) => {
+  const sql = `
+    INSERT INTO new_juaari_win_history (juaari_id, match_id, bet_id)
+    VALUES ($1, $2, $3)
+  `;
+  return query(sql, [juaariId, matchId, betId]);
+};
