@@ -32,16 +32,24 @@ conn.rollback()
 # )
 
 match_id = 61
-# cur.execute('''
-# DELETE FROM new_bets
-# WHERE match_id = %s;      
-#             ''', (match_id,)
-# )
+cur.execute('''
+UPDATE new_bets
+SET successful = FALSE
+WHERE match_id = %s;      
+            ''', (match_id,)
+)
 
 cur.execute('''
             UPDATE new_matches
             SET outcome_winning_team = NULL, outcome_total_score = NULL, outcome_more_or_less = NULL
             WHERE id = %s;
+            ''', (match_id,)
+)
+
+# Remove entries from juaari_win_history table where match_id = 61
+cur.execute('''
+DELETE FROM new_juaari_win_history
+WHERE match_id = %s;
             ''', (match_id,)
 )
 

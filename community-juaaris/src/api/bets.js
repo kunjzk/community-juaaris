@@ -55,7 +55,7 @@ export const getWinnerIDs = async (matchId) => {
 
 export const getWinnerNamesAndWinnings = async (matchId) => {
   const sql = `
-    SELECT display_name
+    SELECT new_juaaris.id, new_juaaris.display_name
     FROM new_bets
     JOIN new_juaaris ON new_bets.juaari_id = new_juaaris.id
     WHERE new_bets.match_id = $1 AND new_bets.successful = TRUE

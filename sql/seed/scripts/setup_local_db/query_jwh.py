@@ -31,6 +31,19 @@ cur.execute('''
 )
 
 results = cur.fetchall()
+print("Juaari win history:")
+print(results)
+
+cur.execute('''
+    SELECT new_bets.id, new_juaaris.display_name, new_bets.successful
+    FROM new_bets
+    JOIN new_juaaris ON new_bets.juaari_id = new_juaaris.id
+    WHERE match_id = %s;
+''', (match_id,)
+)
+
+results = cur.fetchall()
+print("Bets:")
 print(results)
 
 conn.commit()
