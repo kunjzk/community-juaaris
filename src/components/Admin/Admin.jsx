@@ -3,6 +3,7 @@ import SecondDimensionEdit from "./SecondDimensionEdit";
 import ResultsList from "./ResultsList";
 import CreateTrivia from "./CreateTrivia";
 import PostTrivia from "./PostTrivia";
+
 function Admin() {
   const [activeTab, setActiveTab] = useState("results");
 
