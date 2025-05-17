@@ -36,6 +36,7 @@ function PostTrivia() {
   // Update juaari win history table
   // Update juaaris winnings table
   // Update orange and purple caps.
+  // If a trivia is invalid, next one doubles. Just do it manually for now bro.
   const handleSubmitCorrectOption = async (triviaId) => {
     if (!selectedOptions[triviaId]) {
       alert("Please select a correct option");
