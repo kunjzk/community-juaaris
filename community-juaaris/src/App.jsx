@@ -20,6 +20,7 @@ const router = createBrowserRouter([
         path: "/bets/:matchId",
         element: <BetsList />,
       },
+
       {
         path: "/bets",
         element: <BetsList />,

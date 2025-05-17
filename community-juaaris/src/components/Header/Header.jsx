@@ -21,7 +21,7 @@ function Header() {
               : "text-black hover:text-[#2e7d32] transition-colors"
           }`}
         >
-          Upcoming Games
+          Upcoming Matches
         </Link>
         <Link
           to="/bets"
@@ -31,7 +31,27 @@ function Header() {
               : "text-black hover:text-[#2e7d32] transition-colors"
           }`}
         >
-          Bets
+          Match Bets
+        </Link>
+        <Link
+          to="/upcomingtrivia"
+          className={`text-sm sm:text-base font-semibold pb-1 ${
+            location.pathname.startsWith("/upcomingtrivia")
+              ? "text-[#2e7d32] border-b-2 border-[#2e7d32]"
+              : "text-black hover:text-[#2e7d32] transition-colors"
+          }`}
+        >
+          Upcoming Trivia
+        </Link>
+        <Link
+          to="/triviabets"
+          className={`text-sm sm:text-base font-semibold pb-1 ${
+            location.pathname.startsWith("/triviabets")
+              ? "text-[#2e7d32] border-b-2 border-[#2e7d32]"
+              : "text-black hover:text-[#2e7d32] transition-colors"
+          }`}
+        >
+          Trivia Bets
         </Link>
         <Link
           to="/standings"
