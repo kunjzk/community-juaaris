@@ -1,0 +1,102 @@
+[
+  {
+    "match_id": 28,
+    "question": "Number of wickets lost by the side bating first",
+    "option_a": "0-3",
+    "option_b": "4-5",
+    "option_c": "6-7",
+    "option_d": "8-10",
+    "bet_amount": 5,
+    "match_name": "RR vs RCB - 13/4/25"
+  },
+  {
+    "match_id": 35,
+    "question": "How many runs will Gill make?",
+    "option_a": "0 to 24",
+    "option_b": "25 to 35",
+    "option_c": "36 to 50",
+    "option_d": ">50",
+    "bet_amount": 5,
+    "match_name": "GT vs DC - 19/4/25"
+  },
+  {
+    "match_id": 37,
+    "question": "Number of sixes in the match",
+    "option_a": "0-14",
+    "option_b": "15 to 18",
+    "option_c": "19 to 22",
+    "option_d": "more than 22",
+    "bet_amount": 5,
+    "match_name": "PBKS vs RCB - 20/4/25"
+  },
+  {
+    "match_id": 44,
+    "question": "Number of wickets lost in the powerplay (first 6 overs) by the side batting first",
+    "option_a": "0",
+    "option_b": "1",
+    "option_c": "2",
+    "option_d": ">2",
+    "bet_amount": 5,
+    "match_name": "KKR vs PBKS - 26/4/25"
+  },
+  {
+    "match_id": 45,
+    "question": "Number of runs scored in the powerplay (first 6 overs) by the side batting first",
+    "option_a": "<=40",
+    "option_b": "41-50",
+    "option_c": "51-60",
+    "option_d": ">60",
+    "bet_amount": 5,
+    "match_name": "MI vs LSG - 27/4/25"
+  },
+  {
+    "match_id": 52,
+    "question": "Number of runs scored in the last 5 overs by the side batting first",
+    "option_a": "<=42",
+    "option_b": "43-49",
+    "option_c": "50-56",
+    "option_d": ">56",
+    "bet_amount": 5,
+    "match_name": "RCB vs CSK - 3/5/25"
+  },
+  {
+    "match_id": 53,
+    "question": "Number of wickets lost in the last 5 overs (16-20) by the side batting first",
+    "option_a": "0 or 1",
+    "option_b": "2",
+    "option_c": "3",
+    "option_d": "more than 3",
+    "bet_amount": 5,
+    "match_name": "KKR vs RR - 4/5/25"
+  },
+  {
+    "match_id": 58,
+    "question": "Number of players scoring >=25 in the match",
+    "option_a": "<=4",
+    "option_b": "5-6",
+    "option_c": "7-8",
+    "option_d": ">8",
+    "bet_amount": 5,
+    "match_name": "RCB vs KKR - 17/5/25"
+  },
+  {
+    "match_id": 61,
+    "question": "Highest score by an individual in the match",
+    "option_a": "<50",
+    "option_b": "51-60",
+    "option_c": "61-70",
+    "option_d": ">70",
+    "bet_amount": 5,
+    "match_name": "PBKS vs MI - 18/5/25"
+  },
+  {
+    "match_id": 70,
+    "question": "Highest number of wickets taken by an individual in the match",
+    "option_a": "2 or less",
+    "option_b": "3",
+    "option_c": "4",
+    "option_d": ">4",
+    "bet_amount": 5,
+    "match_name": "GT vs CSK - 25/5/25"
+  }
+]
