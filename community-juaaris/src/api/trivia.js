@@ -7,6 +7,16 @@ export const getTriviaHistory = async () => {
   return query(sql);
 };
 
+export const getTriviaWithMatchTime = async () => {
+  const sql = `
+    SELECT t.*, m.datetime as match_datetime 
+    FROM trivia t
+    JOIN new_matches m ON t.match_id = m.id
+    ORDER BY t.id DESC
+  `;
+  return query(sql);
+};
+
 export const createTrivia = async (
   matchId,
   question,
