@@ -49,7 +49,7 @@ function Admin() {
               : "text-black hover:text-[#2e7d32] transition-colors"
           }`}
         >
-          Post Trivia Results
+          Update Trivia Results
         </button>
       </nav>
 

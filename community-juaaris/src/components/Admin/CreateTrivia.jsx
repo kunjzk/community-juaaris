@@ -1,30 +1,31 @@
 import { React, useState, useEffect } from "react";
 import { useMatchesContext } from "../../contexts/matches";
+import { getTriviaHistory, createTrivia } from "../../api/trivia";
 
 function CreateTrivia() {
-  const { matches } = useMatchesContext();
+  const { matches, getMatchById } = useMatchesContext();
   const [triviaHistory, setTriviaHistory] = useState([]);
   const [refreshTrivia, setRefreshTrivia] = useState(false);
 
   // Form state
-  const [selectedMatch, setSelectedMatch] = useState("");
+  const [selectedMatchId, setSelectedMatchId] = useState(0);
   const [question, setQuestion] = useState("");
   const [optionA, setOptionA] = useState("");
   const [optionB, setOptionB] = useState("");
   const [optionC, setOptionC] = useState("");
   const [optionD, setOptionD] = useState("");
+  const [betAmount, setBetAmount] = useState(0);
 
   useEffect(() => {
     const fetchTrivia = async () => {
-      // TODO: Implement API call to fetch trivia history
-      // const triviaData = await getTriviaHistory();
-      // setTriviaHistory(triviaData);
+      const triviaData = await getTriviaHistory();
+      setTriviaHistory(triviaData);
     };
     fetchTrivia();
   }, [refreshTrivia]);
 
   const handleCreateTrivia = async () => {
-    if (!selectedMatch) {
+    if (!selectedMatchId) {
       alert("Please select a match");
       return;
     }
@@ -41,21 +42,44 @@ function CreateTrivia() {
       alert("All options must be filled");
       return;
     }
+    console.log("Selected match ID: ", selectedMatchId);
+    const match = getMatchById(selectedMatchId);
+    console.log("MATCH: ", match);
+    let matchNameStr =
+      match.first_team_name +
+      " vs " +
+      match.second_team_name +
+      " - " +
+      new Date(match.datetime).toLocaleDateString();
+    console.log(matchNameStr);
+    console.log("Selected match: ", selectedMatchId);
+    console.log("Question: ", question);
+    console.log("option a: ", optionA);
+    console.log("option b: ", optionB);
+    console.log("option c: ", optionC);
+    console.log("option d: ", optionD);
+    console.log("Bet amount: ", betAmount);
+    console.log("Match Name String: ", matchNameStr);
 
-    // TODO: Implement API call to create trivia
-    // const response = await createTrivia({
-    //   matchId: selectedMatch,
-    //   question,
-    //   options: [optionA, optionB, optionC, optionD]
-    // });
+    await createTrivia(
+      selectedMatchId,
+      question,
+      optionA,
+      optionB,
+      optionC,
+      optionD,
+      betAmount,
+      matchNameStr
+    );
 
     // Reset form
-    setSelectedMatch("");
+    setSelectedMatchId(0);
     setQuestion("");
     setOptionA("");
     setOptionB("");
     setOptionC("");
     setOptionD("");
+    setBetAmount(0);
 
     setRefreshTrivia(!refreshTrivia);
   };
@@ -74,8 +98,8 @@ function CreateTrivia() {
               </label>
               <select
                 className="w-full border border-gray-300 rounded px-3 py-2"
-                value={selectedMatch}
-                onChange={(e) => setSelectedMatch(e.target.value)}
+                value={selectedMatchId}
+                onChange={(e) => setSelectedMatchId(Number(e.target.value))}
               >
                 <option value="">Select a match</option>
                 {matches.map((match) => (
@@ -153,18 +177,33 @@ function CreateTrivia() {
               </div>
             </div>
 
-            <button
-              className="w-full bg-[#27ae60] hover:bg-[#2ecc71] text-white py-2 rounded-md font-medium mt-6"
-              onClick={handleCreateTrivia}
-            >
-              Create Trivia
-            </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-base sm:text-xl mb-2">
+                  Bet Amount
+                </label>
+                <input
+                  type="number"
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  value={betAmount}
+                  onChange={(e) => setBetAmount(Number(e.target.value))}
+                  min="0"
+                  step="1"
+                />
+              </div>
+              <button
+                className="w-full bg-[#27ae60] hover:bg-[#2ecc71] text-white py-2 rounded-md font-medium mt-6"
+                onClick={handleCreateTrivia}
+              >
+                Create Trivia
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Trivia History Section */}
         <div className="mt-12">
-          <h3 className="text-3xl font-serif mb-8">Trivia History</h3>
+          <h3 className="text-3xl font-serif mb-8">All Trivia</h3>
 
           {/* Table Header */}
           <div className="bg-gray-100 rounded-t-lg border border-gray-200 grid grid-cols-12 font-medium text-gray-700">

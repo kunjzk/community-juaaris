@@ -239,11 +239,11 @@ function ResultsList() {
       <div className="space-y-4">
         {matches.length > 0 ? (
           (() => {
-            console.log(
-              "Rendering match cards, since match length is more than 0."
-            );
+            // console.log(
+            //   "Rendering match cards, since match length is more than 0."
+            // );
             const allMatchCards = matches.map((match) => {
-              console.log("Rendering card content for match id: ", match.id);
+              // console.log("Rendering card content for match id: ", match.id);
               // If there is a result, supply the result to the ResultsCard
               // Otherwise, supply null
               let result = null;

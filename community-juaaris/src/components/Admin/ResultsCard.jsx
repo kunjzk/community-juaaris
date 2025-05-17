@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 // Editing of results is not allowed, for now.
 
 function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
-  console.log("ResultsCard component rendered for match id: ", matchId);
+  // console.log("ResultsCard component rendered for match id: ", matchId);
   const { getMatchById, getWinningTeamName, getNextGameBetAmount } =
     useMatchesContext();
   const navigate = useNavigate();
@@ -91,7 +91,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   };
 
   const renderForm = () => {
-    console.log("Rendering form for match id: ", matchId);
+    // console.log("Rendering form for match id: ", matchId);
     // To reduce code duplication, we will render the static elements of the form in a loop
     const staticElements = [
       { label: "Match", value: matchId + ": " + teams },
@@ -216,7 +216,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   // If washout is true, we want to double the next game's bet mount
 
   function renderResult() {
-    console.log("Rendering result for match id: ", matchId);
+    // console.log("Rendering result for match id: ", matchId);
     let data = [];
     if (match.washout) {
       data = [
@@ -268,12 +268,12 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   }
 
   function renderCardContent() {
-    console.log("Rendering card content for match id: ", matchId);
+    // console.log("Rendering card content for match id: ", matchId);
     if (result === null) {
-      console.log("Result is null, so we are rendering the form");
+      // console.log("Result is null, so we are rendering the form");
       return renderForm();
     } else {
-      console.log("Result is not null, so we are rendering the result");
+      // console.log("Result is not null, so we are rendering the result");
       return renderResult();
     }
   }
