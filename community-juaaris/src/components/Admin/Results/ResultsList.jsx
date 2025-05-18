@@ -6,6 +6,7 @@ import {
   getWinnerIDs,
   allBetsUnsuccessful,
   updateNetWinnings,
+  updateSuccessfulColumnInBetsTableForInvalid,
 } from "../../../api/bets";
 import {
   saveResult,
@@ -78,7 +79,23 @@ const saveMatchResultAndCalculateAllWinnings = async (
       alert("RESULT POST: Error updating bet amount, please tell Kunal");
       return;
     }
-    // Then continue as before? Confirm this.
+  } else if (more_or_less === "INVALID") {
+    console.log(
+      "RESULT POST: More/Less is INVALID, only checking winning team"
+    );
+    // Update successful column based only on winning team
+    try {
+      await updateSuccessfulColumnInBetsTableForInvalid(matchId, winningTeam);
+    } catch (error) {
+      console.error(
+        "RESULT POST: Error updating successful column for invalid more/less:",
+        error
+      );
+      alert(
+        "RESULT POST: Error updating successful column for invalid more/less, please tell Kunal"
+      );
+      return;
+    }
   } else {
     // 2. Update the "successful" column in the bets table
     try {

@@ -102,3 +102,15 @@ export const insertBetIntoJuaariWinHistory = async (
   `;
   return query(sql, [juaariId, matchId, betId]);
 };
+
+export const updateSuccessfulColumnInBetsTableForInvalid = async (
+  matchId,
+  winningTeam
+) => {
+  const sql = `
+    UPDATE new_bets
+    SET successful = (predicted_winning_team = $2)
+    WHERE match_id = $1
+  `;
+  return query(sql, [matchId, winningTeam]);
+};

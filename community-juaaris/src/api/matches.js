@@ -96,3 +96,48 @@ export const updateBetAmount = async (matchId, bet_amount) => {
   `;
   return query(sql, [matchId, bet_amount]);
 };
+
+export const resetMatchData = async (matchId) => {
+  // 1. Get match datetime
+  const matchSql = `
+    SELECT datetime FROM new_matches WHERE id = $1
+  `;
+  const match = await query(matchSql, [matchId]);
+
+  if (match.length > 0) {
+    // 2. Remove orange and purple cap table entries for the match date
+    const orangeCapSql = `
+      DELETE FROM new_orange_cap WHERE date = $1
+    `;
+    const purpleCapSql = `
+      DELETE FROM new_purple_cap WHERE date = $1
+    `;
+    await Promise.all([
+      query(orangeCapSql, [match[0].datetime]),
+      query(purpleCapSql, [match[0].datetime]),
+    ]);
+  }
+
+  // 3. Remove juaari win history entries for the match
+  const historySql = `
+    DELETE FROM new_juaari_win_history WHERE match_id = $1
+  `;
+  await query(historySql, [matchId]);
+
+  // 4. Set successful column to null for all bets
+  const betsSql = `
+    UPDATE new_bets SET successful = NULL WHERE match_id = $1
+  `;
+  await query(betsSql, [matchId]);
+
+  // 5. Reset outcome columns in matches table
+  const matchesSql = `
+    UPDATE new_matches 
+    SET outcome_winning_team = NULL,
+        outcome_total_score = NULL,
+        outcome_more_or_less = NULL,
+        outcome_washout = false
+    WHERE id = $1
+  `;
+  await query(matchesSql, [matchId]);
+};

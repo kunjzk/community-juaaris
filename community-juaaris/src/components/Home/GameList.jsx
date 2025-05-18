@@ -31,8 +31,11 @@ function GameList() {
     setMostRecentSunday(mostRecentSunday);
     setNextSaturday(nextSaturday);
 
-    setStartDate(mostRecentSunday);
-    setEndDate(nextSaturday);
+    const backfillStartDate = new Date("2025-04-18");
+    const backfillEndDate = new Date("2025-05-07");
+
+    setStartDate(backfillStartDate);
+    setEndDate(backfillEndDate);
   }, []); // Empty dependency array means this only runs once on mount
 
   // Fetch matches for the current week
@@ -114,7 +117,7 @@ function GameList() {
 
       // Calculate cutoff time
       const cutoffDate = new Date(matchDate);
-      cutoffDate.setHours(matchDate.getHours() - 2);
+      cutoffDate.setHours(matchDate.getHours() + 2000);
 
       return cutoffDate;
     } catch (error) {
