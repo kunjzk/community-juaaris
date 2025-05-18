@@ -9,6 +9,8 @@ import Standings from "./components/Standings/Standings";
 import Admin from "./components/Admin/Admin";
 import UpcomingTrivia from "./components/UpcomingTrivia/UpcomingTrivia";
 import TriviaBets from "./components/TriviaBets/TriviaBets";
+import DebugDatabase from "./components/Debug/DebugDatabase";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -31,7 +33,7 @@ const router = createBrowserRouter([
         element: <TriviaBets />,
       },
       {
-        path: "/triviabets/:triviaId",
+        path: "/triviabets/:triviaId?",
         element: <TriviaBets />,
       },
       {
@@ -45,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "/admin",
         element: <Admin />,
+      },
+      {
+        path: "/debug",
+        element: <DebugDatabase />,
       },
     ],
   },

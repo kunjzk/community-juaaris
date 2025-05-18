@@ -73,6 +73,18 @@ function Header() {
         >
           Admin
         </Link>
+        {import.meta.env.VITE_VERCEL_TARGET_ENV === "development" && (
+          <Link
+            to="/debug"
+            className={`text-sm sm:text-base font-semibold pb-1 ${
+              location.pathname === "/debug"
+                ? "text-[#2e7d32] border-b-2 border-[#2e7d32]"
+                : "text-black hover:text-[#2e7d32] transition-colors"
+            }`}
+          >
+            Debug DB
+          </Link>
+        )}
       </nav>
     </header>
   );
