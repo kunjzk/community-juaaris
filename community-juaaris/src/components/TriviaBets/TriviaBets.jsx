@@ -4,6 +4,7 @@ import { getTriviaWithMatchTime } from "../../api/trivia";
 import { getJuaaris } from "../../api/juaaris";
 import { createTriviaBet, getTriviaBetsForTrivia } from "../../api/trivia_bets";
 import TriviaBetCard from "./TriviaBetCard";
+import TriviaStatusCard from "./TriviaStatusCard";
 
 function TriviaBets() {
   const { triviaId } = useParams();
@@ -63,7 +64,7 @@ function TriviaBets() {
     const checkCutoff = () => {
       if (!trivia) return;
       const cutoffTime = new Date(trivia.match_datetime);
-      cutoffTime.setHours(cutoffTime.getHours() + 24); // 24 hours before match
+      cutoffTime.setHours(cutoffTime.getHours() + 2000); // 24 hours before match
       const now = new Date();
       setIsCutoffExceeded(now > cutoffTime);
     };
@@ -157,6 +158,9 @@ function TriviaBets() {
         <div className="border-b pb-2">
           <div className="text-lg font-semibold mb-2">{trivia.match_name}</div>
           <div className="mb-2 text-base">{trivia.question}</div>
+          <div className="text-sm text-gray-600">
+            Bet Amount: ${trivia.bet_amount}
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-2 mt-4">
           {options.map((opt) => (
@@ -169,6 +173,9 @@ function TriviaBets() {
           ))}
         </div>
       </div>
+
+      {/* Status Card */}
+      <TriviaStatusCard trivia={trivia} nextTrivia={nextTrivia} />
 
       {/* Juaari cards */}
       <div className="space-y-4">

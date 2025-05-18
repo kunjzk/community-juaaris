@@ -12,7 +12,7 @@ CREATE TABLE trivia (
 );
 
 -- Modify new_juaaris_win_history table
-ALTER TABLE new_juaaris_win_history
+ALTER TABLE new_juaari_win_history
     ALTER COLUMN match_id DROP NOT NULL,
     ADD COLUMN trivia_id INTEGER REFERENCES trivia(id);
 

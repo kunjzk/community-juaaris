@@ -51,3 +51,12 @@ export const updateTriviaCorrectOption = async (triviaId, correctOption) => {
   `;
   return query(sql, [correctOption, triviaId]);
 };
+
+export const updateTriviaBetAmount = async (triviaId, betAmount) => {
+  const sql = `
+    UPDATE trivia
+    SET bet_amount = $1
+    WHERE id = $2
+  `;
+  return query(sql, [betAmount, triviaId]);
+};

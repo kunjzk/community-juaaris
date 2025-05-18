@@ -134,15 +134,38 @@ export const updateJuaariWinHistoryForTrivia = async (triviaId, betAmount) => {
 };
 
 // Update total winnings for all juaaris after trivia results
-export const updateTotalWinningsForTrivia = async () => {
-  // For each juaari, sum all delta_winnings_this_game in new_juaari_win_history
-  const sql = `
-    UPDATE new_juaaris j
-    SET winnings = COALESCE((
-      SELECT SUM(delta_winnings_this_game)
-      FROM new_juaari_win_history wh
-      WHERE wh.juaari_id = j.id
-    ), 0)
+export const updateTotalWinningsForTrivia = async (triviaId) => {
+  // Get win history entries for this specific trivia
+  const getWinHistorySql = `
+    SELECT juaari_id, delta_winnings_this_game
+    FROM new_juaari_win_history
+    WHERE trivia_id = $1
   `;
-  return query(sql);
+
+  const winHistoryResults = await query(getWinHistorySql, [triviaId]);
+
+  // For each juaari, update their total winnings based on this trivia's results
+  for (const result of winHistoryResults) {
+    const updateWinningsSql = `
+      UPDATE new_juaaris
+      SET winnings = winnings + $1
+      WHERE id = $2
+    `;
+    await query(updateWinningsSql, [
+      result.delta_winnings_this_game,
+      result.juaari_id,
+    ]);
+  }
+};
+
+export const getWinnerNamesAndWinningsForTrivia = async (triviaId) => {
+  const sql = `
+    SELECT j.id, j.display_name
+    FROM trivia_bets tb
+    JOIN new_juaaris j ON tb.juaari_id = j.id
+    WHERE tb.trivia_id = $1
+    AND tb.successful = true
+    ORDER BY j.display_name;
+  `;
+  return query(sql, [triviaId]);
 };

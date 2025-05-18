@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { updateTriviaCorrectOption } from "../../../api/trivia";
+import {
+  updateTriviaCorrectOption,
+  updateTriviaBetAmount,
+  getTriviaWithMatchTime,
+} from "../../../api/trivia";
 import {
   updateTriviaBetSuccess,
   updateJuaariWinHistoryForTrivia,
@@ -38,6 +42,34 @@ function TriviaResultsCard({ trivia, onRefresh }) {
         return;
       }
 
+      // If the trivia is invalid, set bet amount to 0 and double the next trivia's bet amount
+      if (selectedOption === "X") {
+        try {
+          // Set current trivia's bet amount to 0
+          await updateTriviaBetAmount(trivia.id, 0);
+          trivia.bet_amount = 0;
+
+          // Get the next trivia and double its bet amount
+          const triviaList = await getTriviaWithMatchTime();
+          const currentIndex = triviaList.findIndex((t) => t.id === trivia.id);
+          if (currentIndex > 0) {
+            // If there is a next trivia
+            const nextTrivia = triviaList[currentIndex - 1];
+            const newBetAmount = nextTrivia.bet_amount * 2;
+            await updateTriviaBetAmount(nextTrivia.id, newBetAmount);
+          }
+        } catch (error) {
+          console.error(
+            "TRIVIA POST: Failed to update bet amounts for invalid trivia:",
+            error
+          );
+          alert(
+            "TRIVIA POST: Failed to update bet amounts for invalid trivia. Please tell Kunal."
+          );
+          return;
+        }
+      }
+
       // Step 2: Update the success status of all bets for this trivia
       console.log("TRIVIA POST: Updating success status of trivia bets");
       try {
@@ -71,7 +103,7 @@ function TriviaResultsCard({ trivia, onRefresh }) {
       // Step 4: Update total winnings for all juaaris
       console.log("TRIVIA POST: Updating total winnings for all juaaris");
       try {
-        await updateTotalWinningsForTrivia();
+        await updateTotalWinningsForTrivia(trivia.id);
       } catch (error) {
         console.error(
           "TRIVIA POST: Failed to update total winnings for juaaris:",
@@ -143,6 +175,7 @@ function TriviaResultsCard({ trivia, onRefresh }) {
               <option value="B">B: {trivia.option_b}</option>
               <option value="C">C: {trivia.option_c}</option>
               <option value="D">D: {trivia.option_d}</option>
+              <option value="X">Invalid</option>
             </select>
           </div>
           <div className="flex items-end">
@@ -168,7 +201,9 @@ function TriviaResultsCard({ trivia, onRefresh }) {
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <div className="text-green-600 font-medium">
-            Option {trivia.correct_option} is set as correct
+            {trivia.correct_option === "X"
+              ? "Trivia is voided"
+              : `Option ${trivia.correct_option} is set as correct`}
           </div>
         </div>
         <div className="flex items-end">

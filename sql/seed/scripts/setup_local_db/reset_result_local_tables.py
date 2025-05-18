@@ -85,6 +85,14 @@ conn.rollback()
 # ADD COLUMN match_name TEXT;
 #             ''')
 
+cur.execute('''
+ALTER TABLE trivia
+DROP CONSTRAINT trivia_correct_option_check;
+
+ALTER TABLE trivia
+ADD CONSTRAINT trivia_correct_option_check 
+CHECK (correct_option IN ('A', 'B', 'C', 'D', 'X'));
+            ''')
 
 conn.commit()
 cur.close()
