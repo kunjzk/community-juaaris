@@ -84,6 +84,7 @@ function PostTrivia() {
                     handleOptionChange(trivia.id, e.target.value)
                   }
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  disabled={!!selectedOptions[trivia.id]}
                 >
                   <option value="">Select correct option</option>
                   <option value="A">A: {trivia.option_a}</option>
@@ -93,18 +94,21 @@ function PostTrivia() {
                 </select>
               </div>
               <div className="flex items-end space-x-4">
-                <button
-                  onClick={() => handleSubmitCorrectOption(trivia.id)}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                >
-                  Submit
-                </button>
-                <button
-                  onClick={() => handleViewWinners(trivia.id)}
-                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-                >
-                  View Winners
-                </button>
+                {!selectedOptions[trivia.id] ? (
+                  <button
+                    onClick={() => handleSubmitCorrectOption(trivia.id)}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                  >
+                    Submit
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleViewWinners(trivia.id)}
+                    className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                  >
+                    View Winners
+                  </button>
+                )}
               </div>
             </div>
           </div>

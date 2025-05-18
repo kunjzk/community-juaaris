@@ -39,7 +39,7 @@ function DebugDatabase() {
 
   return (
     <div className="max-w-6xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Debug Database</h1>
+      <h1 className="text-2xl font-bold mb-6">Trivia Bets Table</h1>
 
       {/* Form */}
       <div className="bg-white rounded-lg shadow p-4 mb-6">
