@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react";
-import { useMatchesContext } from "../../contexts/matches";
-import { getTriviaHistory, createTrivia } from "../../api/trivia";
+import { useMatchesContext } from "../../../contexts/matches";
+import { getTriviaHistory, createTrivia } from "../../../api/trivia";
 
 function CreateTrivia() {
   const { matches, getMatchById } = useMatchesContext();

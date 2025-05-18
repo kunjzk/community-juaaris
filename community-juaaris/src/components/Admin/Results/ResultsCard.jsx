@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { getTeamNameById } from "../../api/teams";
-import { useMatchesContext } from "../../contexts/matches";
+import { useMatchesContext } from "../../../contexts/matches";
 import { useNavigate } from "react-router-dom";
+import { getBetsForMatch } from "../../../api/bets";
 
 // 1. If there is a result for the match, show it
 // 2. If there is no result for the match, show the form to add a result

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import SecondDimensionEdit from "./SecondDimensionEdit";
-import ResultsList from "./ResultsList";
-import CreateTrivia from "./CreateTrivia";
-import PostTrivia from "./PostTrivia";
+import ResultsList from "./Results/ResultsList";
+import CreateTrivia from "./Trivia/CreateTrivia";
+import AllTriviaResults from "./Trivia/AllTriviaResults";
+
 function Admin() {
   const [activeTab, setActiveTab] = useState("results");
 
@@ -60,7 +61,7 @@ function Admin() {
       ) : activeTab === "create-trivia" ? (
         <CreateTrivia />
       ) : (
-        <PostTrivia />
+        <AllTriviaResults />
       )}
     </div>
   );

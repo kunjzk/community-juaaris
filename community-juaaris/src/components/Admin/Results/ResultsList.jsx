@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
 import ResultsCard from "./ResultsCard";
-import { useMatchesContext } from "../../contexts/matches";
+import { useMatchesContext } from "../../../contexts/matches";
 import {
   updateSuccessfulColumnInBetsTable,
   getWinnerIDs,
   allBetsUnsuccessful,
   updateNetWinnings,
-} from "../../api/bets";
+} from "../../../api/bets";
 import {
   saveResult,
   updateWashoutAndBetAmount,
   updateBetAmount,
-} from "../../api/matches";
+} from "../../../api/matches";
 import {
   getJuaarisAndWinnings,
   updateTotalWinnings,
   updateOrangeCap,
   updatePurpleCap,
-} from "../../api/juaaris";
+} from "../../../api/juaaris";
 
 const saveMatchResultAndCalculateAllWinnings = async (
   matchId,
