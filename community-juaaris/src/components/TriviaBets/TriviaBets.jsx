@@ -1,29 +1,55 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getTriviaWithMatchTime } from "../../api/trivia";
 import { getJuaaris } from "../../api/juaaris";
+import { createTriviaBet, getTriviaBetsForTrivia } from "../../api/trivia_bets";
+import TriviaBetCard from "./TriviaBetCard";
 
 function TriviaBets() {
   const { triviaId } = useParams();
+  const navigate = useNavigate();
   const [trivia, setTrivia] = useState(null);
+  const [triviaList, setTriviaList] = useState([]);
   const [juaaris, setJuaaris] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState({});
+  const [isCutoffExceeded, setIsCutoffExceeded] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       try {
         // Fetch all trivia with match time, then filter for the one we want
-        const triviaList = await getTriviaWithMatchTime();
-        const foundTrivia = triviaList.find(
-          (t) => String(t.id) === String(triviaId)
-        );
+        const fetchedTriviaList = await getTriviaWithMatchTime();
+        setTriviaList(fetchedTriviaList);
+        let foundTrivia;
+
+        if (triviaId) {
+          // If triviaId is provided, find that specific trivia
+          foundTrivia = fetchedTriviaList.find(
+            (t) => String(t.id) === String(triviaId)
+          );
+        } else {
+          // If no triviaId is provided, use the first trivia (most recent)
+          foundTrivia = fetchedTriviaList[0];
+        }
+
         setTrivia(foundTrivia);
+
         // Fetch all juaaris
         const juaarisList = await getJuaaris();
         setJuaaris(juaarisList);
+
+        // If we have a trivia, fetch existing bets
+        if (foundTrivia) {
+          const existingBets = await getTriviaBetsForTrivia(foundTrivia.id);
+          const initialOptions = {};
+          existingBets.forEach((bet) => {
+            initialOptions[bet.juaari_id] = bet.selected_option;
+          });
+          setSelectedOptions(initialOptions);
+        }
       } catch (err) {
         setError("Failed to load trivia or juaaris");
       } finally {
@@ -32,6 +58,65 @@ function TriviaBets() {
     }
     fetchData();
   }, [triviaId]);
+
+  useEffect(() => {
+    const checkCutoff = () => {
+      if (!trivia) return;
+      const cutoffTime = new Date(trivia.match_datetime);
+      cutoffTime.setHours(cutoffTime.getHours() + 24); // 24 hours before match
+      const now = new Date();
+      setIsCutoffExceeded(now > cutoffTime);
+    };
+    checkCutoff();
+  }, [trivia]);
+
+  // Get previous and next trivia
+  const getNextTrivia = () => {
+    if (!trivia || !triviaList.length) return null;
+    const currentIndex = triviaList.findIndex(
+      (t) => String(t.id) === String(trivia.id)
+    );
+    if (currentIndex <= 0) return null;
+    return triviaList[currentIndex - 1];
+  };
+
+  const getPreviousTrivia = () => {
+    if (!trivia || !triviaList.length) return null;
+    const currentIndex = triviaList.findIndex(
+      (t) => String(t.id) === String(trivia.id)
+    );
+    if (currentIndex === -1 || currentIndex >= triviaList.length - 1)
+      return null;
+    return triviaList[currentIndex + 1];
+  };
+
+  const prevTrivia = getPreviousTrivia();
+  const nextTrivia = getNextTrivia();
+
+  const goToPrevTrivia = () => {
+    if (prevTrivia) {
+      navigate(`/triviabets/${prevTrivia.id}`);
+    }
+  };
+
+  const goToNextTrivia = () => {
+    if (nextTrivia) {
+      navigate(`/triviabets/${nextTrivia.id}`);
+    }
+  };
+
+  const handleOptionSelect = async (juaariId, option) => {
+    try {
+      await createTriviaBet(trivia.id, juaariId, option);
+      setSelectedOptions({
+        ...selectedOptions,
+        [juaariId]: option,
+      });
+    } catch (error) {
+      console.error("Error creating/updating trivia bet:", error);
+      alert("Failed to save bet. Please try again.");
+    }
+  };
 
   if (loading) return <div className="py-8 text-center">Loading...</div>;
   if (error)
@@ -47,11 +132,33 @@ function TriviaBets() {
 
   return (
     <main className="max-w-2xl mx-auto p-4">
+      {/* Navigation buttons */}
+      <div className="flex justify-center gap-4 mb-6">
+        {prevTrivia && (
+          <button
+            onClick={goToPrevTrivia}
+            className="bg-gray-100 hover:bg-gray-200 rounded-md px-4 py-2 text-base border border-gray-300 shadow-sm"
+          >
+            &lt; Previous
+          </button>
+        )}
+        {nextTrivia && (
+          <button
+            onClick={goToNextTrivia}
+            className="bg-gray-100 hover:bg-gray-200 rounded-md px-4 py-2 text-base border border-gray-300 shadow-sm"
+          >
+            Next &gt;
+          </button>
+        )}
+      </div>
+
       {/* Top section: match name, question, options */}
       <div className="bg-white rounded-lg shadow p-6 mb-8">
-        <div className="text-lg font-semibold mb-2">{trivia.match_name}</div>
-        <div className="mb-4 text-base">{trivia.question}</div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="border-b pb-2">
+          <div className="text-lg font-semibold mb-2">{trivia.match_name}</div>
+          <div className="mb-2 text-base">{trivia.question}</div>
+        </div>
+        <div className="grid grid-cols-2 gap-2 mt-4">
           {options.map((opt) => (
             <div
               key={opt.key}
@@ -66,37 +173,14 @@ function TriviaBets() {
       {/* Juaari cards */}
       <div className="space-y-4">
         {juaaris.map((juaari) => (
-          <div
+          <TriviaBetCard
             key={juaari.id}
-            className="flex flex-col sm:flex-row items-start sm:items-center bg-[#fafdf7] border border-gray-200 rounded-lg p-4"
-          >
-            <div className="font-medium text-base sm:text-lg mb-2 sm:mb-0 sm:mr-6">
-              {juaari.display_name}
-            </div>
-            <div className="flex flex-wrap gap-4">
-              {options.map((opt) => (
-                <label
-                  key={opt.key}
-                  className="flex items-center cursor-pointer"
-                >
-                  <input
-                    type="radio"
-                    name={`option-${juaari.id}`}
-                    value={opt.key}
-                    checked={selectedOptions[juaari.id] === opt.key}
-                    onChange={() =>
-                      setSelectedOptions({
-                        ...selectedOptions,
-                        [juaari.id]: opt.key,
-                      })
-                    }
-                    disabled
-                  />
-                  <span className="ml-1 text-sm">{opt.key}</span>
-                </label>
-              ))}
-            </div>
-          </div>
+            juaari={juaari}
+            options={options}
+            selectedOptions={selectedOptions}
+            onOptionSelect={handleOptionSelect}
+            isCutoffExceeded={isCutoffExceeded}
+          />
         ))}
       </div>
     </main>

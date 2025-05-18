@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useMatchesContext } from "../../contexts/matches";
 import { useNavigate } from "react-router-dom";
 import { getTriviaHistory, updateTriviaCorrectOption } from "../../api/trivia";
+import { updateTriviaBetSuccess } from "../../api/trivia_bets";
 
 function PostTrivia() {
   const { matches } = useMatchesContext();
@@ -43,7 +44,12 @@ function PostTrivia() {
       return;
     }
     try {
+      // Update the correct option in the trivia table
       await updateTriviaCorrectOption(triviaId, selectedOptions[triviaId]);
+
+      // Update the success status of all bets for this trivia
+      await updateTriviaBetSuccess(triviaId, selectedOptions[triviaId]);
+
       setRefreshTrivia(!refreshTrivia);
     } catch (error) {
       console.error("Error updating correct option:", error);
@@ -56,97 +62,50 @@ function PostTrivia() {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-serif mb-8">Update Trivia Results</h1>
-
-      {/* Table Header */}
-      <div className="bg-gray-100 rounded-t-lg border border-gray-200 grid grid-cols-12 font-medium text-gray-700 text-xs sm:text-sm">
-        <div className="px-2 sm:px-3 py-3 border-r border-gray-200 text-center col-span-2 sm:col-span-2">
-          Match
-        </div>
-        <div className="px-2 sm:px-6 py-3 border-r border-gray-200 text-center col-span-3 sm:col-span-3">
-          Question
-        </div>
-        <div className="px-2 sm:px-3 py-3 border-r border-gray-200 text-center col-span-1">
-          A
-        </div>
-        <div className="px-2 sm:px-3 py-3 border-r border-gray-200 text-center col-span-1">
-          B
-        </div>
-        <div className="px-2 sm:px-3 py-3 border-r border-gray-200 text-center col-span-1">
-          C
-        </div>
-        <div className="px-2 sm:px-3 py-3 border-r border-gray-200 text-center col-span-1">
-          D
-        </div>
-        <div className="px-2 sm:px-6 py-3 border-r border-gray-200 text-center col-span-1">
-          Correct
-        </div>
-        <div className="px-2 sm:px-6 py-3 text-center col-span-1">Action</div>
-      </div>
-
-      {/* Table Body */}
-      <div className="rounded-b-lg overflow-hidden border-x border-b border-gray-200 bg-white">
+    <div className="max-w-4xl mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-6">Post Trivia Results</h2>
+      <div className="space-y-6">
         {triviaList.map((trivia) => (
-          <div
-            key={trivia.id}
-            className="grid grid-cols-12 border-t border-gray-200 text-xs sm:text-sm"
-          >
-            <div className="px-2 sm:px-6 py-3 border-r border-gray-200 text-center col-span-2 sm:col-span-2 break-words">
-              {trivia.match_name}
+          <div key={trivia.id} className="bg-white rounded-lg shadow p-6">
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold mb-2">
+                {trivia.match_name}
+              </h3>
+              <p className="text-gray-700">{trivia.question}</p>
             </div>
-            <div className="px-2 sm:px-6 py-3 border-r border-gray-200 text-center col-span-3 sm:col-span-3 break-words">
-              {trivia.question}
-            </div>
-            <div className="px-2 sm:px-3 py-3 border-r border-gray-200 text-center col-span-1 break-words">
-              {trivia.option_a}
-            </div>
-            <div className="px-2 sm:px-3 py-3 border-r border-gray-200 text-center col-span-1 break-words">
-              {trivia.option_b}
-            </div>
-            <div className="px-2 sm:px-3 py-3 border-r border-gray-200 text-center col-span-1 break-words">
-              {trivia.option_c}
-            </div>
-            <div className="px-2 sm:px-3 py-3 border-r border-gray-200 text-center col-span-1 break-words">
-              {trivia.option_d}
-            </div>
-            <div className="px-2 sm:px-6 py-3 border-r border-gray-200 text-center col-span-1">
-              {trivia.correct_option ? (
-                <span className="font-semibold text-green-600">
-                  {trivia.correct_option}
-                </span>
-              ) : (
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Correct Option
+                </label>
                 <select
-                  className="border border-gray-300 rounded px-1 sm:px-2 py-1 w-full text-xs sm:text-sm"
                   value={selectedOptions[trivia.id] || ""}
                   onChange={(e) =>
                     handleOptionChange(trivia.id, e.target.value)
                   }
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
                 >
-                  <option value=""></option>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="D">D</option>
+                  <option value="">Select correct option</option>
+                  <option value="A">A: {trivia.option_a}</option>
+                  <option value="B">B: {trivia.option_b}</option>
+                  <option value="C">C: {trivia.option_c}</option>
+                  <option value="D">D: {trivia.option_d}</option>
                 </select>
-              )}
-            </div>
-            <div className="px-2 sm:px-6 py-3 text-center col-span-1">
-              {trivia.correct_option ? (
-                <button
-                  onClick={() => handleViewWinners(trivia.id)}
-                  className="bg-[#1554ba] hover:bg-[#303f58] text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm whitespace-nowrap mx-auto"
-                >
-                  View Winners
-                </button>
-              ) : (
+              </div>
+              <div className="flex items-end space-x-4">
                 <button
                   onClick={() => handleSubmitCorrectOption(trivia.id)}
-                  className="bg-[#27ae60] hover:bg-[#2ecc71] text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm whitespace-nowrap mx-auto"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                 >
                   Submit
                 </button>
-              )}
+                <button
+                  onClick={() => handleViewWinners(trivia.id)}
+                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                >
+                  View Winners
+                </button>
+              </div>
             </div>
           </div>
         ))}
