@@ -8,8 +8,18 @@ function GameCard({
   dateTime,
   betCutoffTime,
   cutoffExceeded,
+  outcomeWashout,
+  outcomeMoreOrLess,
+  outcomeTotalScore,
+  outcomeWinningTeam,
 }) {
   const navigate = useNavigate();
+
+  // Check if there is a result for the game
+  const hasResult =
+    outcomeWashout ||
+    (outcomeMoreOrLess && outcomeTotalScore && outcomeWinningTeam);
+  console.log("hasResult", hasResult);
 
   // Handle button click
   const handleButtonClick = () => {
@@ -45,7 +55,14 @@ function GameCard({
         </div>
       </div>
       <div className="w-full sm:w-auto sm:ml-4">
-        {cutoffExceeded ? (
+        {hasResult ? (
+          <button
+            onClick={handleButtonClick}
+            className="w-full sm:w-auto bg-[#131aa3] text-white px-3 py-1.5 rounded-md hover:bg-[#3d5836] transition-colors text-xs sm:text-sm whitespace-nowrap"
+          >
+            View winners
+          </button>
+        ) : cutoffExceeded ? (
           <button
             onClick={handleButtonClick}
             className="w-full sm:w-auto bg-[#d9534f] text-white px-3 py-1.5 rounded-md hover:bg-[#c9302c] transition-colors text-xs sm:text-sm whitespace-nowrap"

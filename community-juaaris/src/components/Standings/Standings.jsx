@@ -3,21 +3,35 @@ import { getJuaarisAndWinnings } from "../../api/juaaris";
 
 export default function StandingsPage() {
   const [standings, setStandings] = useState([]);
+  const [partyFund, setPartyFund] = useState(0);
 
   useEffect(() => {
     getJuaarisAndWinnings().then((data) => {
       const standings = data.map((player, index) => ({
         position: index + 1,
         display_name: player.display_name,
-        winnings: player.winnings,
+        winnings: Number(player.winnings) || 0,
       }));
       setStandings(standings);
+
+      // Calculate party fund
+      const negativeWinnings = standings
+        .filter((player) => player.winnings < 0)
+        .reduce((sum, player) => sum + player.winnings, 0);
+
+      console.log("Standings data:", standings);
+      console.log("Negative winnings sum:", negativeWinnings);
+
+      setPartyFund(Math.abs(negativeWinnings));
     });
   }, []);
 
   return (
     <>
-      <h2 className="text-4xl font-serif mb-8">Standings</h2>
+      <h2 className="text-4xl font-serif mb-2">Standings</h2>
+      <div className="text-lg text-gray-600 mb-8">
+        Party Fund: ${partyFund.toFixed(2)}
+      </div>
 
       {/* Table Header - Styled like cards */}
       <div className="bg-gray-100 rounded-t-lg border border-gray-200 grid grid-cols-12 font-medium text-gray-700">

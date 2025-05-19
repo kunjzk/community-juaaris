@@ -193,6 +193,10 @@ function GameList() {
                   dateTime={formatDateTime(match.datetime)}
                   betCutoffTime={formatDateTime(cutoffTime)}
                   cutoffExceeded={cutoffExceeded}
+                  outcomeWashout={match.outcome_washout}
+                  outcomeMoreOrLess={match.outcome_more_or_less}
+                  outcomeTotalScore={match.outcome_total_score}
+                  outcomeWinningTeam={match.outcome_winning_team}
                 />
               );
             })
