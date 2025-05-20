@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useMatchesContext } from "../../../contexts/matches";
 import { useNavigate } from "react-router-dom";
+import { resetMatchResult } from "../../../api/matches";
 
 // 1. If there is a result for the match, show it
 // 2. If there is no result for the match, show the form to add a result
@@ -8,8 +9,12 @@ import { useNavigate } from "react-router-dom";
 
 function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   // console.log("ResultsCard component rendered for match id: ", matchId);
-  const { getMatchById, getWinningTeamName, getNextGameBetAmount } =
-    useMatchesContext();
+  const {
+    getMatchById,
+    getWinningTeamName,
+    getNextGameBetAmount,
+    refreshMatches,
+  } = useMatchesContext();
   const navigate = useNavigate();
   const match = getMatchById(matchId);
   if (!match || !match.datetime) {
@@ -87,6 +92,18 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   const goToBetsPageForMatch = () => {
     console.log("Going to bets page for match id: ", matchId);
     navigate(`/bets/${matchId}`);
+  };
+
+  const resetResult = async () => {
+    try {
+      await resetMatchResult(matchId);
+      // Refresh the matches context to reflect changes
+      refreshMatches();
+      alert("Result has been reset successfully");
+    } catch (error) {
+      console.error("Error resetting result:", error);
+      alert("Error resetting result: " + error.message);
+    }
   };
 
   const renderForm = () => {
@@ -241,9 +258,16 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
     return (
       <div>
         <div className="rounded-xl border border-gray-200 bg-[#fafdf7] p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center">
-          <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 sm:gap-4 flex-1 w-full mb-3 sm:mb-0">
+          <div className="grid grid-cols-2 sm:grid-cols-10 gap-2 sm:gap-4 flex-1 w-full mb-3 sm:mb-0">
             {data.map((element, index) => (
-              <div key={index} className="text-center col-span-1">
+              <div
+                key={index}
+                className={`text-center ${
+                  element.label === "Winner" || element.label === "Total Score"
+                    ? "col-span-1"
+                    : "col-span-2"
+                }`}
+              >
                 <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">
                   {element.label}
                 </div>
@@ -258,6 +282,22 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
                 onClick={() => goToBetsPageForMatch(matchId)}
               >
                 View Winners
+              </button>
+            </div>
+            <div className="col-span-1">
+              <button
+                className="w-full px-1 h-10 leading-none bg-[#d9534f] text-white rounded-md hover:bg-[#c9302c] transition-colors text-xs sm:text-sm whitespace-nowrap"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      "Are you sure you want to reset this result? This action cannot be undone."
+                    )
+                  ) {
+                    resetResult();
+                  }
+                }}
+              >
+                Reset Result
               </button>
             </div>
           </div>

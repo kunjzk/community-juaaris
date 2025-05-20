@@ -141,3 +141,48 @@ export const resetMatchData = async (matchId) => {
   `;
   await query(matchesSql, [matchId]);
 };
+
+export async function resetMatchResult(matchId) {
+  try {
+    // Step 1: Get win history for this match
+    const winHistory = await query(
+      "SELECT juaari_id, delta_winnings_this_game FROM new_juaari_win_history WHERE match_id = $1",
+      [matchId]
+    );
+
+    // Step 2: Update juaaris winnings
+    for (const record of winHistory) {
+      // Update winnings by adding back the delta
+      await query(
+        "UPDATE new_juaaris SET winnings = winnings - $1 WHERE id = $2",
+        [record.delta_winnings_this_game, record.juaari_id]
+      );
+    }
+
+    // Step 3: Remove win history entries
+    await query("DELETE FROM new_juaari_win_history WHERE match_id = $1", [
+      matchId,
+    ]);
+
+    // Step 4: Reset bets
+    await query("UPDATE new_bets SET successful = NULL WHERE match_id = $1", [
+      matchId,
+    ]);
+
+    // Step 5: Reset match outcomes
+    await query(
+      `UPDATE new_matches 
+       SET outcome_washout = false,
+           outcome_more_or_less = NULL,
+           outcome_total_score = NULL,
+           outcome_winning_team = NULL
+       WHERE id = $1`,
+      [matchId]
+    );
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error resetting match result:", error);
+    throw error;
+  }
+}
