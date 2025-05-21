@@ -117,8 +117,8 @@ export const updateJuaariWinHistoryForTrivia = async (triviaId, betAmount) => {
 
   // Insert all win history entries
   const insertWinHistorySql = `
-    INSERT INTO new_juaari_win_history (juaari_id, trivia_id, delta_winnings_this_game)
-    VALUES ($1, $2, $3)
+    INSERT INTO new_juaari_win_history (juaari_id, trivia_id, delta_winnings_this_game, match_id)
+    VALUES ($1, $2, $3, NULL)
   `;
 
   // Use Promise.all to insert all entries concurrently
