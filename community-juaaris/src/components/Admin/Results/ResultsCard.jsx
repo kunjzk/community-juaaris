@@ -46,7 +46,9 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
 
     if (washoutBool === true) {
       // If washout, set more_or_less to "INVALID"
-      console.log("WASHOUT forMatch ID: ", matchId);
+      console.log("WASHOUT for Match ID: ", matchId);
+      console.log("Washout value is: ", washoutBool);
+      console.log("Washout type is: ", typeof washoutBool);
       moreOrLess = "INVALID";
       submitResult({
         matchId: matchId,
@@ -59,6 +61,8 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
       return;
     } else {
       console.log("NO WASHOUT for Match ID: ", matchId);
+      console.log("Washout value is: ", washoutBool);
+      console.log("Washout type is: ", typeof washoutBool);
       // Input validation
       if (!winningTeam || !totalScore || !secondDimValidBool) {
         alert(
