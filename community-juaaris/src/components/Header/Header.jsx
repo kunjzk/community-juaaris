@@ -21,7 +21,7 @@ function Header() {
               : "text-black hover:text-[#2e7d32] transition-colors"
           }`}
         >
-          Upcoming Matches
+          All Matches
         </Link>
         <Link
           to="/bets"
@@ -41,7 +41,7 @@ function Header() {
               : "text-black hover:text-[#2e7d32] transition-colors"
           }`}
         >
-          Upcoming Trivia
+          All Trivia
         </Link>
         <Link
           to="/triviabets"
