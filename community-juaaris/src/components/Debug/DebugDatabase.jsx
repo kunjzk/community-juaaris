@@ -6,7 +6,7 @@ import {
   resetTriviaData,
 } from "../../api/trivia_bets";
 import { Navigate } from "react-router-dom";
-import { getAllMatches } from "../../api/matches";
+import { getAllMatches, updateBetAmount } from "../../api/matches";
 import { getBetsForGame } from "../../api/bets";
 import { getJuaariWinHistoryForMatch } from "../../api/juaari_win_history";
 import { getCapsForDate } from "../../api/caps";
@@ -38,6 +38,8 @@ function DebugDatabase() {
   const [matchCaps, setMatchCaps] = useState([]);
   const [matchLoading, setMatchLoading] = useState(false);
   const [matchResetLoading, setMatchResetLoading] = useState(false);
+  const [editBetAmount, setEditBetAmount] = useState("");
+  const [savingBetAmount, setSavingBetAmount] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -149,6 +151,32 @@ function DebugDatabase() {
     }
   };
 
+  // Add a function to handle bet amount update
+  const handleBetAmountSave = async () => {
+    if (!selectedMatchId || !editBetAmount) return;
+
+    setSavingBetAmount(true);
+    try {
+      await updateBetAmount(selectedMatchId, Number(editBetAmount));
+
+      // Refresh match data
+      const matchesData = await getAllMatches();
+      setMatchList(matchesData);
+      const updatedMatch = matchesData.find((m) => m.id === selectedMatchId);
+      setMatchDetails(updatedMatch);
+
+      // Reset edit state
+      setEditBetAmount("");
+
+      alert("Bet amount updated successfully");
+    } catch (error) {
+      console.error("Error updating bet amount:", error);
+      alert("Error updating bet amount. Please tell Kunal.");
+    } finally {
+      setSavingBetAmount(false);
+    }
+  };
+
   const renderTable = (data, columns, title) => (
     <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
       <h2 className="text-xl font-semibold p-4 bg-gray-50 border-b">{title}</h2>
@@ -173,7 +201,7 @@ function DebugDatabase() {
                   key={col.key}
                   className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                 >
-                  {col.render ? col.render(row) : row[col.key]}
+                  {col.render ? col.render(row) : formatValue(row[col.key])}
                 </td>
               ))}
             </tr>
@@ -182,6 +210,17 @@ function DebugDatabase() {
       </table>
     </div>
   );
+
+  // Helper function to format values for display
+  const formatValue = (value) => {
+    if (value instanceof Date) {
+      return value.toLocaleString();
+    }
+    if (value === null || value === undefined) {
+      return "N/A";
+    }
+    return value;
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -389,7 +428,25 @@ function DebugDatabase() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Bet Amount</p>
-                  <p className="font-medium">${matchDetails.bet_amount}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium">${matchDetails.bet_amount}</p>
+                    <div className="ml-2 flex gap-2">
+                      <input
+                        type="number"
+                        value={editBetAmount}
+                        onChange={(e) => setEditBetAmount(e.target.value)}
+                        placeholder="New amount"
+                        className="border border-gray-300 rounded px-2 py-1 w-24 text-sm"
+                      />
+                      <button
+                        onClick={handleBetAmountSave}
+                        disabled={!editBetAmount || savingBetAmount}
+                        className="bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                      >
+                        {savingBetAmount ? "Saving..." : "Save"}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

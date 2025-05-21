@@ -11,7 +11,7 @@ import {
 import {
   saveResult,
   updateWashoutAndBetAmount,
-  updateBetAmount,
+  doubleBetAmount,
 } from "../../../api/matches";
 import {
   getJuaarisAndWinnings,
@@ -36,7 +36,12 @@ const saveMatchResultAndCalculateAllWinnings = async (
     console.log("RESULT POST: Total score:", totalScore);
     console.log("RESULT POST: More or less:", more_or_less);
     console.log("RESULT POST: Washout:", washout);
-    await saveResult(matchId, winningTeam, totalScore, more_or_less, washout);
+    if (washout === true) {
+      console.log("RESULT POST: Washout, so saving result as INVALID");
+      await saveResult(matchId, null, 0, "INVALID", true);
+    } else {
+      await saveResult(matchId, winningTeam, totalScore, more_or_less, false);
+    }
   } catch (error) {
     console.error("RESULT POST: Error saving match result:", error);
     alert("RESULT POST: Error saving match result, please tell Kunal");
@@ -73,7 +78,7 @@ const saveMatchResultAndCalculateAllWinnings = async (
     }
     // Set bet amount to double for next match in matches table
     try {
-      await updateBetAmount(Number(matchId) + 1, bet_amount * 2);
+      await doubleBetAmount(Number(matchId) + 1);
     } catch (error) {
       console.error("RESULT POST: Error updating bet amount:", error);
       alert("RESULT POST: Error updating bet amount, please tell Kunal");
@@ -280,7 +285,7 @@ function ResultsList() {
                   washout: false,
                 };
               }
-              if (match.washout) {
+              if (match.outcome_washout) {
                 result = {
                   winningTeam: "WASHOUT",
                   totalScore: 0,

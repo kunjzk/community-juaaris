@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { getWinnerNamesAndWinnings } from "../../api/bets";
 
-function WinnerCard({ matchId, winningTeam, moreOrLess, bet_amount }) {
+function WinnerCard({
+  matchId,
+  winningTeam,
+  moreOrLess,
+  bet_amount,
+  outcomeWashout,
+}) {
   const [winners, setWinners] = useState([]);
   const [netWinningsPerWinner, setNetWinningsPerWinner] = useState([]);
 
@@ -19,8 +25,11 @@ function WinnerCard({ matchId, winningTeam, moreOrLess, bet_amount }) {
         console.error("Error getting winners and winnings:", error);
       }
     };
-    fetchWinnersAndWinnings();
-  }, []);
+
+    if (!outcomeWashout) {
+      fetchWinnersAndWinnings();
+    }
+  }, [outcomeWashout, matchId, bet_amount]);
 
   return (
     <div className="mb-6 p-6 bg-green-50 border border-green-200 rounded-lg shadow-sm">
@@ -44,40 +53,73 @@ function WinnerCard({ matchId, winningTeam, moreOrLess, bet_amount }) {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-white p-4 rounded-md shadow-sm">
-              <p className="text-sm text-gray-600">Winning Team</p>
-              <p className="text-lg font-medium text-gray-900">{winningTeam}</p>
-            </div>
-
-            <div className="bg-white p-4 rounded-md shadow-sm">
-              <p className="text-sm text-gray-600">Second Dimension</p>
-              <p className="text-lg font-medium text-gray-900">{moreOrLess}</p>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-md shadow-sm">
-            <p className="text-sm text-gray-600">Net Winnings per Winner</p>
-            <p className="text-2xl font-bold text-green-600">
-              ${netWinningsPerWinner}
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-white p-4 rounded-md shadow-sm">
-          <p className="text-sm text-gray-600 mb-3">Winners</p>
-          <div className="flex flex-wrap gap-3">
-            {winners.map((winner) => (
-              <span
-                key={winner.id}
-                className="inline-flex items-center px-4 py-2 rounded-lg text-base font-semibold bg-green-100 text-green-800 border border-green-200 shadow-sm hover:bg-green-200 transition-colors duration-200"
+        {outcomeWashout ? (
+          <div className="bg-white p-6 rounded-md shadow-sm text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mb-4">
+              <svg
+                className="w-6 h-6 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                {winner.display_name}
-              </span>
-            ))}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">
+              Match is washed out
+            </h3>
+            <p className="text-gray-600 mb-3">No winners or losers</p>
+            <div className="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-lg font-semibold">
+              Next match is worth double!
+            </div>
           </div>
-        </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-white p-4 rounded-md shadow-sm">
+                  <p className="text-sm text-gray-600">Winning Team</p>
+                  <p className="text-lg font-medium text-gray-900">
+                    {winningTeam}
+                  </p>
+                </div>
+
+                <div className="bg-white p-4 rounded-md shadow-sm">
+                  <p className="text-sm text-gray-600">Second Dimension</p>
+                  <p className="text-lg font-medium text-gray-900">
+                    {moreOrLess}
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-md shadow-sm">
+                <p className="text-sm text-gray-600">Net Winnings per Winner</p>
+                <p className="text-2xl font-bold text-green-600">
+                  ${netWinningsPerWinner}
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white p-4 rounded-md shadow-sm">
+              <p className="text-sm text-gray-600 mb-3">Winners</p>
+              <div className="flex flex-wrap gap-3">
+                {winners.map((winner) => (
+                  <span
+                    key={winner.id}
+                    className="inline-flex items-center px-4 py-2 rounded-lg text-base font-semibold bg-green-100 text-green-800 border border-green-200 shadow-sm hover:bg-green-200 transition-colors duration-200"
+                  >
+                    {winner.display_name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

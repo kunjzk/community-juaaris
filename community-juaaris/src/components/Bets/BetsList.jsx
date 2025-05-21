@@ -69,7 +69,10 @@ function BetsList() {
     };
     checkCutoff();
     const checkWinningBet = () => {
-      if (getWinningTeamName(match) !== null) {
+      if (
+        getWinningTeamName(match) !== null ||
+        match.outcome_washout === true
+      ) {
         setWinningBet({
           winningTeam: getWinningTeamName(match),
           moreOrLess: match.outcome_more_or_less,
@@ -276,6 +279,9 @@ function BetsList() {
               <p className="text-base sm:text-lg">
                 Date: {formatDate(match.datetime)}
               </p>
+              <p className="text-base sm:text-lg">
+                Bet amount: ${match.bet_amount}
+              </p>
               <p className="text-base sm:text-lg font-medium">
                 Second dimension: {match.second_dimension_cutoff} runs
               </p>
@@ -330,6 +336,7 @@ function BetsList() {
             winningTeam={winningBet.winningTeam}
             moreOrLess={winningBet.moreOrLess}
             bet_amount={match.bet_amount}
+            outcomeWashout={match.outcome_washout === true}
           />
         )}
 

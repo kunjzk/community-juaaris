@@ -49,7 +49,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
       console.log("WASHOUT for Match ID: ", matchId);
       console.log("Washout value is: ", washoutBool);
       console.log("Washout type is: ", typeof washoutBool);
-      moreOrLess = "INVALID";
+
       submitResult({
         matchId: matchId,
         winningTeam: "WASHOUT",

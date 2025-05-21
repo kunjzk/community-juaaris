@@ -89,12 +89,23 @@ export async function updateWashoutAndBetAmount(matchId, washout, bet_amount) {
 }
 
 export const updateBetAmount = async (matchId, bet_amount) => {
+  console.log("Doubling bet amount for match id: ", matchId);
   const sql = `
     UPDATE new_matches
     SET bet_amount = $2
     WHERE id = $1
   `;
   return query(sql, [matchId, bet_amount]);
+};
+
+export const doubleBetAmount = async (matchId) => {
+  console.log("Doubling bet amount for match id: ", matchId);
+  const sql = `
+    UPDATE new_matches
+    SET bet_amount = bet_amount * 2
+    WHERE id = $1
+  `;
+  return query(sql, [matchId]);
 };
 
 export const resetMatchData = async (matchId) => {
