@@ -73,7 +73,7 @@ export const updateJuaariWinHistoryForTrivia = async (triviaId, betAmount) => {
 
   const allBets = await query(getAllBetsSql, [triviaId]);
   if (allBets.length === 0) {
-    console.log("No bets found for trivia:", triviaId);
+    // console.log("No bets found for trivia:", triviaId);
     return;
   }
 

@@ -73,7 +73,7 @@ const saveMatchResultAndCalculateAllWinnings = async (
     }
     // Set bet amount to double for next match in matches table
     try {
-      await updateBetAmount(matchId, bet_amount * 2);
+      await updateBetAmount(Number(matchId) + 1, bet_amount * 2);
     } catch (error) {
       console.error("RESULT POST: Error updating bet amount:", error);
       alert("RESULT POST: Error updating bet amount, please tell Kunal");
@@ -131,11 +131,14 @@ const saveMatchResultAndCalculateAllWinnings = async (
     return;
   }
 
-  // 4. Calculate the net change for each player
-  const totalWinningsPot = bet_amount * (14 - winnerIds.length);
-  let netWinningsPerWinner = totalWinningsPot / winnerIds.length;
-  // Round to 2 decimal places and return a number
-  netWinningsPerWinner = parseFloat(netWinningsPerWinner.toFixed(2));
+  let netWinningsPerWinner = 0;
+  if (winnerIds.length !== 0) {
+    // 4. Calculate the net change for each player
+    const totalWinningsPot = bet_amount * (14 - winnerIds.length);
+    netWinningsPerWinner = totalWinningsPot / winnerIds.length;
+    // Round to 2 decimal places and return a number
+    netWinningsPerWinner = parseFloat(netWinningsPerWinner.toFixed(2));
+  }
   console.log("RESULT POST: Net winnings per winner:", netWinningsPerWinner);
   console.log(
     "RESULT POST: Type of netWinningsPerWinner:",

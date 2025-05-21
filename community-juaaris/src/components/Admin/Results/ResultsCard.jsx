@@ -42,7 +42,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   }, [result]);
 
   const handleSaveResult = () => {
-    console.log("Saving result for match id: ", matchId);
+    // console.log("Saving result for match id: ", matchId);
 
     if (washoutBool === true) {
       // If washout, set more_or_less to "INVALID"
@@ -90,7 +90,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   };
 
   const goToBetsPageForMatch = () => {
-    console.log("Going to bets page for match id: ", matchId);
+    // console.log("Going to bets page for match id: ", matchId);
     navigate(`/bets/${matchId}`);
   };
 
