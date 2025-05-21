@@ -44,7 +44,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   const handleSaveResult = () => {
     // console.log("Saving result for match id: ", matchId);
 
-    if (washoutBool === true) {
+    if (washoutBool === "true") {
       // If washout, set more_or_less to "INVALID"
       console.log("WASHOUT for Match ID: ", matchId);
       console.log("Washout value is: ", washoutBool);
