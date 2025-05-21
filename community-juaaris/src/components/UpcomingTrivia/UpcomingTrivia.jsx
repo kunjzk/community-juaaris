@@ -8,12 +8,16 @@ function TriviaCard({
   question,
   betCutoffTime,
   cutoffExceeded,
+  correctOption,
 }) {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
     navigate(`/triviabets/${triviaId}`);
   };
+
+  // Check if trivia has a result
+  const hasResult = correctOption !== null;
 
   return (
     <div className="rounded-xl border border-gray-200 bg-[#fafdf7] p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center">
@@ -38,7 +42,14 @@ function TriviaCard({
         </div>
       </div>
       <div className="w-full sm:w-auto sm:ml-4">
-        {cutoffExceeded ? (
+        {hasResult ? (
+          <button
+            onClick={handleButtonClick}
+            className="w-full sm:w-auto bg-[#131aa3] text-white px-3 py-1.5 rounded-md hover:bg-[#0a0f77] transition-colors text-xs sm:text-sm whitespace-nowrap"
+          >
+            View winners
+          </button>
+        ) : cutoffExceeded ? (
           <button
             onClick={handleButtonClick}
             className="w-full sm:w-auto bg-[#d9534f] text-white px-3 py-1.5 rounded-md hover:bg-[#c9302c] transition-colors text-xs sm:text-sm whitespace-nowrap"
@@ -188,6 +199,7 @@ function UpcomingTrivia() {
                   question={trivia.question}
                   betCutoffTime={formatDateTime(cutoffTime)}
                   cutoffExceeded={cutoffExceeded}
+                  correctOption={trivia.correct_option}
                 />
               );
             })
