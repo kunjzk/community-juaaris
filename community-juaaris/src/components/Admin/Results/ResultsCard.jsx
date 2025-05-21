@@ -56,37 +56,38 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
         betAmount: 0,
       });
       return;
-    }
-    // Input validation
-    if (!winningTeam || !totalScore || !secondDimValidBool) {
-      alert(
-        "Missing required fields: winning team, total score, or second dimension valid"
-      );
-      return;
-    }
-
-    // Set more_or_less
-    let moreOrLess = "";
-    if (secondDimValidBool === true) {
-      const second_dim_threshold = secondDimensionCutoff;
-      if (totalScore > second_dim_threshold) {
-        moreOrLess = "MORE";
-      } else {
-        moreOrLess = "LESS";
-      }
     } else {
-      moreOrLess = "INVALID";
-    }
+      // Input validation
+      if (!winningTeam || !totalScore || !secondDimValidBool) {
+        alert(
+          "Missing required fields: winning team, total score, or second dimension valid"
+        );
+        return;
+      }
 
-    // Update the result
-    submitResult({
-      matchId: matchId,
-      winningTeam: winningTeam,
-      totalScore: totalScore,
-      moreOrLess: moreOrLess,
-      washout: false,
-      betAmount: match.bet_amount,
-    });
+      // Set more_or_less
+      let moreOrLess = "";
+      if (secondDimValidBool === true) {
+        const second_dim_threshold = secondDimensionCutoff;
+        if (totalScore > second_dim_threshold) {
+          moreOrLess = "MORE";
+        } else {
+          moreOrLess = "LESS";
+        }
+      } else {
+        moreOrLess = "INVALID";
+      }
+
+      // Update the result
+      submitResult({
+        matchId: matchId,
+        winningTeam: winningTeam,
+        totalScore: totalScore,
+        moreOrLess: moreOrLess,
+        washout: false,
+        betAmount: match.bet_amount,
+      });
+    }
   };
 
   const goToBetsPageForMatch = () => {
