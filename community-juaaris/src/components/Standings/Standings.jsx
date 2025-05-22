@@ -108,13 +108,13 @@ export default function StandingsPage() {
                 key={player.id}
                 className={`grid grid-cols-12 border-t border-gray-200 ${
                   index === 0
-                    ? "bg-purple-100"
+                    ? "bg-purple-200"
                     : index === currentStandings.length - 1
-                    ? "bg-orange-100"
+                    ? "bg-orange-200"
                     : player.match_winnings < 0
-                    ? "bg-red-100"
+                    ? "bg-red-50"
                     : player.match_winnings > 0
-                    ? "bg-green-100"
+                    ? "bg-green-50"
                     : ""
                 }`}
               >
@@ -159,13 +159,13 @@ export default function StandingsPage() {
                 key={player.id}
                 className={`grid grid-cols-12 border-t border-gray-200 ${
                   index === 0
-                    ? "bg-purple-100"
+                    ? "bg-purple-200"
                     : index === currentStandings.length - 1
-                    ? "bg-orange-100"
+                    ? "bg-orange-200"
                     : player.trivia_winnings < 0
-                    ? "bg-red-100"
+                    ? "bg-red-50"
                     : player.trivia_winnings > 0
-                    ? "bg-green-100"
+                    ? "bg-green-50"
                     : ""
                 }`}
               >
