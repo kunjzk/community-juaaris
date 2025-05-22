@@ -22,7 +22,8 @@ function TriviaBets() {
       setLoading(true);
       try {
         // Fetch all trivia with match time, then filter for the one we want
-        const fetchedTriviaList = await getTriviaWithMatchTime();
+        let fetchedTriviaList = await getTriviaWithMatchTime();
+        fetchedTriviaList = [...fetchedTriviaList].reverse();
         setTriviaList(fetchedTriviaList);
         let foundTrivia;
 
