@@ -26,7 +26,7 @@ function GameList() {
 
     // Calculate next Saturday
     const nextSaturday = new Date(mostRecentSunday);
-    nextSaturday.setDate(mostRecentSunday.getDate() + 6);
+    nextSaturday.setDate(mostRecentSunday.getDate() + 7);
 
     setMostRecentSunday(mostRecentSunday);
     setNextSaturday(nextSaturday);

@@ -172,7 +172,7 @@ function UpcomingTrivia() {
     <main>
       <div className="flex flex-col sm:flex-row sm:items-baseline mb-4">
         <h2 className="text-2xl sm:text-4xl font-medium mb-2 sm:mb-0 sm:mr-6">
-          Upcoming Trivia
+          All Trivia
         </h2>
       </div>
 
