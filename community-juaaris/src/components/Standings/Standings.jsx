@@ -111,6 +111,10 @@ export default function StandingsPage() {
                     ? "bg-purple-100"
                     : index === currentStandings.length - 1
                     ? "bg-orange-100"
+                    : player.match_winnings < 0
+                    ? "bg-red-100"
+                    : player.match_winnings > 0
+                    ? "bg-green-100"
                     : ""
                 }`}
               >
@@ -158,6 +162,10 @@ export default function StandingsPage() {
                     ? "bg-purple-100"
                     : index === currentStandings.length - 1
                     ? "bg-orange-100"
+                    : player.trivia_winnings < 0
+                    ? "bg-red-100"
+                    : player.trivia_winnings > 0
+                    ? "bg-green-100"
                     : ""
                 }`}
               >
@@ -168,9 +176,7 @@ export default function StandingsPage() {
                   {player.display_name}
                 </div>
                 <div className="px-6 py-3 text-center col-span-4">
-                  {activeTab === "main"
-                    ? player.match_winnings
-                    : player.trivia_winnings}
+                  {player.trivia_winnings}
                 </div>
               </div>
             ))}
