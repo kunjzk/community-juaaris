@@ -12,7 +12,7 @@ export const getTriviaWithMatchTime = async () => {
     SELECT t.*, m.datetime as match_datetime 
     FROM trivia t
     JOIN new_matches m ON t.match_id = m.id
-    ORDER BY m.datetime DESC
+    ORDER BY m.datetime ASC
   `;
   return query(sql);
 };
