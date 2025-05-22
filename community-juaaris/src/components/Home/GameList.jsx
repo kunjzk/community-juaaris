@@ -31,11 +31,11 @@ function GameList() {
     setMostRecentSunday(mostRecentSunday);
     setNextSaturday(nextSaturday);
 
-    const backfillStartDate = new Date("2025-04-05");
-    const backfillEndDate = new Date("2025-05-07");
+    // const backfillStartDate = new Date("2025-04-05");
+    // const backfillEndDate = new Date("2025-05-07");
 
-    setStartDate(backfillStartDate);
-    setEndDate(backfillEndDate);
+    // setStartDate(backfillStartDate);
+    // setEndDate(backfillEndDate);
   }, []); // Empty dependency array means this only runs once on mount
 
   // Fetch matches for the current week
