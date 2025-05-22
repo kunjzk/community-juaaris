@@ -170,10 +170,11 @@ export async function resetMatchResult(matchId) {
       );
     }
 
-    // Step 3: Remove win history entries
-    await query("DELETE FROM new_juaari_win_history WHERE match_id = $1", [
-      matchId,
-    ]);
+    // Step 3: Update win history entries instead of removing them
+    await query(
+      "UPDATE new_juaari_win_history SET delta_winnings_this_game = NULL WHERE match_id = $1",
+      [matchId]
+    );
 
     // Step 4: Reset bets
     await query("UPDATE new_bets SET successful = NULL WHERE match_id = $1", [

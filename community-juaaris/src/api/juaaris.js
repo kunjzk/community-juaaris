@@ -10,15 +10,20 @@ export async function getJuaarisAndWinnings() {
   return query(sql);
 }
 
-export async function updateTotalWinnings(
+export async function updateTotalMatchWinnings(
   winnerIds,
   netWinningsPerWinner,
   bet_amount
 ) {
-  const sql = `UPDATE new_juaaris SET winnings = CASE
-    WHEN id = ANY($1) THEN winnings + $2
-    ELSE winnings - $3
-  END`;
+  const sql = `UPDATE new_juaaris SET 
+    winnings = CASE
+      WHEN id = ANY($1) THEN winnings + $2
+      ELSE winnings - $3
+    END,
+    match_winnings = CASE
+      WHEN id = ANY($1) THEN match_winnings + $2
+      ELSE match_winnings - $3
+    END`;
   return query(sql, [winnerIds, netWinningsPerWinner, bet_amount]);
 }
 

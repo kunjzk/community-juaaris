@@ -148,7 +148,8 @@ export const updateTotalWinningsForTrivia = async (triviaId) => {
   for (const result of winHistoryResults) {
     const updateWinningsSql = `
       UPDATE new_juaaris
-      SET winnings = winnings + $1
+      SET winnings = winnings + $1,
+          trivia_winnings = trivia_winnings + $1
       WHERE id = $2
     `;
     await query(updateWinningsSql, [
