@@ -8,6 +8,17 @@ export const getBetsForGame = async (matchId) => {
   return query(sql, [matchId]);
 };
 
+// Add a debug function to check bet status
+export const checkBetsStatus = async (matchId) => {
+  const sql = `
+    SELECT id, juaari_id, predicted_winning_team, predicted_more_or_less, successful
+    FROM new_bets
+    WHERE match_id = $1
+    ORDER BY juaari_id
+  `;
+  return query(sql, [matchId]);
+};
+
 export const updateBet = async (betId, team, option) => {
   const sql = `
     UPDATE new_bets
@@ -37,12 +48,35 @@ export const updateSuccessfulColumnInBetsTable = async (
   winningTeam,
   moreOrLess
 ) => {
+  console.log(`DEBUG: Updating bets for match ${matchId}`);
+  console.log(`DEBUG: Winning team: ${winningTeam}`);
+  console.log(`DEBUG: More or Less: ${moreOrLess}`);
+
+  // Check bets before update
+  console.log(`DEBUG: Bets before update:`);
+  const beforeBets = await checkBetsStatus(matchId);
+  console.log(beforeBets);
+
   const sql = `
     UPDATE new_bets
-    SET successful = TRUE
-    WHERE match_id = $1 AND predicted_winning_team = $2 AND predicted_more_or_less = $3
+    SET successful = CASE
+      WHEN predicted_winning_team = $2 AND predicted_more_or_less = $3 THEN TRUE
+      ELSE FALSE
+    END
+    WHERE match_id = $1
   `;
-  return query(sql, [matchId, winningTeam, moreOrLess]);
+  console.log(`DEBUG: SQL: ${sql}`);
+  console.log(`DEBUG: Parameters: [${matchId}, ${winningTeam}, ${moreOrLess}]`);
+
+  const result = await query(sql, [matchId, winningTeam, moreOrLess]);
+  console.log(`DEBUG: Update result:`, result);
+
+  // Check bets after update
+  console.log(`DEBUG: Bets after update:`);
+  const afterBets = await checkBetsStatus(matchId);
+  console.log(afterBets);
+
+  return result;
 };
 
 export const getWinnerIDs = async (matchId) => {
@@ -107,10 +141,83 @@ export const updateSuccessfulColumnInBetsTableForInvalid = async (
   matchId,
   winningTeam
 ) => {
+  console.log(`DEBUG (INVALID): Updating bets for match ${matchId}`);
+  console.log(`DEBUG (INVALID): Winning team: ${winningTeam}`);
+
+  // Check bets before update
+  console.log(`DEBUG (INVALID): Bets before update:`);
+  const beforeBets = await checkBetsStatus(matchId);
+  console.log(beforeBets);
+
   const sql = `
     UPDATE new_bets
     SET successful = (predicted_winning_team = $2)
     WHERE match_id = $1
   `;
-  return query(sql, [matchId, winningTeam]);
+  console.log(`DEBUG (INVALID): SQL: ${sql}`);
+  console.log(`DEBUG (INVALID): Parameters: [${matchId}, ${winningTeam}]`);
+
+  const result = await query(sql, [matchId, winningTeam]);
+  console.log(`DEBUG (INVALID): Update result:`, result);
+
+  // Check bets after update
+  console.log(`DEBUG (INVALID): Bets after update:`);
+  const afterBets = await checkBetsStatus(matchId);
+  console.log(afterBets);
+
+  return result;
+};
+
+export const checkNullSuccessfulBets = async (matchId) => {
+  const sql = `
+    SELECT id, juaari_id, predicted_winning_team, predicted_more_or_less, successful
+    FROM new_bets
+    WHERE match_id = $1 AND successful IS NULL
+  `;
+  return query(sql, [matchId]);
+};
+
+export const setNonWinnersToFalse = async (
+  matchId,
+  winningTeam,
+  moreOrLess
+) => {
+  console.log(`DEBUG: Setting non-winners to FALSE for match ${matchId}`);
+  console.log(`DEBUG: Winning team: ${winningTeam}`);
+  console.log(`DEBUG: More or Less: ${moreOrLess}`);
+
+  const sql = `
+    UPDATE new_bets
+    SET successful = FALSE
+    WHERE match_id = $1 
+    AND (predicted_winning_team != $2 OR predicted_more_or_less != $3)
+  `;
+  console.log(`DEBUG: SQL: ${sql}`);
+  console.log(`DEBUG: Parameters: [${matchId}, ${winningTeam}, ${moreOrLess}]`);
+
+  const result = await query(sql, [matchId, winningTeam, moreOrLess]);
+  console.log(`DEBUG: Update result:`, result);
+
+  return result;
+};
+
+export const setNonWinnersToFalseForInvalid = async (matchId, winningTeam) => {
+  console.log(
+    `DEBUG (INVALID): Setting non-winners to FALSE for match ${matchId}`
+  );
+  console.log(`DEBUG (INVALID): Winning team: ${winningTeam}`);
+
+  const sql = `
+    UPDATE new_bets
+    SET successful = FALSE
+    WHERE match_id = $1 
+    AND predicted_winning_team != $2
+  `;
+  console.log(`DEBUG (INVALID): SQL: ${sql}`);
+  console.log(`DEBUG (INVALID): Parameters: [${matchId}, ${winningTeam}]`);
+
+  const result = await query(sql, [matchId, winningTeam]);
+  console.log(`DEBUG (INVALID): Update result:`, result);
+
+  return result;
 };

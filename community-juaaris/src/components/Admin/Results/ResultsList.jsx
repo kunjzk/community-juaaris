@@ -7,6 +7,10 @@ import {
   allBetsUnsuccessful,
   updateNetWinnings,
   updateSuccessfulColumnInBetsTableForInvalid,
+  checkNullSuccessfulBets,
+  checkBetsStatus,
+  setNonWinnersToFalse,
+  setNonWinnersToFalseForInvalid,
 } from "../../../api/bets";
 import {
   saveResult,
@@ -29,6 +33,13 @@ const saveMatchResultAndCalculateAllWinnings = async (
   bet_amount,
   match_datetime
 ) => {
+  console.log(
+    `DEBUG: saveMatchResultAndCalculateAllWinnings for match ${matchId}`
+  );
+  console.log(
+    `DEBUG: Parameters - winningTeam: ${winningTeam}, totalScore: ${totalScore}, more_or_less: ${more_or_less}, washout: ${washout}`
+  );
+
   // 1. Save the result of the match
   try {
     console.log("RESULT POST: Saving result to database");
@@ -65,6 +76,7 @@ const saveMatchResultAndCalculateAllWinnings = async (
     }
     // Set bet amount to 0 in matches table (note we're already getting a 0 value from the card)
     try {
+      console.log("RESULT POST: Setting all bets to unsuccessful");
       await allBetsUnsuccessful(matchId);
     } catch (error) {
       console.error(
@@ -90,7 +102,35 @@ const saveMatchResultAndCalculateAllWinnings = async (
     );
     // Update successful column based only on winning team
     try {
+      console.log(
+        `DEBUG: Calling updateSuccessfulColumnInBetsTableForInvalid with matchId=${matchId}, winningTeam=${winningTeam}`
+      );
+
+      // Check for NULL successful values
+      console.log("DEBUG: Checking for NULL successful values before update");
+      const nullBets = await checkNullSuccessfulBets(matchId);
+      console.log("DEBUG: Bets with NULL successful:", nullBets);
+
+      // Check all bets status
+      console.log("DEBUG: All bets status before update:");
+      const allBets = await checkBetsStatus(matchId);
+      console.log(allBets);
+
+      // First update - using predicted_winning_team = $2
       await updateSuccessfulColumnInBetsTableForInvalid(matchId, winningTeam);
+
+      // Second update - explicitly set non-winners to FALSE to ensure it happens
+      console.log(
+        "DEBUG: Running second update to explicitly set non-winners to FALSE for INVALID case"
+      );
+      await setNonWinnersToFalseForInvalid(matchId, winningTeam);
+
+      // Check final bets status
+      console.log(
+        "DEBUG: Final bets status after both updates for INVALID case:"
+      );
+      const finalBets = await checkBetsStatus(matchId);
+      console.log(finalBets);
     } catch (error) {
       console.error(
         "RESULT POST: Error updating successful column for invalid more/less:",
@@ -105,11 +145,37 @@ const saveMatchResultAndCalculateAllWinnings = async (
     // 2. Update the "successful" column in the bets table
     try {
       console.log("RESULT POST: Updating successful column in bets table");
+      console.log(
+        `DEBUG: Calling updateSuccessfulColumnInBetsTable with matchId=${matchId}, winningTeam=${winningTeam}, more_or_less=${more_or_less}`
+      );
+
+      // Check for NULL successful values
+      // console.log("DEBUG: Checking for NULL successful values before update");
+      // const nullBets = await checkNullSuccessfulBets(matchId);
+      // console.log("DEBUG: Bets with NULL successful:", nullBets);
+
+      // Check all bets status
+      console.log("DEBUG: All bets status before update:");
+      const allBets = await checkBetsStatus(matchId);
+      console.log(allBets);
+
+      // First update - using CASE expression
       await updateSuccessfulColumnInBetsTable(
         matchId,
         winningTeam,
         more_or_less
       );
+
+      // // Second update - explicitly set non-winners to FALSE to ensure it happens
+      // console.log(
+      //   "DEBUG: Running second update to explicitly set non-winners to FALSE"
+      // );
+      // await setNonWinnersToFalse(matchId, winningTeam, more_or_less);
+
+      // Check final bets status
+      console.log("DEBUG: Final bets status after both updates:");
+      const finalBets = await checkBetsStatus(matchId);
+      console.log(finalBets);
     } catch (error) {
       console.error(
         "RESULT POST: Error updating successful column in bets table:",

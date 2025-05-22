@@ -42,9 +42,18 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
   }, [result]);
 
   const handleSaveResult = () => {
-    // console.log("Saving result for match id: ", matchId);
+    console.log(`DEBUG ResultsCard: Saving result for match id: ${matchId}`);
+    console.log(
+      `DEBUG ResultsCard: washoutBool=${washoutBool}, type=${typeof washoutBool}`
+    );
+    console.log(
+      `DEBUG ResultsCard: secondDimValidBool=${secondDimValidBool}, type=${typeof secondDimValidBool}`
+    );
+    console.log(
+      `DEBUG ResultsCard: winningTeam=${winningTeam}, totalScore=${totalScore}`
+    );
 
-    if (washoutBool === "true") {
+    if (washoutBool === true) {
       // If washout, set more_or_less to "INVALID"
       console.log("WASHOUT for Match ID: ", matchId);
       console.log("Washout value is: ", washoutBool);
@@ -64,7 +73,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
       console.log("Washout value is: ", washoutBool);
       console.log("Washout type is: ", typeof washoutBool);
       // Input validation
-      if (!winningTeam || !totalScore || !secondDimValidBool) {
+      if (!winningTeam || !totalScore || secondDimValidBool === false) {
         alert(
           "Missing required fields: winning team, total score, or second dimension valid"
         );
@@ -75,7 +84,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
       let moreOrLess = "";
       if (secondDimValidBool === true) {
         const second_dim_threshold = secondDimensionCutoff;
-        if (totalScore > second_dim_threshold) {
+        if (parseInt(totalScore) > second_dim_threshold) {
           moreOrLess = "MORE";
         } else {
           moreOrLess = "LESS";
@@ -83,6 +92,8 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
       } else {
         moreOrLess = "INVALID";
       }
+
+      console.log(`DEBUG ResultsCard: Calculated moreOrLess=${moreOrLess}`);
 
       // Update the result
       submitResult({
@@ -147,18 +158,18 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
               </div>
               <select
                 className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[120px] sm:w-[140px]"
-                value={washoutBool}
+                value={String(washoutBool)}
                 onChange={(e) => {
                   if (e.target.value === "true") {
                     alert(
                       "Be careful, if washout is True then there is no result for this game. If you are 100% sure, close this warning and click save result. Otherwise, close this warning and select False for washout."
                     );
                   }
-                  setWashoutBool(e.target.value);
+                  setWashoutBool(e.target.value === "true");
                 }}
               >
-                <option value={false}>False</option>
-                <option value={true}>True</option>
+                <option value="false">False</option>
+                <option value="true">True</option>
               </select>
             </div>
 
@@ -205,11 +216,13 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
               </div>
               <select
                 className="border border-gray-300 rounded px-2 sm:px-3 py-1 sm:py-2 w-[120px] sm:w-[140px]"
-                value={secondDimValidBool}
-                onChange={(e) => setSecondDimValidBool(e.target.value)}
+                value={String(secondDimValidBool)}
+                onChange={(e) =>
+                  setSecondDimValidBool(e.target.value === "true")
+                }
               >
-                <option value={false}>False</option>
-                <option value={true}>True</option>
+                <option value="false">False</option>
+                <option value="true">True</option>
               </select>
             </div>
 
