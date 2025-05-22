@@ -56,7 +56,7 @@ function BetsList() {
   useEffect(() => {
     const checkCutoff = () => {
       let cutoffTime = new Date(match.datetime);
-      cutoffTime.setHours(cutoffTime.getHours() + 20000);
+      cutoffTime.setHours(cutoffTime.getHours() - 2);
       console.log("Cutoff time:", cutoffTime);
       const now = new Date();
       if (now > cutoffTime) {
