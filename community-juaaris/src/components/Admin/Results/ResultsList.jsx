@@ -9,7 +9,6 @@ import {
   updateSuccessfulColumnInBetsTableForInvalid,
   checkNullSuccessfulBets,
   checkBetsStatus,
-  setNonWinnersToFalse,
   setNonWinnersToFalseForInvalid,
 } from "../../../api/bets";
 import {
@@ -19,7 +18,7 @@ import {
 } from "../../../api/matches";
 import {
   getJuaarisAndWinnings,
-  updateTotalWinnings,
+  updateTotalMatchWinnings,
   updateOrangeCap,
   updatePurpleCap,
 } from "../../../api/juaaris";
@@ -235,7 +234,7 @@ const saveMatchResultAndCalculateAllWinnings = async (
   // 6. Update total winnings for juaaris
   try {
     console.log("RESULT POST: Updating total winnings for all juaaris");
-    await updateTotalWinnings(winnerIds, netWinningsPerWinner, bet_amount);
+    await updateTotalMatchWinnings(winnerIds, netWinningsPerWinner, bet_amount);
   } catch (error) {
     console.error("RESULT POST: Error updating total winnings:", error);
     alert("RESULT POST: Error updating total winnings, please tell Kunal");
