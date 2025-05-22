@@ -112,7 +112,7 @@ export default function StandingsPage() {
                     : index === currentStandings.length - 1
                     ? "bg-orange-200"
                     : player.match_winnings < 0
-                    ? "bg-red-50"
+                    ? "bg-red-100"
                     : player.match_winnings > 0
                     ? "bg-green-50"
                     : ""
@@ -163,7 +163,7 @@ export default function StandingsPage() {
                     : index === currentStandings.length - 1
                     ? "bg-orange-200"
                     : player.trivia_winnings < 0
-                    ? "bg-red-50"
+                    ? "bg-red-100"
                     : player.trivia_winnings > 0
                     ? "bg-green-50"
                     : ""
