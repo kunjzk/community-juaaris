@@ -115,7 +115,7 @@ function UpcomingTrivia() {
       }
 
       const cutoffDate = new Date(matchDate);
-      cutoffDate.setHours(matchDate.getHours() + 2000);
+      cutoffDate.setHours(matchDate.getHours() - 2);
 
       return cutoffDate;
     } catch (error) {
