@@ -21,7 +21,7 @@ function GameList() {
 
     // Calculate most recent Sunday
     const mostRecentSunday = new Date(today);
-    mostRecentSunday.setDate(today.getDate() - currentDay);
+    mostRecentSunday.setDate(today.getDate() - currentDay - 1);
     mostRecentSunday.setHours(0, 0, 0, 0);
 
     // Calculate next Saturday
