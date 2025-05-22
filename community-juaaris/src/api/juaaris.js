@@ -6,7 +6,7 @@ export async function getJuaaris() {
 }
 
 export async function getJuaarisAndWinnings() {
-  const sql = `SELECT id, display_name, winnings FROM new_juaaris ORDER BY winnings DESC`;
+  const sql = `SELECT id, display_name, winnings, match_winnings, trivia_winnings FROM new_juaaris ORDER BY winnings DESC`;
   return query(sql);
 }
 
