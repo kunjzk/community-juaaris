@@ -154,7 +154,8 @@ function AddMatches() {
         : `${gmtHours12}:${gmtMinutes.toString().padStart(2, "0")} ${gmtAmpm}`;
 
     // Combine all parts
-    return `${day} ${month}, ${localTimeStr} (Local) [${gmtTimeStr} GMT]`;
+    // return `${day} ${month}, ${localTimeStr} (Local) [${gmtTimeStr} GMT]`;
+    return `${day} ${month}, ${localTimeStr} (Local)`;
   };
 
   return (
@@ -279,44 +280,41 @@ function AddMatches() {
         <div className="mt-12">
           <h3 className="text-3xl font-serif mb-8">Recent Matches</h3>
 
-          {/* Table Header */}
-          <div className="bg-gray-100 rounded-t-lg border border-gray-200 grid grid-cols-12 font-medium text-gray-700">
-            <div className="px-3 py-3 border-r border-gray-200 text-center col-span-1">
-              ID
-            </div>
-            <div className="px-3 py-3 border-r border-gray-200 text-center col-span-4">
-              Teams
-            </div>
-            <div className="px-3 py-3 border-r border-gray-200 text-center col-span-3">
-              Venue
-            </div>
-            <div className="px-3 py-3 border-r border-gray-200 text-center col-span-3">
-              Date/Time
-            </div>
-            <div className="px-3 py-3 text-center col-span-1">Bet</div>
-          </div>
-
-          {/* Table Body */}
-          <div className="rounded-b-lg overflow-hidden border-x border-b border-gray-200 bg-white">
+          <div className="space-y-4">
             {recentMatches.map((match) => (
               <div
                 key={match.id}
-                className="grid grid-cols-12 border-t border-gray-200"
+                className="rounded-xl border border-gray-200 bg-white p-4"
               >
-                <div className="px-3 py-3 border-r border-gray-200 text-center col-span-1">
-                  {match.id}
-                </div>
-                <div className="px-3 py-3 border-r border-gray-200 text-center col-span-4">
-                  {match.first_team_name} vs {match.second_team_name}
-                </div>
-                <div className="px-3 py-3 border-r border-gray-200 text-center col-span-3">
-                  {match.venue_name}
-                </div>
-                <div className="px-3 py-3 border-r border-gray-200 text-center col-span-3">
-                  {formatDate(match.datetime)}
-                </div>
-                <div className="px-3 py-3 text-center col-span-1">
-                  {match.bet_amount}
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 mb-1">ID</div>
+                    <div className="font-medium text-sm">{match.id}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 mb-1">Teams</div>
+                    <div className="font-medium text-sm">
+                      {match.first_team_name} vs {match.second_team_name}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 mb-1">Venue</div>
+                    <div className="font-medium text-sm">
+                      {match.venue_name}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 mb-1">Date/Time</div>
+                    <div className="font-medium text-sm">
+                      {formatDate(match.datetime)}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 mb-1">Bet Amount</div>
+                    <div className="font-medium text-sm">
+                      {match.bet_amount}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

@@ -343,66 +343,75 @@ function EditTrivia() {
               No upcoming trivia found
             </div>
           ) : (
-            <>
-              {/* Table Header */}
-              <div className="bg-gray-100 rounded-t-lg border border-gray-200 grid grid-cols-12 font-medium text-gray-700">
-                <div className="px-2 py-3 border-r border-gray-200 text-center col-span-1">
-                  ID
-                </div>
-                <div className="px-2 py-3 border-r border-gray-200 text-center col-span-3">
-                  Match
-                </div>
-                <div className="px-2 py-3 border-r border-gray-200 text-center col-span-3">
-                  Question
-                </div>
-                <div className="px-2 py-3 border-r border-gray-200 text-center col-span-3">
-                  Options
-                </div>
-                <div className="px-2 py-3 border-r border-gray-200 text-center col-span-1">
-                  Bet Amount
-                </div>
-                <div className="px-2 py-3 text-center col-span-1">Actions</div>
-              </div>
-
-              {/* Table Body */}
-              <div className="rounded-b-lg overflow-hidden border-x border-b border-gray-200 bg-white">
-                {triviaList.map((trivia) => (
-                  <div
-                    key={trivia.id}
-                    className="grid grid-cols-12 border-t border-gray-200"
-                  >
-                    <div className="px-2 py-3 border-r border-gray-200 text-center col-span-1">
-                      {trivia.id}
+            <div className="space-y-4">
+              {triviaList.map((trivia) => (
+                <div
+                  key={trivia.id}
+                  className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col sm:flex-row items-start sm:items-center"
+                >
+                  <div className="grid grid-cols-4 sm:grid-cols-9 gap-4 flex-1 w-full mb-4 sm:mb-0">
+                    <div className="text-center">
+                      <div className="text-xs text-gray-500 mb-1">ID</div>
+                      <div className="font-medium text-sm">{trivia.id}</div>
                     </div>
-                    <div className="px-2 py-3 border-r border-gray-200 text-center col-span-3">
-                      {trivia.match_name.split(" - ")[0]}
-                    </div>
-                    <div className="px-2 py-3 border-r border-gray-200 text-center col-span-3 overflow-hidden text-ellipsis">
-                      {formatPreview(trivia.question)}
-                    </div>
-                    <div className="px-2 py-3 border-r border-gray-200 text-center col-span-3">
-                      <div className="flex flex-wrap gap-1 text-sm">
-                        <span>A: {formatPreview(trivia.option_a)}</span>
-                        <span>B: {formatPreview(trivia.option_b)}</span>
-                        <span>C: {formatPreview(trivia.option_c)}</span>
-                        <span>D: {formatPreview(trivia.option_d)}</span>
+                    <div className="text-center">
+                      <div className="text-xs text-gray-500 mb-1">Match</div>
+                      <div className="font-medium text-sm">
+                        {trivia.match_name
+                          ? trivia.match_name.split(" - ")[0]
+                          : ""}
                       </div>
                     </div>
-                    <div className="px-2 py-3 border-r border-gray-200 text-center col-span-1">
-                      {trivia.bet_amount}
+                    <div className="text-center sm:col-span-2">
+                      <div className="text-xs text-gray-500 mb-1">Question</div>
+                      <div className="font-medium text-sm">
+                        {formatPreview(trivia.question)}
+                      </div>
                     </div>
-                    <div className="px-2 py-3 text-center col-span-1">
-                      <button
-                        className="px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-md text-sm"
-                        onClick={() => handleSelectTrivia(trivia)}
-                      >
-                        Edit
-                      </button>
+                    <div className="text-center">
+                      <div className="text-xs text-gray-500 mb-1">Option A</div>
+                      <div className="text-xs">
+                        {formatPreview(trivia.option_a)}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs text-gray-500 mb-1">Option B</div>
+                      <div className="text-xs">
+                        {formatPreview(trivia.option_b)}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs text-gray-500 mb-1">Option C</div>
+                      <div className="text-xs">
+                        {formatPreview(trivia.option_c)}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs text-gray-500 mb-1">Option D</div>
+                      <div className="text-xs">
+                        {formatPreview(trivia.option_d)}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs text-gray-500 mb-1">
+                        Bet Amount
+                      </div>
+                      <div className="font-medium text-sm">
+                        {trivia.bet_amount}
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </>
+                  <div className="w-full sm:w-auto sm:ml-4">
+                    <button
+                      className="w-full sm:w-auto bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2 rounded-md text-sm font-medium"
+                      onClick={() => handleSelectTrivia(trivia)}
+                    >
+                      Edit Trivia
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>

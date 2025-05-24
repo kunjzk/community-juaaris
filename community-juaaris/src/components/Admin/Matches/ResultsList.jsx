@@ -318,7 +318,8 @@ function ResultsList() {
               .padStart(2, "0")} ${gmtAmpm}`;
 
       // Combine all parts
-      return `${day} ${month}, ${localTimeStr} (Local) [${gmtTimeStr} GMT]`;
+      // return `${day} ${month}, ${localTimeStr} (Local) [${gmtTimeStr} GMT]`;
+      return `${day} ${month}, ${localTimeStr} (Local)`;
     } catch (error) {
       console.error("Error formatting date:", error);
       return "Date formatting error";
