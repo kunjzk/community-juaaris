@@ -5,33 +5,31 @@ import { useMatchesContext } from "../../contexts/matches";
 function GameList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [mostRecentSunday, setMostRecentSunday] = useState(null);
+  const [mostRecentSaturday, setMostRecentSaturday] = useState(null);
   const [nextSaturday, setNextSaturday] = useState(null);
   const { matches, setStartDate, setEndDate, refreshMatches } =
     useMatchesContext();
 
   useEffect(() => {
-    // Get the date of the most recent sunday, relative to the current date.
-    // For example if today is 6/4, the most recent sunday is 6/4.
-    // If today is 5/4, the most recent sunday is 30/3.
-    // subtract one day from the current date
-    // Calculate most recent Sunday and next Sunday
+    // Calculate most recent Saturday and next Saturday
     const today = new Date();
-    const currentDay = today.getDay(); // 0 is Sunday, 1 is Monday, etc.
+    const currentDay = today.getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
 
-    // Calculate most recent Sunday
-    const mostRecentSunday = new Date(today);
-    mostRecentSunday.setDate(today.getDate() - currentDay - 1);
-    mostRecentSunday.setHours(0, 0, 0, 0);
+    // Calculate most recent Saturday
+    const mostRecentSaturday = new Date(today);
+    // If today is Saturday (6), go back 0 days. Otherwise, go back (currentDay + 1) days
+    const daysToGoBack = currentDay === 6 ? 0 : (currentDay + 1) % 7;
+    mostRecentSaturday.setDate(today.getDate() - daysToGoBack);
+    mostRecentSaturday.setHours(0, 0, 0, 0);
 
     // Calculate next Saturday
-    const nextSaturday = new Date(mostRecentSunday);
-    nextSaturday.setDate(mostRecentSunday.getDate() + 7);
+    const nextSaturday = new Date(mostRecentSaturday);
+    nextSaturday.setDate(mostRecentSaturday.getDate() + 7);
 
-    setMostRecentSunday(mostRecentSunday);
+    setMostRecentSaturday(mostRecentSaturday);
     setNextSaturday(nextSaturday);
 
-    setStartDate(mostRecentSunday);
+    setStartDate(mostRecentSaturday);
     setEndDate(nextSaturday);
   }, []); // Empty dependency array means this only runs once on mount
 
@@ -61,7 +59,7 @@ function GameList() {
     return () => {
       isMounted = false;
     };
-  }, [mostRecentSunday, nextSaturday]);
+  }, [mostRecentSaturday, nextSaturday]);
 
   // Format date and time for display
   const formatDateTime = (dateTimeString) => {
@@ -81,13 +79,35 @@ function GameList() {
         return "Invalid date";
       }
 
-      // Format the date and time
+      // Format the day and month
       const day = date.getDate();
-      const month = date.getMonth() + 1; // Months are 0-indexed
-      const hours = date.getHours();
-      const minutes = date.getMinutes().toString().padStart(2, "0");
+      const month = date.toLocaleString("en-US", { month: "short" });
 
-      return `${day}/${month}/25, ${hours}:${minutes} SGT`;
+      // Format local time in 12-hour format with AM/PM
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
+      const hours12 = hours % 12 || 12;
+      const localTimeStr =
+        minutes === 0
+          ? `${hours12} ${ampm}`
+          : `${hours12}:${minutes.toString().padStart(2, "0")} ${ampm}`;
+
+      // Format GMT time in 12-hour format
+      const gmtDate = new Date(date.toISOString());
+      const gmtHours = gmtDate.getUTCHours();
+      const gmtMinutes = gmtDate.getUTCMinutes();
+      const gmtAmpm = gmtHours >= 12 ? "PM" : "AM";
+      const gmtHours12 = gmtHours % 12 || 12;
+      const gmtTimeStr =
+        gmtMinutes === 0
+          ? `${gmtHours12} ${gmtAmpm}`
+          : `${gmtHours12}:${gmtMinutes
+              .toString()
+              .padStart(2, "0")} ${gmtAmpm}`;
+
+      // Combine all parts
+      return `${day} ${month}, ${localTimeStr} (Local) [${gmtTimeStr} GMT]`;
     } catch (error) {
       console.error("Error formatting date:", error);
       return "Date formatting error";
@@ -145,9 +165,9 @@ function GameList() {
         <h2 className="text-2xl sm:text-4xl font-medium mb-2 sm:mb-0 sm:mr-6">
           This week's games
         </h2>
-        {mostRecentSunday && nextSaturday && (
+        {mostRecentSaturday && nextSaturday && (
           <span className="text-sm sm:text-base text-gray-700">
-            {mostRecentSunday
+            {mostRecentSaturday
               .toLocaleDateString("en-GB", {
                 weekday: "long",
                 day: "numeric",

@@ -6,6 +6,7 @@ function CreateTrivia() {
   const { matches, getMatchById } = useMatchesContext();
   const [triviaHistory, setTriviaHistory] = useState([]);
   const [refreshTrivia, setRefreshTrivia] = useState(false);
+  const [upcomingMatches, setUpcomingMatches] = useState([]);
 
   // Form state
   const [selectedMatchId, setSelectedMatchId] = useState(0);
@@ -17,12 +18,17 @@ function CreateTrivia() {
   const [betAmount, setBetAmount] = useState(0);
 
   useEffect(() => {
+    // Filter matches to only include upcoming ones (datetime in the future)
+    const now = new Date();
+    const filtered = matches.filter((match) => new Date(match.datetime) > now);
+    setUpcomingMatches(filtered);
+
     const fetchTrivia = async () => {
       const triviaData = await getTriviaHistory();
       setTriviaHistory(triviaData);
     };
     fetchTrivia();
-  }, [refreshTrivia]);
+  }, [refreshTrivia, matches]);
 
   const handleCreateTrivia = async () => {
     if (!selectedMatchId) {
@@ -42,24 +48,27 @@ function CreateTrivia() {
       alert("All options must be filled");
       return;
     }
-    console.log("Selected match ID: ", selectedMatchId);
+
     const match = getMatchById(selectedMatchId);
-    console.log("MATCH: ", match);
+    if (!match) {
+      alert("Selected match not found");
+      return;
+    }
+
+    // Double-check that the match is still in the future
+    const matchDate = new Date(match.datetime);
+    const now = new Date();
+    if (matchDate <= now) {
+      alert("You can only create trivia for upcoming matches");
+      return;
+    }
+
     let matchNameStr =
       match.first_team_name +
       " vs " +
       match.second_team_name +
       " - " +
       new Date(match.datetime).toLocaleDateString();
-    console.log(matchNameStr);
-    console.log("Selected match: ", selectedMatchId);
-    console.log("Question: ", question);
-    console.log("option a: ", optionA);
-    console.log("option b: ", optionB);
-    console.log("option c: ", optionC);
-    console.log("option d: ", optionD);
-    console.log("Bet amount: ", betAmount);
-    console.log("Match Name String: ", matchNameStr);
 
     await createTrivia(
       selectedMatchId,
@@ -84,6 +93,18 @@ function CreateTrivia() {
     setRefreshTrivia(!refreshTrivia);
   };
 
+  // Add a function to format dates with timezone info
+  const formatDateWithTimezone = (dateString) => {
+    // Database has UTC time, but we display in user's local timezone
+    const date = new Date(dateString);
+
+    // Extract just the time portion in 24-hour format
+    const timeStr = date.toISOString().slice(11, 16); // HH:MM format
+
+    // For admin purposes, we'll display local time with GMT reference
+    return date.toLocaleString() + ` (Local) [${timeStr} GMT]`;
+  };
+
   return (
     <>
       <div>
@@ -94,7 +115,7 @@ function CreateTrivia() {
             {/* Match Selection */}
             <div className="mb-4">
               <label className="block text-base sm:text-xl mb-2">
-                Select Match
+                Select Upcoming Match
               </label>
               <select
                 className="w-full border border-gray-300 rounded px-3 py-2"
@@ -102,13 +123,21 @@ function CreateTrivia() {
                 onChange={(e) => setSelectedMatchId(Number(e.target.value))}
               >
                 <option value="">Select a match</option>
-                {matches.map((match) => (
-                  <option key={match.id} value={match.id}>
-                    {match.first_team_name} vs {match.second_team_name} -{" "}
-                    {new Date(match.datetime).toLocaleDateString()}
-                  </option>
-                ))}
+                {upcomingMatches.length > 0 ? (
+                  upcomingMatches.map((match) => (
+                    <option key={match.id} value={match.id}>
+                      {match.first_team_name} vs {match.second_team_name} -{" "}
+                      {formatDateWithTimezone(match.datetime)}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No upcoming matches available</option>
+                )}
               </select>
+              <p className="text-sm text-gray-500 mt-1">
+                Only upcoming matches are shown. You cannot create trivia for
+                past matches.
+              </p>
             </div>
 
             {/* Question Input */}
@@ -194,6 +223,7 @@ function CreateTrivia() {
               <button
                 className="w-full bg-[#27ae60] hover:bg-[#2ecc71] text-white py-2 rounded-md font-medium mt-6"
                 onClick={handleCreateTrivia}
+                disabled={upcomingMatches.length === 0}
               >
                 Create Trivia
               </button>
@@ -207,34 +237,50 @@ function CreateTrivia() {
 
           {/* Table Header */}
           <div className="bg-gray-100 rounded-t-lg border border-gray-200 grid grid-cols-12 font-medium text-gray-700">
-            <div className="px-3 py-3 border-r border-gray-200 text-center col-span-3">
+            <div className="px-3 py-3 border-r border-gray-200 text-center col-span-2">
               Match
             </div>
-            <div className="px-6 py-3 border-r border-gray-200 text-center col-span-6">
+            <div className="px-3 py-3 border-r border-gray-200 text-center col-span-5">
               Question
             </div>
-            <div className="px-6 py-3 text-center col-span-3">Options</div>
+            <div className="px-3 py-3 border-r border-gray-200 text-center col-span-3">
+              Options
+            </div>
+            <div className="px-3 py-3 text-center col-span-2">Bet Amount</div>
           </div>
 
           {/* Table Body */}
           <div className="rounded-b-lg overflow-hidden border-x border-b border-gray-200 bg-white">
-            {triviaHistory.map((trivia) => (
-              <div
-                key={trivia.id}
-                className="grid grid-cols-12 border-t border-gray-200"
-              >
-                <div className="px-6 py-3 border-r border-gray-200 text-center col-span-3">
-                  {trivia.match_name}
+            {triviaHistory.length > 0 ? (
+              triviaHistory.map((trivia) => (
+                <div
+                  key={trivia.id}
+                  className="grid grid-cols-12 border-t border-gray-200"
+                >
+                  <div className="px-3 py-3 border-r border-gray-200 text-center col-span-2">
+                    {trivia.match_name ? trivia.match_name.split(" - ")[0] : ""}
+                  </div>
+                  <div className="px-3 py-3 border-r border-gray-200 text-center col-span-5">
+                    {trivia.question}
+                  </div>
+                  <div className="px-3 py-3 border-r border-gray-200 text-center col-span-3">
+                    <div className="flex flex-wrap gap-1 text-sm">
+                      <span>A: {trivia.option_a}</span>
+                      <span>B: {trivia.option_b}</span>
+                      <span>C: {trivia.option_c}</span>
+                      <span>D: {trivia.option_d}</span>
+                    </div>
+                  </div>
+                  <div className="px-3 py-3 text-center col-span-2">
+                    {trivia.bet_amount}
+                  </div>
                 </div>
-                <div className="px-6 py-3 border-r border-gray-200 text-center col-span-6">
-                  {trivia.question}
-                </div>
-                <div className="px-6 py-3 text-center col-span-3">
-                  A: {trivia.option_a}, B: {trivia.option_b}, C:{" "}
-                  {trivia.option_c}, D: {trivia.option_d}
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-6 text-gray-500">
+                No trivia questions found
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

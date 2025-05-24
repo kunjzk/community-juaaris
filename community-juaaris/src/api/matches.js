@@ -198,3 +198,140 @@ export async function resetMatchResult(matchId) {
     throw error;
   }
 }
+
+export async function checkMatchIdExists(matchId) {
+  const sql = `
+    SELECT id FROM new_matches 
+    WHERE id = $1
+  `;
+
+  const result = await query(sql, [matchId]);
+  return result.length > 0;
+}
+
+export async function createMatch(
+  matchId,
+  firstTeamId,
+  secondTeamId,
+  venueId,
+  dateTime,
+  betAmount
+) {
+  // Convert SGT to UTC by subtracting 8 hours
+  // The frontend provides datetime in SGT (UTC+8) format
+  const sgtDate = new Date(dateTime);
+  const utcDate = new Date(sgtDate.getTime() - 8 * 60 * 60 * 1000);
+
+  const sql = `
+    INSERT INTO new_matches (
+      id, 
+      first_team_id, 
+      second_team_id, 
+      venue_id, 
+      datetime, 
+      bet_amount, 
+      outcome_winning_team, 
+      outcome_total_score, 
+      outcome_more_or_less, 
+      outcome_washout
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, NULL, NULL, NULL, false)
+  `;
+
+  return query(sql, [
+    matchId,
+    firstTeamId,
+    secondTeamId,
+    venueId,
+    utcDate.toISOString(), // Store as UTC in the database
+    betAmount,
+  ]);
+}
+
+export async function getAllTeams() {
+  const sql = `
+    SELECT id, name FROM new_teams
+    ORDER BY name
+  `;
+
+  return query(sql);
+}
+
+export async function getAllVenues() {
+  const sql = `
+    SELECT id, name FROM new_venues
+    ORDER BY name
+  `;
+
+  return query(sql);
+}
+
+export async function updateMatch(
+  matchId,
+  firstTeamId,
+  secondTeamId,
+  venueId,
+  dateTime,
+  betAmount
+) {
+  // Convert SGT to UTC by subtracting 8 hours
+  // The frontend provides datetime in SGT (UTC+8) format
+  const sgtDate = new Date(dateTime);
+  const utcDate = new Date(sgtDate.getTime() - 8 * 60 * 60 * 1000);
+
+  const sql = `
+    UPDATE new_matches
+    SET first_team_id = $2,
+        second_team_id = $3,
+        venue_id = $4,
+        datetime = $5,
+        bet_amount = $6
+    WHERE id = $1
+  `;
+
+  return query(sql, [
+    matchId,
+    firstTeamId,
+    secondTeamId,
+    venueId,
+    utcDate.toISOString(), // Store as UTC in the database
+    betAmount,
+  ]);
+}
+
+export async function deleteMatch(matchId) {
+  // First, check if there are any bets for this match
+  const checkBetsSql = `
+    SELECT COUNT(*) FROM new_bets WHERE match_id = $1
+  `;
+
+  const betsResult = await query(checkBetsSql, [matchId]);
+  const betCount = parseInt(betsResult[0].count);
+
+  if (betCount > 0) {
+    throw new Error(
+      `Cannot delete match: ${betCount} bets already placed on this match.`
+    );
+  }
+
+  // If no bets, proceed with deletion
+  const sql = `DELETE FROM new_matches WHERE id = $1`;
+  return query(sql, [matchId]);
+}
+
+export async function getUpcomingMatches() {
+  const sql = `
+    SELECT m.*, 
+           t1.name as first_team_name,
+           t2.name as second_team_name,
+           v.name as venue_name
+    FROM new_matches m
+    JOIN new_teams t1 ON m.first_team_id = t1.id
+    JOIN new_teams t2 ON m.second_team_id = t2.id
+    JOIN new_venues v ON m.venue_id = v.id
+    WHERE m.datetime > NOW()
+    ORDER BY m.datetime ASC
+  `;
+
+  return query(sql);
+}

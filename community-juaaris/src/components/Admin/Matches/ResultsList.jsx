@@ -290,13 +290,35 @@ function ResultsList() {
         return "Invalid date";
       }
 
-      // Format the date and time
+      // Format the day and month
       const day = date.getDate();
-      const month = date.getMonth() + 1; // Months are 0-indexed
-      const hours = date.getHours();
-      const minutes = date.getMinutes().toString().padStart(2, "0");
+      const month = date.toLocaleString("en-US", { month: "short" });
 
-      return `${day}/${month}/25, ${hours}:${minutes} SGT`;
+      // Format local time in 12-hour format with AM/PM
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
+      const hours12 = hours % 12 || 12;
+      const localTimeStr =
+        minutes === 0
+          ? `${hours12} ${ampm}`
+          : `${hours12}:${minutes.toString().padStart(2, "0")} ${ampm}`;
+
+      // Format GMT time in 12-hour format
+      const gmtDate = new Date(date.toISOString());
+      const gmtHours = gmtDate.getUTCHours();
+      const gmtMinutes = gmtDate.getUTCMinutes();
+      const gmtAmpm = gmtHours >= 12 ? "PM" : "AM";
+      const gmtHours12 = gmtHours % 12 || 12;
+      const gmtTimeStr =
+        gmtMinutes === 0
+          ? `${gmtHours12} ${gmtAmpm}`
+          : `${gmtHours12}:${gmtMinutes
+              .toString()
+              .padStart(2, "0")} ${gmtAmpm}`;
+
+      // Combine all parts
+      return `${day} ${month}, ${localTimeStr} (Local) [${gmtTimeStr} GMT]`;
     } catch (error) {
       console.error("Error formatting date:", error);
       return "Date formatting error";
