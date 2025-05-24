@@ -85,7 +85,7 @@ function EditTrivia() {
     }
 
     if (!betAmount || betAmount <= 0) {
-      alert("Please enter a valid bet amount");
+      alert("Please enter a valid number of points");
       return;
     }
 
@@ -278,7 +278,7 @@ function EditTrivia() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-base sm:text-xl mb-2">
-                    Bet Amount
+                    Points
                   </label>
                   <input
                     type="number"
@@ -393,9 +393,7 @@ function EditTrivia() {
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-xs text-gray-500 mb-1">
-                        Bet Amount
-                      </div>
+                      <div className="text-xs text-gray-500 mb-1">Points</div>
                       <div className="font-medium text-sm">
                         {trivia.bet_amount}
                       </div>

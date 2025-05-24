@@ -49,16 +49,16 @@ function TriviaBetCard({
 
   const getButtonText = () => {
     if (isCutoffExceeded) {
-      return "Cutoff exceeded, no bets allowed";
+      return "Cutoff exceeded, no predictions allowed";
     }
 
     switch (betState) {
       case BET_STATES.NO_BET:
-        return "Place a Bet";
+        return "Make a prediction";
       case BET_STATES.EDITING:
-        return "Submit Bet";
+        return "Submit prediction";
       case BET_STATES.BET_PLACED:
-        return "Edit Bet";
+        return "Edit prediction";
       default:
         return "";
     }
@@ -67,11 +67,11 @@ function TriviaBetCard({
   const getStatusMessage = () => {
     switch (betState) {
       case BET_STATES.NO_BET:
-        return <span className="text-red-500">No bet placed</span>;
+        return <span className="text-red-500">No prediction made</span>;
       case BET_STATES.BET_PLACED:
         const selectedOption = selectedOptions[juaari.id];
         if (!selectedOption) {
-          return <span className="text-red-500">No bet placed</span>;
+          return <span className="text-red-500">No prediction made</span>;
         }
         return (
           <span className="text-blue-500">

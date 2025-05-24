@@ -75,7 +75,7 @@ function WinnerCard({
             </h3>
             <p className="text-gray-600 mb-3">No winners or losers</p>
             <div className="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-lg font-semibold">
-              Next match is worth double!
+              Next match is double points!
             </div>
           </div>
         ) : (
@@ -100,7 +100,7 @@ function WinnerCard({
               <div className="bg-white p-4 rounded-md shadow-sm">
                 <p className="text-sm text-gray-600">Net Winnings per Winner</p>
                 <p className="text-2xl font-bold text-green-600">
-                  ${netWinningsPerWinner}
+                  {netWinningsPerWinner} Points
                 </p>
               </div>
             </div>

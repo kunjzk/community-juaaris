@@ -97,13 +97,13 @@ function TriviaBets() {
 
   const goToPrevTrivia = () => {
     if (prevTrivia) {
-      navigate(`/triviabets/${prevTrivia.id}`);
+      navigate(`/triviapreds/${prevTrivia.id}`);
     }
   };
 
   const goToNextTrivia = () => {
     if (nextTrivia) {
-      navigate(`/triviabets/${nextTrivia.id}`);
+      navigate(`/triviapreds/${nextTrivia.id}`);
     }
   };
 
@@ -115,8 +115,8 @@ function TriviaBets() {
         [juaariId]: option,
       });
     } catch (error) {
-      console.error("Error creating/updating trivia bet:", error);
-      alert("Failed to save bet. Please try again.");
+      console.error("Error creating/updating trivia pred:", error);
+      alert("Failed to save prediction. Please try again.");
     }
   };
 
@@ -160,7 +160,7 @@ function TriviaBets() {
           <div className="text-lg font-semibold mb-2">{trivia.match_name}</div>
           <div className="mb-2 text-base">{trivia.question}</div>
           <div className="text-sm text-gray-600">
-            Bet Amount: ${trivia.bet_amount}
+            Points: {trivia.bet_amount}
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2 mt-4">

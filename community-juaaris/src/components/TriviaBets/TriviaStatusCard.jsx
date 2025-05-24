@@ -62,7 +62,7 @@ function TriviaStatusCard({ trivia, nextTrivia }) {
             </p>
             {nextTrivia && (
               <p className="text-base text-yellow-700 mt-2">
-                The next trivia is worth ${nextTrivia.bet_amount}
+                The next trivia is worth {nextTrivia.bet_amount} points
               </p>
             )}
           </div>
@@ -104,7 +104,7 @@ function TriviaStatusCard({ trivia, nextTrivia }) {
           <div className="bg-white p-4 rounded-md shadow-sm">
             <p className="text-sm text-gray-600">Net Winnings per Winner</p>
             <p className="text-2xl font-bold text-green-600">
-              ${netWinningsPerWinner}
+              {netWinningsPerWinner} Points
             </p>
           </div>
         </div>

@@ -99,7 +99,7 @@ function EditMatches() {
     }
 
     if (!betAmount || betAmount <= 0) {
-      alert("Please enter a valid bet amount");
+      alert("Please enter a valid number of points");
       return;
     }
 
@@ -277,7 +277,7 @@ function EditMatches() {
               {/* Bet Amount Input */}
               <div className="mb-4">
                 <label className="block text-base sm:text-xl mb-2">
-                  Bet Amount
+                  Points
                 </label>
                 <input
                   type="number"
@@ -371,9 +371,7 @@ function EditMatches() {
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-xs text-gray-500 mb-1">
-                        Bet Amount
-                      </div>
+                      <div className="text-xs text-gray-500 mb-1">Points</div>
                       <div className="font-medium text-sm">
                         {match.bet_amount}
                       </div>

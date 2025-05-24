@@ -87,7 +87,7 @@ export default function StandingsPage() {
         <>
           <h2 className="text-4xl font-serif mb-2">Main Game Standings</h2>
           <div className="text-lg text-gray-600 mb-8">
-            Party Fund: ${mainGamePartyFund.toFixed(2)}
+            Party Points: {mainGamePartyFund.toFixed(2)}
           </div>
 
           {/* Table Header - Styled like cards */}
@@ -96,9 +96,9 @@ export default function StandingsPage() {
               Position
             </div>
             <div className="px-6 py-3 border-r border-gray-200 text-center col-span-6">
-              Juaari
+              Player
             </div>
-            <div className="px-6 py-3 text-center col-span-4">Winnings</div>
+            <div className="px-6 py-3 text-center col-span-4">Points</div>
           </div>
 
           {/* Table Rows - Styled like cards */}
@@ -138,7 +138,7 @@ export default function StandingsPage() {
         <>
           <h2 className="text-4xl font-serif mb-2">Trivia Standings</h2>
           <div className="text-lg text-gray-600 mb-8">
-            Party Fund: ${triviaPartyFund.toFixed(2)}
+            Party points: {triviaPartyFund.toFixed(2)}
           </div>
 
           {/* Table Header - Styled like cards */}
@@ -147,9 +147,9 @@ export default function StandingsPage() {
               Position
             </div>
             <div className="px-6 py-3 border-r border-gray-200 text-center col-span-6">
-              Juaari
+              Player
             </div>
-            <div className="px-6 py-3 text-center col-span-4">Winnings</div>
+            <div className="px-6 py-3 text-center col-span-4">Points</div>
           </div>
 
           {/* Table Rows - Styled like cards */}

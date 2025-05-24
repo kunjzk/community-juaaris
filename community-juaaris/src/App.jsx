@@ -21,7 +21,7 @@ const router = createBrowserRouter([
         element: <GameList />,
       },
       {
-        path: "/bets/:matchId",
+        path: "/preds/:matchId",
         element: <BetsList />,
       },
       {
@@ -29,15 +29,15 @@ const router = createBrowserRouter([
         element: <UpcomingTrivia />,
       },
       {
-        path: "/triviabets",
+        path: "/triviapreds",
         element: <TriviaBets />,
       },
       {
-        path: "/triviabets/:triviaId?",
+        path: "/triviapreds/:triviaId?",
         element: <TriviaBets />,
       },
       {
-        path: "/bets",
+        path: "/preds",
         element: <BetsList />,
       },
       {

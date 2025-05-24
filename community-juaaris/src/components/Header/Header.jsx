@@ -16,7 +16,7 @@ function Header() {
   return (
     <header className="flex justify-between items-center mb-8 sm:mb-12 relative">
       <Link to="/" className="text-xl sm:text-2xl font-medium text-[#4b6c43]">
-        Community Juaaris
+        Community Games
       </Link>
 
       {/* Hamburger menu button - only visible on mobile */}
@@ -75,15 +75,15 @@ function NavLinks({ location, onClick }) {
         All Matches
       </Link>
       <Link
-        to="/bets"
+        to="/preds"
         onClick={onClick}
         className={`text-base font-semibold pb-1 ${
-          location.pathname.startsWith("/bets")
+          location.pathname.startsWith("/preds")
             ? "text-[#2e7d32] border-b-2 border-[#2e7d32]"
             : "text-black hover:text-[#2e7d32] transition-colors"
         }`}
       >
-        Match Bets
+        Match Predictions
       </Link>
       <Link
         to="/upcomingtrivia"
@@ -97,15 +97,15 @@ function NavLinks({ location, onClick }) {
         All Trivia
       </Link>
       <Link
-        to="/triviabets"
+        to="/triviapreds"
         onClick={onClick}
         className={`text-base font-semibold pb-1 ${
-          location.pathname.startsWith("/triviabets")
+          location.pathname.startsWith("/triviapreds")
             ? "text-[#2e7d32] border-b-2 border-[#2e7d32]"
             : "text-black hover:text-[#2e7d32] transition-colors"
         }`}
       >
-        Trivia Bets
+        Trivia Predictions
       </Link>
       <Link
         to="/standings"

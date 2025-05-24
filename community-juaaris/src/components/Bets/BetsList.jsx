@@ -102,12 +102,12 @@ function BetsList() {
 
   const goToPrevMatch = () => {
     console.log("Going to previous match:", prevMatch);
-    navigate(`/bets/${prevMatch.id}`);
+    navigate(`/preds/${prevMatch.id}`);
   };
 
   const goToNextMatch = () => {
     console.log("Going to next match:", nextMatch);
-    navigate(`/bets/${nextMatch.id}`);
+    navigate(`/preds/${nextMatch.id}`);
   };
 
   // --- DATA REFRESH TRIGGER ---
@@ -279,9 +279,7 @@ function BetsList() {
               <p className="text-base sm:text-lg">
                 Date: {formatDate(match.datetime)}
               </p>
-              <p className="text-base sm:text-lg">
-                Bet amount: ${match.bet_amount}
-              </p>
+              <p className="text-base sm:text-lg">Points: {match.bet_amount}</p>
               <p className="text-base sm:text-lg font-medium">
                 Second dimension: {match.second_dimension_cutoff} runs
               </p>
@@ -324,7 +322,7 @@ function BetsList() {
                 />
               </svg>
               <p className="text-red-600 text-center text-sm sm:text-base font-medium">
-                Betting is closed. The cutoff time has been exceeded.
+                Predictions are closed. The cutoff time has been exceeded.
               </p>
             </div>
           </div>

@@ -52,7 +52,7 @@ function BetCard({ juaari_name, match, bet, isCutoffExceeded, onUpdateBet }) {
       return (
         <>
           <h3 className="text-xl sm:text-2xl font-serif mb-2 text-center">
-            {juaariName}'s bet
+            {juaariName}
           </h3>
           <div className="flex-grow">
             <div className="mb-4 flex items-center justify-between">
@@ -89,7 +89,7 @@ function BetCard({ juaari_name, match, bet, isCutoffExceeded, onUpdateBet }) {
             onClick={handleSaveBet}
             disabled={isCutoffExceeded}
           >
-            Save your bet
+            Save your prediction
           </button>
         </>
       );
@@ -100,7 +100,7 @@ function BetCard({ juaari_name, match, bet, isCutoffExceeded, onUpdateBet }) {
       return (
         <>
           <h3 className="text-xl sm:text-2xl font-serif mb-2 text-center">
-            {juaariName}'s bet:
+            {juaariName}:
           </h3>
           <p className="text-2xl sm:text-4xl font-serif mb-6 text-red-500 text-center flex-grow flex items-center justify-center">
             Nothing yet!
@@ -112,7 +112,7 @@ function BetCard({ juaari_name, match, bet, isCutoffExceeded, onUpdateBet }) {
               onClick={handleStartEdit}
               disabled={isCutoffExceeded}
             >
-              Place a bet!
+              Make a prediction!
             </button>
           )}
         </>
@@ -123,7 +123,7 @@ function BetCard({ juaari_name, match, bet, isCutoffExceeded, onUpdateBet }) {
     return (
       <>
         <h3 className="text-xl sm:text-2xl font-serif mb-2 text-center">
-          {juaariName}'s bet:
+          {juaariName}:
         </h3>
         <p className="text-2xl sm:text-4xl font-serif mb-6 text-center flex-grow flex items-center justify-center">
           {selectedTeam} {selectedOption}
@@ -135,7 +135,7 @@ function BetCard({ juaari_name, match, bet, isCutoffExceeded, onUpdateBet }) {
             onClick={handleStartEdit}
             disabled={isCutoffExceeded}
           >
-            Edit bet
+            Edit prediction
           </button>
         )}
       </>

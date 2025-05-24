@@ -13,7 +13,7 @@ function TriviaCard({
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    navigate(`/triviabets/${triviaId}`);
+    navigate(`/triviapreds/${triviaId}`);
   };
 
   // Check if trivia has a result
@@ -36,7 +36,7 @@ function TriviaCard({
         </div>
         <div className="text-center col-span-1 sm:col-span-1">
           <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">
-            Bet Cutoff Time
+            Prediction Cutoff Time
           </div>
           <div className="font-medium text-xs sm:text-sm">{betCutoffTime}</div>
         </div>
@@ -54,14 +54,14 @@ function TriviaCard({
             onClick={handleButtonClick}
             className="w-full sm:w-auto bg-[#d9534f] text-white px-3 py-1.5 rounded-md hover:bg-[#c9302c] transition-colors text-xs sm:text-sm whitespace-nowrap"
           >
-            Cutoff exceeded, view all bets
+            Cutoff exceeded, view all predictions
           </button>
         ) : (
           <button
             onClick={handleButtonClick}
             className="w-full sm:w-auto bg-[#4b6c43] text-white px-3 py-1.5 rounded-md hover:bg-[#3d5836] transition-colors text-xs sm:text-sm whitespace-nowrap"
           >
-            Place your bet
+            Make a prediction
           </button>
         )}
       </div>
