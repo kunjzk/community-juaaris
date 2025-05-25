@@ -139,7 +139,7 @@ function UpcomingTrivia() {
       }
 
       const cutoffDate = new Date(matchDate);
-      cutoffDate.setHours(matchDate.getHours() - 2);
+      cutoffDate.setHours(matchDate.getHours() - 1);
 
       return cutoffDate;
     } catch (error) {

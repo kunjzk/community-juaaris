@@ -65,7 +65,7 @@ function TriviaBets() {
     const checkCutoff = () => {
       if (!trivia) return;
       const cutoffTime = new Date(trivia.match_datetime);
-      cutoffTime.setHours(cutoffTime.getHours() - 2); // 24 hours before match
+      cutoffTime.setHours(cutoffTime.getHours() - 1); // 24 hours before match
       const now = new Date();
       setIsCutoffExceeded(now > cutoffTime);
     };
