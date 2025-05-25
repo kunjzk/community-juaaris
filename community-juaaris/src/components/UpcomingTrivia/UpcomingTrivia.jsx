@@ -61,7 +61,7 @@ function TriviaCard({
             onClick={handleButtonClick}
             className="w-full sm:w-auto bg-[#4b6c43] text-white px-3 py-1.5 rounded-md hover:bg-[#3d5836] transition-colors text-xs sm:text-sm whitespace-nowrap"
           >
-            Make a prediction
+            Predictions Open
           </button>
         )}
       </div>
