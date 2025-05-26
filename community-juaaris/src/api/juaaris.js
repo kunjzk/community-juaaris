@@ -10,6 +10,12 @@ export async function getJuaarisAndWinnings() {
   return query(sql);
 }
 
+// Get all juaaris with defaults_remaining for admin forms
+export async function getAllJuaaris() {
+  const sql = `SELECT id, display_name, defaults_remaining FROM new_juaaris ORDER BY display_name`;
+  return query(sql);
+}
+
 export async function updateTotalMatchWinnings(
   winnerIds,
   netWinningsPerWinner,

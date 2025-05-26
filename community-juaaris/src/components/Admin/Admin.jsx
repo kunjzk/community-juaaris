@@ -6,6 +6,7 @@ import AllTriviaResults from "./Trivia/AllTriviaResults";
 import AddMatches from "./Matches/AddMatches";
 import EditMatches from "./Matches/EditMatches";
 import EditTrivia from "./Trivia/EditTrivia";
+import CreateDefaultBet from "./Matches/CreateDefaultBet";
 
 function Admin() {
   const [activeMainTab, setActiveMainTab] = useState("matches");
@@ -44,6 +45,16 @@ function Admin() {
             }`}
           >
             Post Match Results
+          </button>
+          <button
+            onClick={() => setActiveSubTab("create-default-bet")}
+            className={`text-sm sm:text-base font-medium px-3 py-1 rounded-md ${
+              activeSubTab === "create-default-bet"
+                ? "bg-[#e8f5e9] text-[#2e7d32]"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+            }`}
+          >
+            Create Default Bet
           </button>
         </div>
       );
@@ -95,6 +106,8 @@ function Admin() {
         return <AddMatches />;
       } else if (activeSubTab === "edit-matches") {
         return <EditMatches />;
+      } else if (activeSubTab === "create-default-bet") {
+        return <CreateDefaultBet />;
       }
     }
     // Trivia tab content

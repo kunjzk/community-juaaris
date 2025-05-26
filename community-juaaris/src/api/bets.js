@@ -221,3 +221,37 @@ export const setNonWinnersToFalseForInvalid = async (matchId, winningTeam) => {
 
   return result;
 };
+
+// Create a default bet for a juaari
+export const createDefaultBet = async (
+  newBetId,
+  matchId,
+  juaariId,
+  team,
+  option
+) => {
+  const sql = `
+    INSERT INTO new_bets (id, match_id, juaari_id, predicted_winning_team, predicted_more_or_less, default_bet)
+    VALUES ($1, $2, $3, $4, $5, TRUE)
+  `;
+  return query(sql, [newBetId, matchId, juaariId, team, option]);
+};
+
+// Decrement defaults_remaining for a juaari
+export const decrementDefaultsRemaining = async (juaariId) => {
+  const sql = `
+    UPDATE new_juaaris 
+    SET defaults_remaining = defaults_remaining - 1
+    WHERE id = $1 AND defaults_remaining > 0
+    RETURNING defaults_remaining
+  `;
+  return query(sql, [juaariId]);
+};
+
+// Get juaari's current defaults_remaining count
+export const getDefaultsRemaining = async (juaariId) => {
+  const sql = `
+    SELECT defaults_remaining FROM new_juaaris WHERE id = $1
+  `;
+  return query(sql, [juaariId]);
+};
