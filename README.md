@@ -82,6 +82,7 @@ Given the need for time series processing and filtering, as well as foreign key 
 | 07/05/2025 | v1.0.0  | Results posting works                                                                                                                |
 | 23/05/2025 | v2.0.0  | Release trivia features |
 | 24/05/2025 | v2.1.0 | Better admin features, localized timestamps, mobile friendliness |
+| 26/05/2025 | v2.2.0 | Admin can add default bets |
 
 ## TODO
 
