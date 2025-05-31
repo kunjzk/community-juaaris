@@ -109,7 +109,7 @@ function ResultsCard({ matchId, teams, dateTime, result, submitResult }) {
 
   const goToBetsPageForMatch = () => {
     // console.log("Going to bets page for match id: ", matchId);
-    navigate(`/bets/${matchId}`);
+    navigate(`/preds/${matchId}`);
   };
 
   const resetResult = async () => {
