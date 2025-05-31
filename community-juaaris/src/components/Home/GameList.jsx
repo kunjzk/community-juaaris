@@ -18,7 +18,7 @@ function GameList() {
     // Calculate most recent Saturday
     const mostRecentSaturday = new Date(today);
     // If today is Saturday (6), go back 0 days. Otherwise, go back (currentDay + 1) days
-    const daysToGoBack = currentDay === 6 ? 0 : (currentDay + 1) % 7;
+    const daysToGoBack = currentDay === 6 ? 2 : (currentDay + 1) % 7;
     mostRecentSaturday.setDate(today.getDate() - daysToGoBack);
     mostRecentSaturday.setHours(0, 0, 0, 0);
 
