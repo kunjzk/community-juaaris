@@ -80,9 +80,10 @@ Given the need for time series processing and filtering, as well as foreign key 
 | 10/04/2025 | v0.6.0  | Match data saved to localStorage, standings page renders table. Left with bet read/write, DB changes, and result upload + db changes |
 | 12/04/2025 | v0.7.0  | Dropped UUIDs, such a pain. Slight DB schema refactoring. So important to get this right the first time!                             |
 | 07/05/2025 | v1.0.0  | Results posting works                                                                                                                |
-| 23/05/2025 | v2.0.0  | Release trivia features |
-| 24/05/2025 | v2.1.0 | Better admin features, localized timestamps, mobile friendliness |
-| 26/05/2025 | v2.2.0 | Admin can add default bets |
+| 23/05/2025 | v2.0.0  | Release trivia features                                                                                                              |
+| 24/05/2025 | v2.1.0  | Better admin features, localized timestamps, mobile friendliness                                                                     |
+| 26/05/2025 | v2.2.0  | Admin can add default bets                                                                                                           |
+| 05/06/2025 | v 2.3.0 | Finals completed, season done                                                                                                        |
 
 ## TODO
 
