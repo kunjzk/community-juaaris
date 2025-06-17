@@ -101,5 +101,3 @@ Given the need for time series processing and filtering, as well as foreign key 
 ## V1 does NOT support:
 
 - Displaying bumpers
-- Drawn matches
-- Editing results
