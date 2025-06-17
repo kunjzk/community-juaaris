@@ -163,9 +163,9 @@ export async function resetMatchResult(matchId) {
 
     // Step 2: Update juaaris winnings
     for (const record of winHistory) {
-      // Update winnings by adding back the delta
+      // Update winnings by subtracting the delta (reversing the previous addition)
       await query(
-        "UPDATE new_juaaris SET winnings = winnings - $1 WHERE id = $2",
+        "UPDATE new_juaaris SET winnings = winnings - $1, match_winnings = match_winnings - $1 WHERE id = $2",
         [record.delta_winnings_this_game, record.juaari_id]
       );
     }

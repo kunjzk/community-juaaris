@@ -15,19 +15,22 @@ function GameList() {
     const today = new Date();
     const currentDay = today.getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
 
-    // Calculate most recent Saturday
-    const mostRecentSaturday = new Date(today);
-    // If today is Saturday (6), go back 0 days. Otherwise, go back (currentDay + 1) days
-    const daysToGoBack = currentDay === 6 ? 5 : (currentDay + 1) % 7;
-    mostRecentSaturday.setDate(today.getDate() - daysToGoBack);
-    mostRecentSaturday.setHours(0, 0, 0, 0);
+    // // Calculate most recent Saturday
+    // const mostRecentSaturday = new Date(today);
+    // // If today is Saturday (6), go back 0 days. Otherwise, go back (currentDay + 1) days
+    // const daysToGoBack = currentDay === 6 ? 5 : (currentDay + 1) % 7;
+    // mostRecentSaturday.setDate(today.getDate() - daysToGoBack);
+    // mostRecentSaturday.setHours(0, 0, 0, 0);
 
-    // Calculate next Saturday
-    const nextSaturday = new Date(mostRecentSaturday);
-    nextSaturday.setDate(mostRecentSaturday.getDate() + 7);
+    // // Calculate next Saturday
+    // const nextSaturday = new Date(mostRecentSaturday);
+    // nextSaturday.setDate(mostRecentSaturday.getDate() + 7);
 
-    setMostRecentSaturday(mostRecentSaturday);
-    setNextSaturday(nextSaturday);
+    // setMostRecentSaturday(mostRecentSaturday);
+    // setNextSaturday(nextSaturday);
+
+    const mostRecentSaturday = new Date("2025-03-22");
+    const nextSaturday = new Date("2025-06-21");
 
     setStartDate(mostRecentSaturday);
     setEndDate(nextSaturday);
